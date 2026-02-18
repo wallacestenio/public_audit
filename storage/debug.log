@@ -1,0 +1,2093 @@
+2026-02-17T12:40:08+00:00 POST: Array
+(
+    [ticket_number] => INC889843
+    [ticket_type] => Incidente
+    [ticket_type_label] => Incidente
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-01
+    [audit_month_label] => 2026-01
+    [audit_year] => 2026
+    [priority] => 3
+    [priority_label] => 3
+    [category] => HARDWARE
+    [category_label] => HARDWARE
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Alberto Vieira
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T12:40:08+00:00 DATA: Array
+(
+    [ticket_number] => INC889843
+    [ticket_type] => Incidente
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-01
+    [priority] => 3
+    [requester_name] => Alberto Vieira
+    [category] => HARDWARE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T12:40:08+00:00 OK id=12
+2026-02-17T12:46:22+00:00 POST: Array
+(
+    [ticket_number] => INC889849
+    [ticket_type] => Incidente
+    [ticket_type_label] => Incidente
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-01
+    [audit_month_label] => 2026-01
+    [audit_year] => 2026
+    [priority] => 3
+    [priority_label] => 3
+    [category] => HARDWARE
+    [category_label] => HARDWARE
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Alberto Vieira
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T12:46:22+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => INC889849
+    [ticket_type] => Incidente
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-01
+    [priority] => 3
+    [requester_name] => Alberto Vieira
+    [category] => HARDWARE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T12:46:22+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T12:46:22+00:00 [AuditEntry.insertSimple] OK id=13
+2026-02-17T12:46:22+00:00 OK id=13
+2026-02-17T12:53:59+00:00 POST: Array
+(
+    [ticket_number] => RITM989090
+    [ticket_type] => TASK
+    [ticket_type_label] => TASK
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 2
+    [priority_label] => 2
+    [category] => Rede
+    [category_label] => Rede
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Daniela Mardas
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T12:53:59+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989090
+    [ticket_type] => TASK
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 2
+    [requester_name] => Daniela Mardas
+    [category] => Rede
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T12:53:59+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T12:53:59+00:00 [AuditEntry.insertSimple] OK id=14
+2026-02-17T12:53:59+00:00 OK id=14
+2026-02-17T13:22:10+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:10+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:10+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:10+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:10+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:34+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:34+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:34+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:34+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:34+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:36+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:36+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:36+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:36+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:36+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:37+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:37+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:37+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:37+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:37+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:38+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:38+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:38+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:38+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:38+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:38+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:38+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:38+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:38+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:38+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:39+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:39+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:39+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:39+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:39+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:39+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:39+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:39+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:39+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:39+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:40+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:40+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:40+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:40+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:40+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:40+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:40+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:41+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:41+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:41+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:41+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:41+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:41+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:41+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:41+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:41+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:41+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:42+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:42+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:42+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:42+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:42+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:22:42+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:22:42+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:34:29+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:34:29+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:34:29+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:34:29+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:34:29+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:34:30+00:00 POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-02
+    [audit_month_label] => 2026-02
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:34:30+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-02
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:34:30+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:34:30+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:34:30+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:35:07+00:00 POST: Array
+(
+    [ticket_number] => RITM989099
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-01
+    [audit_month_label] => 2026-01
+    [priority] => 2
+    [priority_label] => 2
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Aldenir Marcedo
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:35:07+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989099
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-01
+    [priority] => 2
+    [requester_name] => Aldenir Marcedo
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:35:07+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:35:07+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:35:07+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:39:53+00:00 POST: Array
+(
+    [ticket_number] => RITM989087
+    [ticket_type] => REQUISIÇÃO
+    [ticket_type_label] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [kyndryl_auditor_label] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [petrobras_inspector_label] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [audited_supplier_label] => Minsit
+    [location] => CENPES
+    [location_label] => CENPES
+    [audit_month] => 2026-01
+    [audit_month_label] => 2026-01
+    [priority] => 1
+    [priority_label] => 1
+    [category] => MTR
+    [category_label] => MTR
+    [resolver_group] => N2-CENPES
+    [resolver_group_label] => N2-CENPES
+    [requester_name] => Andre Almeida
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T13:39:53+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989087
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => Wallace Stenio
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_date] => 
+    [audit_month] => 2026-01
+    [priority] => 1
+    [requester_name] => Andre Almeida
+    [category] => MTR
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:39:53+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_date,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_date,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:39:53+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:39:53+00:00 ERR: SQLSTATE[HY000]: General error: 1 table audit_entries has no column named audit_date
+2026-02-17T13:46:24+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989954
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => MARCOS ALMEIDA
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:46:24+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989954
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 4
+    [requester_name] => MARCOS ALMEIDA
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T13:46:24+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T13:46:24+00:00 [AuditEntry.insertSimple] OK id=15
+2026-02-17T13:46:24+00:00 OK id=15
+2026-02-17T14:37:04+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T14:37:04+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-02
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T14:37:04+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T14:37:04+00:00 [AuditEntry.insertSimple] OK id=1
+2026-02-17T14:37:04+00:00 OK id=1
+2026-02-17T14:47:05+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T14:47:05+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-02
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T14:47:05+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T14:47:05+00:00 [AuditEntry.insertSimple] OK id=2
+2026-02-17T14:47:05+00:00 OK id=2
+2026-02-17T14:48:16+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T14:48:16+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T14:48:16+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T14:48:16+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T14:48:16+00:00 ERR: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T15:58:03+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T15:58:03+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T15:58:03+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T15:58:03+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T15:58:03+00:00 ERR: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T15:58:08+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989090
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T15:58:08+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989090
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 4
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T15:58:08+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T15:58:08+00:00 [AuditEntry.insertSimple] OK id=3
+2026-02-17T15:58:08+00:00 OK id=3
+2026-02-17T15:58:35+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T15:58:35+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 4
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T15:58:35+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T15:58:35+00:00 [AuditEntry.insertSimple] FAIL: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T15:58:35+00:00 ERR: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T16:09:53+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:10:02+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989096
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:10:06+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989097
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 4
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:10:06+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989097
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 4
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:10:06+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T16:10:06+00:00 [AuditEntry.insertSimple] OK id=4
+2026-02-17T16:10:06+00:00 OK id=4
+2026-02-17T16:13:32+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989000
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:13:32+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989000
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => 2026-01
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:13:32+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T16:13:32+00:00 [AuditEntry.insertSimple] OK id=5
+2026-02-17T16:13:32+00:00 OK id=5
+2026-02-17T16:21:51+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => 
+    [kyndryl_auditor] => 
+    [petrobras_inspector] => 
+    [audited_supplier] => 
+    [location] => 
+    [audit_month] => janeiro
+    [priority] => 
+    [requester_name] => Aldenir Marcedo
+    [category] => 
+    [resolver_group] => 
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:21:58+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989093
+    [ticket_type] => 
+    [kyndryl_auditor] => 
+    [petrobras_inspector] => 
+    [audited_supplier] => 
+    [location] => 
+    [audit_month] => janeiro
+    [priority] => 
+    [requester_name] => Aldenir Marcedo
+    [category] => 
+    [resolver_group] => 
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:21:58+00:00 [AuditEntry.insertSimple] DATA:
+Array
+(
+    [ticket_number] => RITM989093
+    [ticket_type] => 
+    [kyndryl_auditor] => 
+    [petrobras_inspector] => 
+    [audited_supplier] => 
+    [location] => 
+    [audit_month] => 2026-01
+    [priority] => 
+    [requester_name] => Aldenir Marcedo
+    [category] => 
+    [resolver_group] => 
+    [sla_met] => 1
+    [is_compliant] => 1
+)
+
+2026-02-17T16:21:58+00:00 [AuditEntry.insertSimple] SQL: INSERT INTO audit_entries (ticket_number,ticket_type,kyndryl_auditor,petrobras_inspector,audited_supplier,location,audit_month,priority,requester_name,category,resolver_group,sla_met,is_compliant)
+                 VALUES (:ticket_number,:ticket_type,:kyndryl_auditor,:petrobras_inspector,:audited_supplier,:location,:audit_month,:priority,:requester_name,:category,:resolver_group,:sla_met,:is_compliant)
+2026-02-17T16:21:58+00:00 [AuditEntry.insertSimple] OK id=6
+2026-02-17T16:21:58+00:00 OK id=6
+2026-02-17T17:57:49+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T17:58:09+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989092
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T17:58:27+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989001
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T17:58:35+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989002
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T17:58:44+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989003
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T17:58:52+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989004
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T17:58:59+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989005
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => janeiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T19:42:02+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T19:42:26+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM980963
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T19:46:07+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC9889075
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T20:36:44+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC9889075
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T20:36:44+00:00 OK id=1
+2026-02-17T20:39:20+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC9889075
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T20:39:20+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-17T20:39:35+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC9889079
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-17T20:39:35+00:00 OK id=1
+2026-02-18T01:03:17+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989085
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => MARCOS ALMEIDA
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T01:03:17+00:00 OK id=1
+2026-02-18T11:36:59+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:36:59+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-18T11:37:23+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989006
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:37:23+00:00 OK id=1
+2026-02-18T11:42:33+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989009
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:42:33+00:00 OK id=1
+2026-02-18T11:43:19+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989010
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:43:19+00:00 OK id=1
+2026-02-18T11:44:10+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989011
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:44:10+00:00 OK id=1
+2026-02-18T11:44:49+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989012
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:44:49+00:00 OK id=1
+2026-02-18T11:47:36+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC9889076
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:47:36+00:00 OK id=1
+2026-02-18T11:47:36+00:00 ERR: syntax error, unexpected token ";"
+2026-02-18T11:48:21+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989015
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Andre Almeida
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:48:21+00:00 OK id=1
+2026-02-18T11:48:21+00:00 ERR: syntax error, unexpected token ";"
+2026-02-18T11:49:10+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC9889017
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Roberto Mariano
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:49:10+00:00 OK id=1
+2026-02-18T11:52:45+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989095
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:52:45+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-18T11:52:57+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989019
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T11:52:57+00:00 OK id=1
+2026-02-18T12:51:55+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => SCTASK2787893
+    [ticket_type] => TASK
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-18T12:51:55+00:00 OK id=1

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Teste de Insert - audit_entries</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:24px;background:#f6f7f9}
+    .card{background:#fff;border:1px solid #e3e6ea;border-radius:8px;padding:20px;max-width:900px}
+    .row{display:flex;flex-wrap:wrap;gap:12px}
+    .col{flex:1 1 280px;min-width:280px}
+    label{font-weight:600;display:block;margin:6px 0}
+    input,select{width:100%;padding:10px;border:1px solid #ccd1d6;border-radius:6px}
+    .hint{color:#6b7280;font-size:13px;margin-top:4px}
+    button{padding:10px 16px;border:0;background:#0d6efd;color:#fff;border-radius:6px;cursor:pointer}
+    button:hover{background:#0b5ed7}
+    pre{background:#0f172a;color:#e5e7eb;padding:12px;border-radius:8px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Teste de Insert — <code>audit_entries</code></h1>
+    <p>Preencha e envie. O servidor normaliza <b>Mês da Auditoria</b> para <code>YYYY-MM</code> (ex.: <code>2026-02</code>).</p>
+
+    <form method="post" action="test-insert.php" class="row">
+      <div class="col">
+        <label>Número Ticket *</label>
+        <input name="ticket_number" required placeholder="TCK-123456">
+      </div>
+
+      <div class="col">
+        <label>Tipo do Ticket</label>
+        <input name="ticket_type" placeholder="INC / RITM / TASK / SCTASK / Incidente">
+      </div>
+
+      <div class="col">
+        <label>Auditor Kyndryl</label>
+        <input name="kyndryl_auditor" placeholder="Nome do auditor">
+      </div>
+
+      <div class="col">
+        <label>Fiscal Petrobras</label>
+        <input name="petrobras_inspector" placeholder="Nome do fiscal">
+      </div>
+
+      <div class="col">
+        <label>Fornecedor Auditado</label>
+        <input name="audited_supplier" placeholder="Fornecedor">
+      </div>
+
+      <div class="col">
+        <label>Localidade</label>
+        <input name="location" placeholder="SP / RJ / etc.">
+      </div>
+
+      <div class="col">
+        <label>Data da Auditoria</label>
+        <input type="date" name="audit_date">
+      </div>
+
+      <div class="col">
+        <label>Mês da Auditoria</label>
+        <input
+          name="audit_month"
+          class="form-control"
+          placeholder="fevereiro 2026, fev 2026, 02/2026 ou 2026-02"
+          list="month_names"
+          autocomplete="off"
+        >
+        <datalist id="month_names">
+          <option value="janeiro"></option>
+          <option value="fevereiro"></option>
+          <option value="março"></option>
+          <option value="abril"></option>
+          <option value="maio"></option>
+          <option value="junho"></option>
+          <option value="julho"></option>
+          <option value="agosto"></option>
+          <option value="setembro"></option>
+          <option value="outubro"></option>
+          <option value="novembro"></option>
+          <option value="dezembro"></option>
+        </datalist>
+        <div class="hint">Dica: “fevereiro 2026”, “fev 2026”, “02/2026” ou “2026-02”.</div>
+      </div>
+
+      <div class="col">
+        <label>Prioridade</label>
+        <input name="priority" placeholder="1, 2, 3, 4">
+      </div>
+
+      <div class="col">
+        <label>Solicitante *</label>
+        <input name="requester_name" required placeholder="Nome do solicitante">
+      </div>
+
+      <div class="col">
+        <label>Categoria</label>
+        <input name="category" placeholder="Categoria">
+      </div>
+
+      <div class="col">
+        <label>Mesa Solucionadora</label>
+        <input name="resolver_group" placeholder="Mesa / Grupo">
+      </div>
+
+      <div class="col">
+        <label>Nível de Serviço Atingido?</label>
+        <select name="sla_met">
+          <option value="1" selected>Sim</option>
+          <option value="0">Não</option>
+        </select>
+      </div>
+
+      <div class="col">
+        <label>Chamado Conforme?</label>
+        <select name="is_compliant">
+          <option value="1" selected>Sim</option>
+          <option value="0">Não</option>
+        </select>
+      </div>
+
+      <div class="col" style="align-self:flex-end">
+        <button type="submit">Salvar</button>
+      </div>
+    </form>
+
+    <p class="hint">Após enviar, o <code>test-insert.php</code> mostrará o arquivo do DB, tabelas, colunas, e a linha inserida.</p>
+  </div>
+</body>
+</html>
