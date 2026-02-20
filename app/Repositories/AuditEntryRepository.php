@@ -7,27 +7,29 @@ use App\Models\AuditEntry;
 
 final class AuditEntryRepository
 {
-    public function __construct(private AuditEntry $model) {}
+    public function __construct(
+        private AuditEntry $model
+    ) {}
+
+    /**
+     * Cria a entrada e vincula as razões (IDs) na ponte.
+     *
+     * @param array $data
+     * @param int[] $reasonIds
+     * @return int
+     */
+    public function create(array $data, array $reasonIds = []): int
+    {
+        return $this->model->insertWithReasons($data, $reasonIds);
+    }
 
     
-public function create(array $data, array $reasons): int
+
+
+public function rawPdo(): \PDO
 {
-    return $this->model->insertWithReasons($data, $reasons);
+    return $this->model->getPdo();
 }
 
 
-    public function exportRows(): array
-    {
-        return $this->model->listForExport();
-    }
-
-    public function reasonsBridge(): array
-    {
-        return $this->model->listReasonsBridge();
-    }
-
-    public function existsTicketNumber(string $ticket): bool
-{
-    return $this->model->existsTicketNumber($ticket);
-}
 }

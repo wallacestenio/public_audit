@@ -32,21 +32,25 @@ $pdo = $db->pdo();
 
 // DI manual
 use App\Core\Router;
+
 use App\Models\{Presets, AuditEntry, SchemaInspector};
 use App\Repositories\{CatalogRepository, AuditEntryRepository};
+
 use App\Services\{PayloadMapper, CreateAuditEntryService};
 use App\Controllers\{CatalogController, AuditEntriesController};
 
 $schema = new SchemaInspector($pdo);
 $mapper = new PayloadMapper($schema, $pdo);
 
-$presets     = new Presets($pdo);
-$catalogRepo = new CatalogRepository($presets);
+
+$presets     = new Presets($pdo); // (se usar para outros recursos)
+$catalogRepo = new CatalogRepository($pdo);
 $catalogCtrl = new CatalogController($catalogRepo);
+
 
 $auditModel = new AuditEntry($pdo);
 $auditRepo  = new AuditEntryRepository($auditModel);
-$createSvc  = new CreateAuditEntryService($auditRepo, $mapper, $schema);
+$createSvc  = new CreateAuditEntryService($auditRepo);
 $auditCtrl  = new AuditEntriesController($createSvc, $auditRepo);
 
 $router = new Router();

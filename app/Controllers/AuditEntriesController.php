@@ -1,106 +1,169 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Core\View;
-use App\Repositories\AuditEntryRepository;
 use App\Services\CreateAuditEntryService;
+use App\Repositories\AuditEntryRepository;
 use App\Support\Logger;
-use PDOException;
 
 final class AuditEntriesController
 {
     public function __construct(
         private CreateAuditEntryService $service,
-        private AuditEntryRepository $repo
-    ) {}
-
-    /* =======================
-       PÁGINA DO FORMULÁRIO
-       ======================= */
-    public function form(): void
-    {
-        echo View::render('form', ['title' => 'Formulário de Chamados']);
+        private AuditEntryRepository $repo,
+        private ?Logger $logger = null
+    ) {
+        $this->logger ??= new Logger();
     }
 
-    /* =======================
-       SALVAR (POST /audit-entries)
-       ======================= */
-    public function store(): void
+    private function simpleRender(string $template, array $data = []): void
     {
-        $logger = new Logger();
-        $post = $_POST ?? [];
-        $logger->write('debug.log', date('c')." /audit-entries POST: ".print_r($post,true).PHP_EOL);
+        $baseDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Views';
+        $file = $baseDir . DIRECTORY_SEPARATOR . trim($template, "/\\") . '.php';
 
-        // Para mensagem amigável
-        $ticket = isset($post['ticket_number']) ? strtoupper(trim((string)$post['ticket_number'])) : '';
+        if (!is_file($file)) {
+            http_response_code(500);
+            $safe = htmlspecialchars($file, ENT_QUOTES, 'UTF-8');
+            echo "<div style='color:#b91c1c;background:#fee2e2;padding:10px;border:1px solid #ef4444;border-radius:6px'>
+                    Template não encontrado: <code>{$safe}</code>
+                  </div>";
+            return;
+        }
+
+        if (!empty($data)) {
+            extract($data, EXTR_SKIP);
+        }
+        require $file;
+    }
+
+    
+public function form(): void
+    {
+        $this->simpleRender('form', [
+            'title' => 'Formulário de Chamados',
+            'old'   => $_GET ?? [],
+            'error' => null, // opcional: evita avisos na View
+        ]);
+    }
+
+
+    
+public function store(): void
+{
+    $post   = $_POST ?? [];
+    $logger = $this->logger;
+
+    /* 🔧 Normaliza os IDs de justificativas vindos do POST
+       - Aceita separadores ; , espaço
+       - Mantém apenas inteiros > 0
+       - Regrava em $post['noncompliance_reason_ids'] como "1;2;3"
+    */
+    // Normaliza os IDs (aceita ; , espaço) e mantém só inteiros > 0
+$raw = (string)($post['noncompliance_reason_ids'] ?? '');
+$ids = preg_split('/[;,|\s]+/', $raw, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+$ids = array_values(array_unique(array_filter(
+    array_map(static fn($x) => (int)preg_replace('/\D+/', '', $x), $ids),
+    static fn($n) => $n > 0
+)));
+$post['noncompliance_reason_ids'] = implode(';', $ids);
+
+// Se "Não conforme" (0), exigir ao menos 1 justificativa
+$isNc = (string)($post['is_compliant'] ?? '1') === '0';
+if ($isNc && empty($ids)) {
+    http_response_code(422);
+    $this->simpleRender('form', [
+        'title' => 'Formulário de Chamados',
+        'error' => 'Selecione ao menos uma justificativa.',
+        'old'   => $post
+    ]);
+    return;
+}
+
+
+
 
         try {
             $id = $this->service->handle($post);
-            $logger->write('debug.log', date('c')." OK id={$id}".PHP_EOL);
+            $logger->write('debug.log', date('c') . " OK id={$id}" . PHP_EOL);
 
-            echo View::render('success', ['id' => $id, 'title' => 'Salvo']);
-            return;
-
-        } catch (PDOException $e) {
-
-            // Log detalhado
-            $logger->write('debug.log', date('c')." PDOEX: code={$e->getCode()} info=".print_r($e->errorInfo,true)." msg=".$e->getMessage().PHP_EOL);
-
-            // Somente quando for UNIQUE em ticket_number
-            if ($this->isTicketNumberDuplicate($e)) {
-                $msg = $ticket !== '' ? "{$ticket} já está salvo." : "Este Número de Ticket já está salvo.";
-                http_response_code(409);
-                echo View::render('form', [
-                    'title' => 'Formulário de Chamados',
-                    'error' => $msg,
-                    'old'   => $post
-                ]);
-                return;
-            }
-
-            // Outras violações de integridade (NOT NULL, CHECK, etc.)
-            if ($this->isIntegrityViolation($e)) {
-                http_response_code(422);
-                echo View::render('form', [
-                    'title' => 'Formulário de Chamados',
-                    'error' => 'Não foi possível salvar: verifique os campos obrigatórios e valores informados.',
-                    'old'   => $post
-                ]);
-                return;
-            }
-
-            // Erro desconhecido
-            $logger->write('debug.log', date('c')." ERR DB: ".$e->getMessage().PHP_EOL);
-            http_response_code(500);
-            echo View::render('form', [
-                'title' => 'Formulário de Chamados',
-                'error' => 'Erro ao salvar. Tente novamente.',
-                'old'   => $post
-            ]);
+            // ✅ usar simpleRender
+            $this->simpleRender('success', ['id' => $id, 'title' => 'Salvo']);
             return;
 
         } catch (\InvalidArgumentException $e) {
             http_response_code(422);
-            echo View::render('form', [
+            
+$data = [
+  'ticket_number'       => trim((string)($post['ticket_number'] ?? '')),
+  'ticket_type'         => (string)($post['ticket_type'] ?? ''),
+  'kyndryl_auditor'     => (string)($post['kyndryl_auditor'] ?? ''),
+  'petrobras_inspector' => (string)($post['petrobras_inspector'] ?? ''),
+  'audited_supplier'    => (string)($post['audited_supplier'] ?? ''),
+  'location'            => (string)($post['location'] ?? ''),
+  'audit_month'         => (string)($post['audit_month'] ?? ''), // já vem normalizado pelo front; se tiver mapper, pode usar ele
+  'priority'            => (int)($post['priority'] ?? 0),
+  'requester_name'      => (string)($post['requester_name'] ?? ''),
+  'category'            => (string)($post['category'] ?? ''),
+  'resolver_group'      => (string)($post['resolver_group'] ?? ''),
+  'sla_met'             => (int)($post['sla_met'] ?? 0),
+  'is_compliant'        => (int)($post['is_compliant'] ?? 1),
+];
+
+            $this->simpleRender('form', [
                 'title' => 'Formulário de Chamados',
                 'error' => $e->getMessage(),
                 'old'   => $post
             ]);
             return;
 
-        } catch (\Throwable $e) {
-            $logger->write('debug.log', date('c')." ERR: ".$e->getMessage().PHP_EOL);
-            http_response_code(500);
-            echo View::render('form', [
-                'title' => 'Formulário de Chamados',
-                'error' => 'Erro inesperado. Tente novamente.',
-                'old'   => $post
-            ]);
-            return;
-        }
+        
+} catch (\PDOException $e) {
+    // Log detalhado do PDO
+    $logger->write(
+        'debug.log',
+        date('c') . " PDOEX: code={$e->getCode()} info=" . print_r($e->errorInfo, true) . " msg=" . $e->getMessage() . PHP_EOL
+    );
+
+    // 1) Ticket duplicado (mensagem específica)
+    if ($this->isTicketNumberDuplicate($e)) {
+        $ticket = (string)($post['ticket_number'] ?? '');
+        $msg = $ticket !== '' ? "{$ticket} já está salvo." : "Este Número de Ticket já está salvo.";
+        http_response_code(409);
+        $this->simpleRender('form', [
+            'title' => 'Formulário de Chamados',
+            'error' => $msg,
+            'old'   => $post
+        ]);
+        return;
     }
+
+    // 2) Outras violações de integridade ou formato
+    
+$msg    = $e->getMessage();
+$detail = $e->errorInfo[2] ?? $msg; // SQLite coloca a frase da constraint aqui
+
+if (stripos($detail, 'FOREIGN KEY constraint failed') !== false) {
+    $error = 'Falha de integridade: alguma justificativa/entrada não existe. (' . $detail . ')';
+} elseif (stripos($detail, 'CHECK constraint failed') !== false) {
+    $error = 'Regra de validação do banco violada. (' . $detail . ')';
+} elseif (str_contains($detail, 'NOT NULL constraint failed')) {
+    $error = 'Campo obrigatório ausente. (' . $detail . ')';
+} else {
+    $error = 'Não foi possível salvar: ' . $detail;
+}
+
+
+    http_response_code(422);
+    $this->simpleRender('form', [
+        'title' => 'Formulário de Chamados',
+        'error' => $error, // agora definido
+        'old'   => $post
+    ]);
+    return;
+}
+
+    }
+
 
     /* =======================
        EXPORTAR CSV (base)

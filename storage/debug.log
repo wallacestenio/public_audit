@@ -2091,3 +2091,995 @@ Array
 )
 
 2026-02-18T12:51:55+00:00 OK id=1
+2026-02-19T11:29:03+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7749302
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-19T11:29:03+00:00 OK id=1
+2026-02-19T14:03:08+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2247949
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 8;7;11
+)
+
+2026-02-19T14:03:30+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2247949
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 8;7;3
+)
+
+2026-02-19T14:03:38+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2247949
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 8;7;3
+)
+
+2026-02-19T14:03:38+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:03:57+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2247949
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 3
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 9
+)
+
+2026-02-19T14:05:01+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC6748241
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3;1
+)
+
+2026-02-19T14:05:08+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC6748241
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 2
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3;1
+)
+
+2026-02-19T14:05:08+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:05:52+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:05:52+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:06:04+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:06:04+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:10:44+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:10:44+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:11:27+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:11:27+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:14:31+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3;10;2
+)
+
+2026-02-19T14:19:57+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3;10;2
+)
+
+2026-02-19T14:19:57+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:20:11+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3;10;2
+)
+
+2026-02-19T14:20:11+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:20:15+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3;10;2
+)
+
+2026-02-19T14:20:15+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:20:41+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7768212
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3;10;2
+)
+
+2026-02-19T14:20:41+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => NOT NULL constraint failed: audit_entries.requester_name
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: audit_entries.requester_name
+2026-02-19T14:23:59+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC12345674
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:23:59+00:00 ERR: Call to undefined function App\Services\mb_strtolower()
+2026-02-19T14:24:09+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC12345674
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:24:09+00:00 ERR: Call to undefined function App\Services\mb_strtolower()
+2026-02-19T14:24:26+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC12345674
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3;10;1
+)
+
+2026-02-19T14:24:26+00:00 ERR: Call to undefined function App\Services\mb_strtolower()
+2026-02-19T14:28:12+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC4428983
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:28:12+00:00 ERR: Call to undefined function App\Services\mb_strtolower()
+2026-02-19T14:32:37+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC4878345
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:32:37+00:00 OK id=1
+2026-02-19T14:37:33+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2290876
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3;4;9
+)
+
+2026-02-19T14:37:33+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T14:37:44+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2290876
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3;4;9
+)
+
+2026-02-19T14:37:44+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T14:38:10+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC2290876
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3;4;9
+)
+
+2026-02-19T14:38:10+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T14:38:30+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC4490349
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T14:38:30+00:00 OK id=1
+2026-02-19T14:39:06+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7865431
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 10;9;7
+)
+
+2026-02-19T14:39:06+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T19:09:08+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989019
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 1
+    [noncompliance_reasons] => 
+)
+
+2026-02-19T19:09:08+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-19T19:09:24+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989010
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3
+)
+
+2026-02-19T19:09:24+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-19T19:09:41+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => RITM989082
+    [ticket_type] => REQUISIÇÃO
+    [kyndryl_auditor] => WALLACE STENIO
+    [petrobras_inspector] => PAULO CESAR
+    [audited_supplier] => MINSIT
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 1
+    [requester_name] => Aldenir Marcedo
+    [category] => REDE
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 3
+)
+
+2026-02-19T19:09:41+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T19:19:14+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7865431
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 10;9;7
+)
+
+2026-02-19T19:19:14+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T19:19:51+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC7865431
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 0
+    [is_compliant] => 1
+    [noncompliance_reason_ids] => 
+)
+
+2026-02-19T19:19:51+00:00 OK id=1
+2026-02-19T19:23:55+00:00 /audit-entries POST: Array
+(
+    [ticket_number] => INC098093485
+    [ticket_type] => INCIDENTE
+    [kyndryl_auditor] => Wallace Stenio da Silva
+    [petrobras_inspector] => Paulo Cesar
+    [audited_supplier] => Minsit
+    [location] => CENPES
+    [audit_month] => fevereiro
+    [priority] => 4
+    [requester_name] => Adriano de Paula
+    [category] => Software
+    [resolver_group] => N2-CENPES
+    [sla_met] => 1
+    [is_compliant] => 0
+    [noncompliance_reason_ids] => 3;10;5;1
+)
+
+2026-02-19T19:23:55+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T20:50:53+00:00 OK id=24
+2026-02-19T20:51:54+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T20:52:47+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-19T23:54:01+00:00 OK id=25
+2026-02-20T10:30:03+00:00 OK id=26
+2026-02-20T11:24:25+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-20T11:25:40+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-20T11:25:56+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-20T11:36:13+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-20T11:36:30+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => FOREIGN KEY constraint failed
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 FOREIGN KEY constraint failed
+2026-02-20T12:07:25+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:07:36+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:08:00+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:27:18+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:31:21+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:36:24+00:00 SERVICE data={"ticket_number":"INC09674678","ticket_type":"INCIDENTE","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[10,5,1,3]
+2026-02-20T12:36:24+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:42:58+00:00 SERVICE data={"ticket_number":"INC09674678","ticket_type":"INCIDENTE","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1} reasonIds=[10,5,1,3]
+2026-02-20T12:42:58+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:43:06+00:00 SERVICE data={"ticket_number":"INC09674678","ticket_type":"INCIDENTE","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[10,5,1,3]
+2026-02-20T12:43:06+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:44:23+00:00 SERVICE data={"ticket_number":"INC09674678","ticket_type":"INCIDENTE","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0} reasonIds=[10,5,1,3]
+2026-02-20T12:44:23+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T12:54:24+00:00 SERVICE data={"ticket_number":"INC0978654","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,4,7]
+2026-02-20T12:54:24+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T13:01:36+00:00 SERVICE data={"ticket_number":"INC0895684","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,11,8]
+2026-02-20T13:01:36+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries_OLD2"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries_OLD2"
+2026-02-20T13:03:08+00:00 SERVICE data={"ticket_number":"INC0895684","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,11,8]
+2026-02-20T13:03:08+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T13:05:40+00:00 SERVICE data={"ticket_number":"INC0895684","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,11,8]
+2026-02-20T13:05:40+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T13:06:34+00:00 SERVICE data={"ticket_number":"INC09786543","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,4,11,8,7]
+2026-02-20T13:06:34+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T13:08:00+00:00 SERVICE data={"ticket_number":"INC09786543","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,4,11,8,7]
+2026-02-20T13:08:00+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => no such table: audit_entries
+)
+ msg=SQLSTATE[HY000]: General error: 1 no such table: audit_entries
+2026-02-20T13:08:30+00:00 SERVICE data={"ticket_number":"INC09786543","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0} reasonIds=[3,4,11,8,7]
+2026-02-20T13:08:30+00:00 PDOEX: code=HY000 info=Array
+(
+    [0] => HY000
+    [1] => 1
+    [2] => foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+)
+ msg=SQLSTATE[HY000]: General error: 1 foreign key mismatch - "audit_entry_noncompliance_reasons" referencing "audit_entries"
+2026-02-20T14:00:36+00:00 SERVICE data={"ticket_number":"INC76590352","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;4;8;11;7;2;10;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Utilização incorreta do KB no chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,4,8,11,7,2,10,1]
+2026-02-20T14:00:36+00:00 OK id=1
+2026-02-20T14:02:05+00:00 SERVICE data={"ticket_number":"INC09675984","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;2;11","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,2,11]
+2026-02-20T14:02:05+00:00 OK id=1
+2026-02-20T16:29:06+00:00 SERVICE data={"ticket_number":"INC09897654","ticket_type":"Incidente","kyndryl_auditor":"WALLACE STENIO","petrobras_inspector":"PAULO CESAR","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-01","priority":4,"requester_name":"Andre Almeida","category":"REDE","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;9;8;2","noncompliance_reasons":null} reasonIds=[3,9,8,2]
+2026-02-20T16:33:55+00:00 SERVICE data={"ticket_number":"INC07865468","ticket_type":"Incidente","kyndryl_auditor":"WALLACE STENIO","petrobras_inspector":"PAULO CESAR","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Andre Almeida","category":"REDES","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;7;6;8","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio"} reasonIds=[3,7,6,8]
+2026-02-20T16:33:55+00:00 OK id=1
+2026-02-20T20:16:08+00:00 SERVICE data={"ticket_number":"RITM089485789","ticket_type":"Requisição","kyndryl_auditor":"WALLACE STENIO","petrobras_inspector":"PAULO CESAR","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-01","priority":4,"requester_name":"Roberto Mariano","category":"REDE","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-20T20:16:08+00:00 OK id=1
+2026-02-20T20:18:51+00:00 SERVICE data={"ticket_number":"SCTASK09890987","ticket_type":"Task","kyndryl_auditor":"WALLACE STENIO","petrobras_inspector":"PAULO CESAR","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Andre Almeida","category":"REDE","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"5;4;3;1;2","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB"} reasonIds=[5,4,3,1,2]
+2026-02-20T20:18:51+00:00 OK id=1
+2026-02-20T20:36:28+00:00 SERVICE data={"ticket_number":"INC098987","ticket_type":"Incidente","kyndryl_auditor":"WALLACE STENIO","petrobras_inspector":"PAULO CESAR","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-01","priority":4,"requester_name":"Andre Almeida","category":"REDE","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;9;2;8;11","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,9,2,8,11]
+2026-02-20T20:36:28+00:00 MODEL.insert ok=1 rc=1 lastId=1
+2026-02-20T20:36:28+00:00 MODEL.check row={"ticket_number":"INC098987","noncompliance_reason_ids":"3;9;2;8;11"}
+2026-02-20T20:36:28+00:00 OK id=1
+2026-02-20T20:42:13+00:00 SERVICE data={"ticket_number":"RITM09807654","ticket_type":"Requisição","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;4;2;8;12","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Não revogou a custódia do rádio;Outros"} reasonIds=[3,4,2,8,12]
+2026-02-20T20:42:13+00:00 MODEL.insert ok=1 rc=1 lastId=2
+2026-02-20T20:42:13+00:00 MODEL.check row={"ticket_number":"RITM09807654","noncompliance_reason_ids":"3;4;2;8;12"}
+2026-02-20T20:42:13+00:00 OK id=2
+2026-02-20T20:47:04+00:00 SERVICE data={"ticket_number":"RITM09897654","ticket_type":"Requisição","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;5;1;2;7;6","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,5,1,2,7,6]
+2026-02-20T20:47:04+00:00 MODEL.insert ok=1 rc=1 lastId=1
+2026-02-20T20:47:04+00:00 MODEL.check row={"ticket_number":"RITM09897654","noncompliance_reason_ids":"3;5;1;2;7;6"}
+2026-02-20T20:47:04+00:00 OK id=1
+2026-02-20T20:55:09+00:00 SERVICE data={"ticket_number":"SCTASK09897675","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T20:55:09+00:00 MODEL.insert ok=1 rc=1 lastId=2
+2026-02-20T20:55:09+00:00 MODEL.check row={"ticket_number":"SCTASK09897675","noncompliance_reason_ids":"3;2;7;6"}
+2026-02-20T20:55:09+00:00 OK id=2
+2026-02-20T20:55:55+00:00 SERVICE data={"ticket_number":"SCTASK09897675","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T20:55:55+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-20T20:55:55+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-20T20:55:58+00:00 SERVICE data={"ticket_number":"SCTASK09897675","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T20:55:58+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-20T20:55:58+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-20T20:56:03+00:00 SERVICE data={"ticket_number":"SCTASK09897670","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T20:56:03+00:00 MODEL.insert ok=1 rc=1 lastId=3
+2026-02-20T20:56:03+00:00 MODEL.check row={"ticket_number":"SCTASK09897670","noncompliance_reason_ids":"3;2;7;6"}
+2026-02-20T20:56:03+00:00 OK id=3
+2026-02-20T20:58:18+00:00 SERVICE data={"ticket_number":"SCTASK09897671","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T20:58:18+00:00 MODEL.insert ok=1 rc=1 lastId=4
+2026-02-20T20:58:18+00:00 MODEL.check row={"ticket_number":"SCTASK09897671","noncompliance_reason_ids":"3;2;7;6"}
+2026-02-20T20:58:18+00:00 OK id=4
+2026-02-20T21:01:28+00:00 SERVICE data={"ticket_number":"SCTASK09897675","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T21:01:28+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-20T21:01:28+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-20T21:01:33+00:00 SERVICE data={"ticket_number":"SCTASK09897679","ticket_type":"Task","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;2;7;6","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,2,7,6]
+2026-02-20T21:01:33+00:00 MODEL.insert ok=1 rc=1 lastId=5
+2026-02-20T21:01:33+00:00 MODEL.check row={"ticket_number":"SCTASK09897679","noncompliance_reason_ids":"3;2;7;6"}
+2026-02-20T21:01:33+00:00 OK id=5
+2026-02-20T21:02:46+00:00 SERVICE data={"ticket_number":"RITM0907865","ticket_type":"Requisição","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;2;7;6;12","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Outros"} reasonIds=[3,2,7,6,12]
+2026-02-20T21:02:46+00:00 MODEL.insert ok=1 rc=1 lastId=6
+2026-02-20T21:02:46+00:00 MODEL.check row={"ticket_number":"RITM0907865","noncompliance_reason_ids":"3;2;7;6;12"}
+2026-02-20T21:02:46+00:00 OK id=6
+2026-02-20T21:03:19+00:00 SERVICE data={"ticket_number":"INC09087865","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"5;4;3;7;6","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[5,4,3,7,6]
+2026-02-20T21:03:19+00:00 MODEL.insert ok=1 rc=1 lastId=7
+2026-02-20T21:03:19+00:00 MODEL.check row={"ticket_number":"INC09087865","noncompliance_reason_ids":"5;4;3;7;6"}
+2026-02-20T21:03:19+00:00 OK id=7
+2026-02-20T21:04:33+00:00 SERVICE data={"ticket_number":"RITM908768765","ticket_type":"Requisição","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":3,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"5;4;8;11","noncompliance_reasons":"Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Não revogou a custódia do rádio;Utilização incorreta do Status \"Em andamento\""} reasonIds=[5,4,8,11]
+2026-02-20T21:04:33+00:00 MODEL.insert ok=1 rc=1 lastId=8
+2026-02-20T21:04:33+00:00 MODEL.check row={"ticket_number":"RITM908768765","noncompliance_reason_ids":"5;4;8;11"}
+2026-02-20T21:04:33+00:00 OK id=8
+2026-02-20T21:07:53+00:00 SERVICE data={"ticket_number":"INC08978654","ticket_type":"Incidente","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;9;8;7;11;6;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,9,8,7,11,6,1]
+2026-02-20T21:07:53+00:00 MODEL.insert ok=1 rc=1 lastId=9
+2026-02-20T21:07:53+00:00 MODEL.check row={"ticket_number":"INC08978654","noncompliance_reason_ids":"3;9;8;7;11;6;1"}
+2026-02-20T21:07:53+00:00 OK id=9
