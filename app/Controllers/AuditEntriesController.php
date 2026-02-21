@@ -40,7 +40,7 @@ final class AuditEntriesController
 public function form(): void
     {
         $this->simpleRender('form', [
-            'title' => 'Formulário de Chamados',
+            'title' => 'Auditoria de Chamados',
             'old'   => $_GET ?? [],
             'error' => null, // opcional: evita avisos na View
         ]);
@@ -168,34 +168,70 @@ if (stripos($detail, 'FOREIGN KEY constraint failed') !== false) {
     /* =======================
        EXPORTAR CSV (base)
        ======================= */
-    public function exportCsv(): void
-    {
+    // App\Controllers\AuditEntriesController.php
+
+public function exportCsv(): void
+{
+    // Blindar warnings/erros só nesta resposta (não vazar no CSV)
+    $prevErrorReporting = error_reporting();
+    $prevDisplayErrors  = ini_get('display_errors');
+    error_reporting($prevErrorReporting & ~E_DEPRECATED);
+    ini_set('display_errors', '0');
+
+    // Limpar quaisquer buffers abertos (evita HTML/avisos no CSV)
+    while (ob_get_level() > 0) { @ob_end_clean(); }
+
+    try {
+        // Filtro opcional: ?audit_month=YYYY-MM
         $month = isset($_GET['audit_month']) ? trim((string)$_GET['audit_month']) : null;
 
+        // Busca as linhas já normalizadas (ordem e colunas certas)
         $rows = $this->repo->exportRows([
             'audit_month' => $month ?: null
         ]);
 
-        // Cabeçalho dinâmico
-        $header = array_keys($rows[0] ?? [
-            'ticket_number'  => null,
-            'ticket_type'    => null,
-            'audit_month'    => null,
-            'priority'       => null,
-            'requester_name' => null,
-        ]);
-
-        $csvRows = [];
-        foreach ($rows as $r) {
-            $line = [];
-            foreach ($header as $h) $line[] = $r[$h] ?? null;
-            $csvRows[] = $line;
+        // ===== Nome do arquivo =====
+        // Se veio mês (YYYY-MM) válido -> auditoria_chamados_YYYY-MM.csv
+        // Senão, base inteira por enquanto fixamos 2026 -> auditoria_chamados_2026.csv
+        $filename = 'auditoria_chamados_';
+        if ($month && preg_match('/^(\d{4})-(0[1-9]|1[0-2])$/', $month)) {
+            $filename .= $month . '.csv'; // YYYY-MM
+        } else {
+            $filename .= '2026.csv';      // base inteira (ano fixo por enquanto)
         }
 
-        $filename = 'audit_entries' . ($month ? "_{$month}" : '') . '.csv';
+        // Cabeçalhos HTTP para download
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
 
-        \App\Core\Response::csv($filename, $header, $csvRows);
+        // Abre stream de saída
+        $out = fopen('php://output', 'w');
+
+        // 🔹 BOM UTF‑8 para o Excel reconhecer acentuação
+        fwrite($out, "\xEF\xBB\xBF");
+
+        // Configurações do CSV (padrão Brasil/Excel)
+        $sep       = ';';     // separador ponto-e-vírgula
+        $enclosure = '"';
+        $escape    = '\\';
+        $eol       = "\r\n";  // Excel/Windows-friendly; use "\n" se preferir UNIX
+
+        // Apenas conteúdo (SEM cabeçalho)
+        foreach ($rows as $r) {
+            fputcsv($out, array_values($r), $sep, $enclosure, $escape, $eol);
+        }
+
+        fclose($out);
+        exit;
+    } finally {
+        // Restaurar configurações originais
+        ini_set('display_errors', $prevDisplayErrors);
+        error_reporting($prevErrorReporting);
     }
+}
 
     /* =======================
        EXPORTAR CSV (ponte)
@@ -218,6 +254,75 @@ if (stripos($detail, 'FOREIGN KEY constraint failed') !== false) {
 
         \App\Core\Response::csv('audit_entry_noncompliance_reasons.csv', $header, $csvRows);
     }
+
+    // App\Repositories\AuditEntryRepository.php
+
+public function exportRows(array $filters = []): array
+{
+    // Campos em ORDEM exata solicitada
+    $cols = [
+        'ticket_number',
+        'ticket_type',
+        'kyndryl_auditor',
+        'petrobras_inspector',
+        'audited_supplier',
+        'location',
+        'audit_month',
+        'priority',
+        'requester_name',
+        'category',
+        'resolver_group',
+        'sla_met',
+        'is_compliant',
+        'noncompliance_reasons',
+    ];
+
+    $sql = 'SELECT ' . implode(',', $cols) . ' FROM audit_entries';
+    $where = [];
+    $params = [];
+
+    // Filtro opcional por mês (YYYY-MM)
+    if (!empty($filters['audit_month'])) {
+        $where[] = 'audit_month = :audit_month';
+        $params[':audit_month'] = (string)$filters['audit_month'];
+    }
+
+    if ($where) {
+        $sql .= ' WHERE ' . implode(' AND ', $where);
+    }
+
+    // Ordenação previsível (ajuste se quiser outro critério)
+    $sql .= ' ORDER BY rowid ASC';
+
+    // Obter o PDO do model de forma clean (sem Reflection)
+    if (!method_exists($this->model, 'getPdo')) {
+        // Adicione no Model:
+        // public function getPdo(): \PDO { return $this->pdo; }
+        throw new \RuntimeException('Model não expõe getPdo(). Crie getPdo() para continuar.');
+    }
+
+    $pdo = $this->model->getPdo();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+    // Garante que só retornamos as colunas desejadas (e na ordem)
+    // e converte null -> '' para não sujar o CSV
+    $normalized = [];
+    foreach ($rows as $r) {
+        $line = [];
+        foreach ($cols as $c) {
+            $v = $r[$c] ?? '';
+            if ($v === null) $v = '';
+            $line[$c] = (string)$v;
+        }
+        $normalized[] = $line;
+    }
+
+    return $normalized;
+}
+
 
     /* =======================
        HELPERS PRIVADOS

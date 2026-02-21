@@ -326,8 +326,8 @@ $error = $error ?? null;
     <!-- Ações (fora do form) -->
     <div class="actions" style="justify-content:flex-end;max-width:1000px;margin:12px auto 0">
       <a href="/export/csv" class="btn btn-gray">Exportar CSV (toda base)</a>
-      <a href="/export/bridge" class="btn btn-light">Exportar CSV (Justificativas)</a>
-      <a href="/export/csv/full" class="btn btn-light">Exportar CSV (base + justificativas)</a>
+      <!-- <a href="/export/bridge" class="btn btn-light">Exportar CSV (Justificativas)</a>
+      <a href="/export/csv/full" class="btn btn-light">Exportar CSV (base + justificativas)</a> -->
       <button type="button" onclick="exportByMonth()" class="btn btn-info">Exportar CSV (mês do formulário)</button>
     </div>
 

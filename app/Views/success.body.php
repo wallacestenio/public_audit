@@ -36,7 +36,7 @@
   const ticket   = qs.get('ticket')  || '';          // ticket (quando você manda via ?ticket=)
   const digits   = (s) => (s || '').match(/\d+/g)?.join('') || '';
   const seedStr  = digits(created) || digits(ticket) || String(Date.now());
-  const seedNum  = Number(seedStr) || 0;
+  const seedNum  = Number(seedStr) || 1;
 
   let idx        = (seedNum % frases.length + frases.length) % frases.length;
   let contador   = 10; // 3 → 2 → 1
@@ -73,7 +73,7 @@
   setTimeout(() => {
     try { clearInterval(timer); } catch (e) {}
     window.location.assign(destino);
-  }, 3200);
+  }, 4800);
 })();
 </script>
 
