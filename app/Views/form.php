@@ -99,6 +99,27 @@ $error = $error ?? null;
     .tag-chip .x:hover{ background:var(--chip-x-bg-hover); border-color:var(--chip-x-bg-hover); color:var(--chip-x-tx-hover); }
     .tag-chip .x:focus{ outline:3px solid rgba(14,165,233,.35); outline-offset:1px; }
     .tag-chip .x:active{ transform:scale(.94); }
+
+    /* Sugestões dropdown (para ambos autocompletes) */
+    #auditor_suggest, #inspector_suggest{
+      position:absolute; top:100%; left:0; right:0;
+      background:#fff; border:1px solid var(--bd2); border-radius:6px;
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+      max-height:260px; overflow:auto; z-index:9999; display:none; padding:6px;
+    }
+    #auditor_suggest, #inspector_suggest, #supplier_suggest{
+  position:absolute; top:100%; left:0; right:0;
+  background:#fff; border:1px solid var(--bd2); border-radius:6px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  max-height:260px; overflow:auto; z-index:9999; display:none; padding:6px;
+}
+#auditor_suggest, #inspector_suggest, #supplier_suggest,
+#location_suggest, #category_suggest, #resolver_suggest{
+  position:absolute; top:100%; left:0; right:0;
+  background:#fff; border:1px solid var(--bd2); border-radius:6px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  max-height:260px; overflow:auto; z-index:9999; display:none; padding:6px;
+} 
   </style>
 </head>
 <body>
@@ -187,25 +208,100 @@ $error = $error ?? null;
           </div>
         </div>
 
-        <div class="col">
-          <label for="kyndryl_auditor">Auditor Kyndryl *</label>
-          <input id="kyndryl_auditor" name="kyndryl_auditor" required value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+        <!-- Auditor Kyndryl -->
+        <div class="col" style="position:relative">
+          <label for="kyndryl_auditor_input">Auditor Kyndryl *</label>
+
+          <input id="kyndryl_auditor_input"
+                 type="text"
+                 autocomplete="off"
+                 placeholder="Comece a digitar para buscar..."
+                 value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                 required>
+
+          <input type="hidden" name="kyndryl_auditor" id="kyndryl_auditor_value"
+                 value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+          <input type="hidden" name="kyndryl_auditor_id" id="kyndryl_auditor_id"
+                 value="<?= htmlspecialchars((string)($old['kyndryl_auditor_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+          <!-- Dropdown de sugestões -->
+          <div id="auditor_suggest"></div>
+
+          <div class="muted">Selecione um nome da lista.</div>
         </div>
 
-        <div class="col">
-          <label for="petrobras_inspector">Fiscal Petrobras *</label>
-          <input id="petrobras_inspector" name="petrobras_inspector" required value="<?= htmlspecialchars((string)($old['petrobras_inspector'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+        <!-- Inspetor Petrobras -->
+        <div class="col" style="position:relative">
+          <label for="petrobras_inspector_input">Inspetor Petrobras *</label>
+
+          <input id="petrobras_inspector_input"
+                 type="text"
+                 autocomplete="off"
+                 placeholder="Comece a digitar para buscar..."
+                 value="<?= htmlspecialchars((string)($old['petrobras_inspector'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+                 required>
+
+          <input type="hidden" name="petrobras_inspector"
+                 id="petrobras_inspector_value"
+                 value="<?= htmlspecialchars((string)($old['petrobras_inspector'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+          <input type="hidden" name="petrobras_inspector_id"
+                 id="petrobras_inspector_id"
+                 value="<?= htmlspecialchars((string)($old['petrobras_inspector_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+          <!-- Dropdown de sugestões -->
+          <div id="inspector_suggest"></div>
+
+          <div class="muted">Selecione um nome da lista.</div>
         </div>
 
-        <div class="col">
-          <label for="audited_supplier">Fornecedor Auditado *</label>
-          <input id="audited_supplier" name="audited_supplier" required value="<?= htmlspecialchars((string)($old['audited_supplier'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        </div>
+        <!-- Fornecedor Auditado (autocomplete) -->
+<div class="col" style="position:relative">
+  <label for="audited_supplier_input">Fornecedor Auditado *</label>
 
-        <div class="col">
-          <label for="location">Localidade *</label>
-          <input id="location" name="location" required value="<?= htmlspecialchars((string)($old['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        </div>
+  <input id="audited_supplier_input"
+         type="text"
+         autocomplete="off"
+         placeholder="Comece a digitar para buscar..."
+         value="<?= htmlspecialchars((string)($old['audited_supplier'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+         required>
+
+  <!-- Hidden com o valor oficial para o POST -->
+  <input type="hidden" name="audited_supplier" id="audited_supplier_value"
+         value="<?= htmlspecialchars((string)($old['audited_supplier'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <!-- (Opcional) Hidden com o ID do fornecedor -->
+  <input type="hidden" name="audited_supplier_id" id="audited_supplier_id"
+         value="<?= htmlspecialchars((string)($old['audited_supplier_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <!-- Dropdown de sugestões -->
+  <div id="supplier_suggest"></div>
+
+  <div class="muted">Selecione um nome da lista.</div>
+</div>
+
+        <!-- Localidade (autocomplete) -->
+<div class="col" style="position:relative">
+  <label for="location_input">Localidade *</label>
+
+  <input id="location_input"
+         type="text"
+         autocomplete="off"
+         placeholder="Comece a digitar para buscar..."
+         value="<?= htmlspecialchars((string)($old['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+         required>
+
+  <input type="hidden" name="location" id="location_value"
+         value="<?= htmlspecialchars((string)($old['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <input type="hidden" name="location_id" id="location_id"
+         value="<?= htmlspecialchars((string)($old['location_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <div id="location_suggest"></div>
+
+  <div class="muted">Selecione uma localidade da lista.</div>
+</div>
 
         <div class="col">
           <label for="audit_month">Mês da Auditoria *</label>
@@ -248,15 +344,49 @@ $error = $error ?? null;
           <input id="requester_name" name="requester_name" required value="<?= htmlspecialchars((string)($old['requester_name'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
         </div>
 
-        <div class="col">
-          <label for="category">Categoria *</label>
-          <input id="category" name="category" required value="<?= htmlspecialchars((string)($old['category'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        </div>
+        <!-- Categoria (autocomplete) -->
+<div class="col" style="position:relative">
+  <label for="category_input">Categoria *</label>
 
-        <div class="col">
-          <label for="resolver_group">Mesa Solucionadora *</label>
-          <input id="resolver_group" name="resolver_group" required value="<?= htmlspecialchars((string)($old['resolver_group'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        </div>
+  <input id="category_input"
+         type="text"
+         autocomplete="off"
+         placeholder="Comece a digitar para buscar..."
+         value="<?= htmlspecialchars((string)($old['category'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+         required>
+
+  <input type="hidden" name="category" id="category_value"
+         value="<?= htmlspecialchars((string)($old['category'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <input type="hidden" name="category_id" id="category_id"
+         value="<?= htmlspecialchars((string)($old['category_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <div id="category_suggest"></div>
+
+  <div class="muted">Selecione uma categoria da lista.</div>
+</div>
+
+        <!-- Mesa Solucionadora (autocomplete) -->
+<div class="col" style="position:relative">
+  <label for="resolver_group_input">Mesa Solucionadora *</label>
+
+  <input id="resolver_group_input"
+         type="text"
+         autocomplete="off"
+         placeholder="Comece a digitar para buscar..."
+         value="<?= htmlspecialchars((string)($old['resolver_group'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+         required>
+
+  <input type="hidden" name="resolver_group" id="resolver_group_value"
+         value="<?= htmlspecialchars((string)($old['resolver_group'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <input type="hidden" name="resolver_group_id" id="resolver_group_id"
+         value="<?= htmlspecialchars((string)($old['resolver_group_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <div id="resolver_suggest"></div>
+
+  <div class="muted">Selecione uma mesa solucionadora da lista.</div>
+</div>
 
         <!-- SLA -->
         <div class="col">
@@ -312,11 +442,12 @@ $error = $error ?? null;
           <div class="muted">Clique nos presets para adicionar. Clique na tag para remover.</div>
         </div>
 
-        <!-- Ações -->
+        <!-- Ações (único bloco) -->
         <div class="col-full" style="margin-top:8px">
           <div class="actions" style="justify-content:flex-end">
             <button type="reset" class="btn btn-light" title="Limpar formulário">Limpar</button>
-            <button type="submit" class="btn" title="Salvar chamado">Salvar</button>
+            <!-- Salvar abre o modal de confirmação -->
+            <button id="btn-open-confirm" type="button" class="btn" title="Salvar chamado">Salvar</button>
           </div>
         </div>
 
@@ -326,11 +457,45 @@ $error = $error ?? null;
     <!-- Ações (fora do form) -->
     <div class="actions" style="justify-content:flex-end;max-width:1000px;margin:12px auto 0">
       <a href="/export/csv" class="btn btn-gray">Exportar CSV (toda base)</a>
-      <!-- <a href="/export/bridge" class="btn btn-light">Exportar CSV (Justificativas)</a>
+      <!-- Desativados por escolha:
+      <a href="/export/bridge" class="btn btn-light">Exportar CSV (Justificativas)</a>
       <a href="/export/csv/full" class="btn btn-light">Exportar CSV (base + justificativas)</a> -->
       <button type="button" onclick="exportByMonth()" class="btn btn-info">Exportar CSV (mês do formulário)</button>
     </div>
 
+  </div>
+
+  <!-- Modal de Confirmação (dentro do body) -->
+  <div id="confirm-overlay" aria-hidden="true"
+       style="position:fixed; inset:0; background:rgba(17,24,39,.45); display:none; z-index:9998"></div>
+
+  <div id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc"
+       style="position:fixed; inset:0; display:none; z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="width:min(560px, 96vw); background:#fff; border:1px solid var(--bd); border-radius:10px; box-shadow:0 12px 28px rgba(0,0,0,.18);">
+      <div style="padding:16px 18px; border-bottom:1px solid var(--bd2);">
+        <h2 id="confirm-title" style="margin:0; font-size:18px;">Confirmação antes de enviar</h2>
+      </div>
+      <div id="confirm-desc" style="padding:16px 18px; color:var(--tx);">
+        <p style="margin:0 0 12px 0">Antes de prosseguir, confirme:</p>
+        <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer;">
+          <input id="ack-check" type="checkbox"
+                 style="width:18px; height:18px; margin-top:2px; accent-color: var(--btn);">
+          <span>
+            Estou ciente de que <strong>todos os dados</strong> informados são verdadeiros e precisos, e autorizo o envio deste registro.
+          </span>
+        </label>
+        <div class="muted" style="margin-top:8px">Você poderá revisar novamente em caso de erro.</div>
+      </div>
+      <div style="padding:12px 18px; border-top:1px solid var(--bd2); display:flex; gap:8px; justify-content:flex-end;">
+        <button id="btn-cancel-confirm" type="button" class="btn btn-light" style="background:var(--btn3);" title="Voltar e revisar">
+          Cancelar
+        </button>
+        <button id="btn-submit-confirm" type="button" class="btn" title="Confirmar e enviar" disabled
+                style="opacity:.8; cursor:not-allowed;">
+          Confirmar e Enviar
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Scripts -->
@@ -616,5 +781,622 @@ $error = $error ?? null;
     m.addEventListener('blur', ()=>{ m.value = norm(m.value); });
   })();
   </script>
+
+  <!-- Autocomplete: Auditor Kyndryl -->
+  <script>
+(function(){
+  const input   = document.getElementById('kyndryl_auditor_input');
+  const hidden  = document.getElementById('kyndryl_auditor_value');
+  const hidId   = document.getElementById('kyndryl_auditor_id');
+  const popup   = document.getElementById('auditor_suggest');
+  if (!input || !hidden || !hidId || !popup) return;
+
+  let timer = null;
+  let cache = []; // [{id,name}, ...]
+
+  function closePopup(){ popup.style.display = 'none'; popup.innerHTML = ''; }
+  function openPopup(){ popup.style.display = 'block'; }
+
+  function renderList(items){
+    popup.innerHTML = '';
+    if (!items.length) { closePopup(); return; }
+    const list = document.createElement('div');
+    list.style.display = 'flex';
+    list.style.flexDirection = 'column';
+    items.forEach(it => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = it.name;
+      btn.className = 'preset-badge';
+      btn.style.textAlign = 'left';
+      btn.style.margin = '4px';
+      btn.onclick = () => selectItem(it);
+      list.appendChild(btn);
+    });
+    popup.appendChild(list);
+    openPopup();
+  }
+
+  async function fetchAuditors(q){
+    try {
+      const url = '/api/catalog?resource=kyndryl-auditors&q=' + encodeURIComponent(q || '');
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error('fail');
+      const data = await res.json();
+      cache = Array.isArray(data) ? data : [];
+      renderList(cache);
+    } catch(e) {
+      cache = [];
+      closePopup();
+      console.error(e);
+    }
+  }
+
+  function selectItem(it){
+    input.value  = it.name;
+    hidden.value = it.name;
+    hidId.value  = String(it.id);
+    closePopup();
+  }
+
+  function clearSelection(){
+    hidden.value = '';
+    hidId.value  = '';
+  }
+
+  input.addEventListener('input', () => {
+    clearSelection();
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closePopup(); return; }
+    timer = setTimeout(() => fetchAuditors(q), 180);
+  });
+
+  input.addEventListener('focus', () => {
+    const q = input.value.trim();
+    if (q.length >= 2) fetchAuditors(q);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  });
+
+  const form = document.querySelector('form[action="/audit-entries"]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const vis = (input.value || '').trim();
+      const sel = (hidden.value || '').trim();
+      if (vis === '' || sel === '') {
+        e.preventDefault();
+        alert('Selecione um auditor válido da lista.');
+        input.focus();
+        return;
+      }
+      if (vis !== sel) {
+        e.preventDefault();
+        alert('O valor informado não corresponde a um auditor válido. Selecione na lista.');
+        input.focus();
+        return;
+      }
+    });
+  }
+})();
+  </script>
+
+  <!-- Autocomplete: Inspetor Petrobras (mesma formatação do Kyndryl) -->
+  <script>
+(function(){
+  const input  = document.getElementById('petrobras_inspector_input');
+  const hidden = document.getElementById('petrobras_inspector_value');
+  const hidId  = document.getElementById('petrobras_inspector_id');
+  const popup  = document.getElementById('inspector_suggest');
+  if (!input || !hidden || !hidId || !popup) return;
+
+  let timer = null;
+  let cache = [];
+
+  function closePopup(){ popup.style.display='none'; popup.innerHTML=''; }
+  function openPopup(){ popup.style.display='block'; }
+
+  function selectItem(it){
+    const name = (it && (it.name || it.petrobras_inspector || it.label || '')) || '';
+    input.value  = name;
+    hidden.value = name;
+    hidId.value  = String(it.id ?? '');
+    closePopup();
+  }
+
+  function renderList(items){
+    popup.innerHTML = '';
+    if (!items || !items.length) { closePopup(); return; }
+
+    // idêntico ao Kyndryl
+    const list = document.createElement('div');
+    list.style.display = 'flex';
+    list.style.flexDirection = 'column';
+
+    items.forEach(it => {
+      const name = (it && (it.name || it.petrobras_inspector || it.label || '')) || '';
+      const btn  = document.createElement('button');
+      btn.type   = 'button';
+      btn.className = 'preset-badge';
+      btn.style.textAlign = 'left';
+      btn.style.margin    = '4px';
+      btn.textContent = name;
+      btn.title      = name;
+      btn.onclick    = () => selectItem(it);
+      list.appendChild(btn);
+    });
+
+    popup.appendChild(list);
+    openPopup();
+  }
+
+  async function fetchInspectors(q){
+    try {
+      const url = '/api/catalog?resource=petrobras-inspectors&q=' + encodeURIComponent(q || '');
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      cache = Array.isArray(data) ? data : [];
+      renderList(cache);
+    } catch(e) {
+      cache = [];
+      closePopup();
+      console.error(e);
+    }
+  }
+
+  function clearSelection(){ hidden.value=''; hidId.value=''; }
+
+  input.addEventListener('input', () => {
+    clearSelection();
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closePopup(); return; }
+    timer = setTimeout(() => fetchInspectors(q), 180);
+  });
+
+  input.addEventListener('focus', () => {
+    const q = input.value.trim();
+    if (q.length >= 2) fetchInspectors(q);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  });
+
+  const form = document.querySelector('form[action="/audit-entries"]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const vis = (input.value || '').trim();
+      const sel = (hidden.value || '').trim();
+      if (vis === '' || sel === '') {
+        e.preventDefault();
+        alert('Selecione um inspetor Petrobras válido da lista.');
+        input.focus();
+        return;
+      }
+      if (vis !== sel) {
+        e.preventDefault();
+        alert('O valor informado não corresponde a um inspetor Petrobras válido. Selecione na lista.');
+        input.focus();
+        return;
+      }
+    });
+  }
+})();
+  </script>
+
+  <!-- Modal: controle -->
+  <script>
+(function(){
+  const form        = document.querySelector('form[action="/audit-entries"]');
+  const btnOpen     = document.getElementById('btn-open-confirm');
+  const overlay     = document.getElementById('confirm-overlay');
+  const modal       = document.getElementById('confirm-modal');
+  const ack         = document.getElementById('ack-check');
+  const btnCancel   = document.getElementById('btn-cancel-confirm');
+  const btnSubmit   = document.getElementById('btn-submit-confirm');
+
+  if (!form || !btnOpen || !overlay || !modal || !ack || !btnCancel || !btnSubmit) return;
+
+  let lastFocus = null;
+
+  function setVisible(show){
+    overlay.style.display = show ? 'block' : 'none';
+    modal.style.display   = show ? 'flex' : 'none';
+    modal.setAttribute('aria-hidden', show ? 'false' : 'true');
+  }
+
+  function openModal(){
+    lastFocus = document.activeElement;
+    setVisible(true);
+    ack.checked = false;
+    btnSubmit.disabled = true;
+    btnSubmit.style.opacity = '.8';
+    btnSubmit.style.cursor  = 'not-allowed';
+    setTimeout(() => ack.focus(), 0);
+  }
+
+  function closeModal(){
+    setVisible(false);
+    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  }
+
+  btnOpen.addEventListener('click', openModal);
+  btnCancel.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  ack.addEventListener('change', () => {
+    const ok = ack.checked === true;
+    btnSubmit.disabled = !ok;
+    btnSubmit.style.opacity = ok ? '1' : '.8';
+    btnSubmit.style.cursor  = ok ? 'pointer' : 'not-allowed';
+    if (ok) btnSubmit.focus();
+  });
+
+  btnSubmit.addEventListener('click', () => {
+    if (!ack.checked) return;
+    closeModal();
+    form.requestSubmit ? form.requestSubmit() : form.submit();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (modal.style.display !== 'flex') return;
+    if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+    if (e.key === 'Enter' && !btnSubmit.disabled) {
+      e.preventDefault(); btnSubmit.click();
+    }
+  });
+})();
+  </script>
+  <script>
+(function(){
+  const input  = document.getElementById('audited_supplier_input');
+  const hidden = document.getElementById('audited_supplier_value');
+  const hidId  = document.getElementById('audited_supplier_id');
+  const popup  = document.getElementById('supplier_suggest');
+  if (!input || !hidden || !hidId || !popup) return;
+
+  let timer = null;
+  let cache = [];
+
+  function closePopup(){ popup.style.display='none'; popup.innerHTML=''; }
+  function openPopup(){ popup.style.display='block'; }
+
+  function selectItem(it){
+    const name = (it && (it.name || it.audited_supplier || it.label || '')) || '';
+    input.value  = name;
+    hidden.value = name;
+    hidId.value  = String(it.id ?? '');
+    closePopup();
+  }
+
+  function renderList(items){
+    popup.innerHTML = '';
+    if (!items || !items.length) { closePopup(); return; }
+
+    // idêntico ao Kyndryl/Inspector: coluna + botões preset-badge
+    const list = document.createElement('div');
+    list.style.display = 'flex';
+    list.style.flexDirection = 'column';
+
+    items.forEach(it => {
+      const name = (it && (it.name || it.audited_supplier || it.label || '')) || '';
+      const btn  = document.createElement('button');
+      btn.type   = 'button';
+      btn.className = 'preset-badge';
+      btn.style.textAlign = 'left';
+      btn.style.margin    = '4px';
+      btn.textContent = name;
+      btn.title      = name;
+      btn.onclick    = () => selectItem(it);
+      list.appendChild(btn);
+    });
+
+    popup.appendChild(list);
+    openPopup();
+  }
+
+  async function fetchSuppliers(q){
+    try {
+      const url = '/api/catalog?resource=audited-suppliers&q=' + encodeURIComponent(q || '');
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      cache = Array.isArray(data) ? data : [];
+      renderList(cache);
+    } catch(e) {
+      cache = [];
+      closePopup();
+      console.error(e);
+    }
+  }
+
+  function clearSelection(){ hidden.value=''; hidId.value=''; }
+
+  input.addEventListener('input', () => {
+    clearSelection();
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closePopup(); return; }
+    timer = setTimeout(() => fetchSuppliers(q), 180);
+  });
+
+  input.addEventListener('focus', () => {
+    const q = input.value.trim();
+    if (q.length >= 2) fetchSuppliers(q);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  });
+
+  // Validação no submit: idêntica às outras (auditor/inspector)
+  const form = document.querySelector('form[action="/audit-entries"]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const vis = (input.value || '').trim();
+      const sel = (hidden.value || '').trim();
+      if (vis === '' || sel === '') {
+        e.preventDefault();
+        alert('Selecione um fornecedor auditado válido da lista.');
+        input.focus();
+        return;
+      }
+      if (vis !== sel) {
+        e.preventDefault();
+        alert('O valor informado não corresponde a um fornecedor auditado válido. Selecione na lista.');
+        input.focus();
+        return;
+      }
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  const input  = document.getElementById('location_input');
+  const hidden = document.getElementById('location_value');
+  const hidId  = document.getElementById('location_id');
+  const popup  = document.getElementById('location_suggest');
+  if (!input || !hidden || !hidId || !popup) return;
+
+  let timer = null, cache = [];
+
+  function closePopup(){ popup.style.display='none'; popup.innerHTML=''; }
+  function openPopup(){ popup.style.display='block'; }
+  function clearSelection(){ hidden.value=''; hidId.value=''; }
+
+  function selectItem(it){
+    const name = (it && (it.name || it.location || it.label || '')) || '';
+    input.value  = name;
+    hidden.value = name;
+    hidId.value  = String(it.id ?? '');
+    closePopup();
+  }
+
+  function renderList(items){
+    popup.innerHTML = '';
+    if (!items?.length) { closePopup(); return; }
+    const list = document.createElement('div');
+    list.style.display = 'flex';
+    list.style.flexDirection = 'column';
+    items.forEach(it => {
+      const name = (it && (it.name || it.location || it.label || '')) || '';
+      const btn  = document.createElement('button');
+      btn.type   = 'button';
+      btn.className = 'preset-badge';
+      btn.style.textAlign = 'left';
+      btn.style.margin    = '4px';
+      btn.textContent = name;
+      btn.title      = name;
+      btn.onclick    = () => selectItem(it);
+      list.appendChild(btn);
+    });
+    popup.appendChild(list);
+    openPopup();
+  }
+
+  async function fetchList(q){
+    try {
+      const url = '/api/catalog?resource=locations&q=' + encodeURIComponent(q || '');
+      const res = await fetch(url, { headers: { 'Accept':'application/json' } });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      cache = Array.isArray(data) ? data : [];
+      renderList(cache);
+    } catch(e){ cache = []; closePopup(); console.error(e); }
+  }
+
+  input.addEventListener('input', () => {
+    clearSelection();
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closePopup(); return; }
+    timer = setTimeout(() => fetchList(q), 180);
+  });
+  input.addEventListener('focus', () => {
+    const q = input.value.trim();
+    if (q.length >= 2) fetchList(q);
+  });
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  });
+
+  const form = document.querySelector('form[action="/audit-entries"]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const vis = (input.value || '').trim();
+      const sel = (hidden.value || '').trim();
+      if (vis === '' || sel === '') { e.preventDefault(); alert('Selecione uma localidade válida da lista.'); input.focus(); return; }
+      if (vis !== sel)              { e.preventDefault(); alert('O valor informado não corresponde a uma localidade válida. Selecione na lista.'); input.focus(); return; }
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  const input  = document.getElementById('category_input');
+  const hidden = document.getElementById('category_value');
+  const hidId  = document.getElementById('category_id');
+  const popup  = document.getElementById('category_suggest');
+  if (!input || !hidden || !hidId || !popup) return;
+
+  let timer = null, cache = [];
+
+  function closePopup(){ popup.style.display='none'; popup.innerHTML=''; }
+  function openPopup(){ popup.style.display='block'; }
+  function clearSelection(){ hidden.value=''; hidId.value=''; }
+
+  function selectItem(it){
+    const name = (it && (it.name || it.category || it.label || '')) || '';
+    input.value  = name;
+    hidden.value = name;
+    hidId.value  = String(it.id ?? '');
+    closePopup();
+  }
+
+  function renderList(items){
+    popup.innerHTML = '';
+    if (!items?.length) { closePopup(); return; }
+    const list = document.createElement('div');
+    list.style.display = 'flex';
+    list.style.flexDirection = 'column';
+    items.forEach(it => {
+      const name = (it && (it.name || it.category || it.label || '')) || '';
+      const btn  = document.createElement('button');
+      btn.type   = 'button';
+      btn.className = 'preset-badge';
+      btn.style.textAlign = 'left';
+      btn.style.margin    = '4px';
+      btn.textContent = name;
+      btn.title      = name;
+      btn.onclick    = () => selectItem(it);
+      list.appendChild(btn);
+    });
+    popup.appendChild(list);
+    openPopup();
+  }
+
+  async function fetchList(q){
+    try {
+      const url = '/api/catalog?resource=categories&q=' + encodeURIComponent(q || '');
+      const res = await fetch(url, { headers: { 'Accept':'application/json' } });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      cache = Array.isArray(data) ? data : [];
+      renderList(cache);
+    } catch(e){ cache=[]; closePopup(); console.error(e); }
+  }
+
+  input.addEventListener('input', () => {
+    clearSelection();
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closePopup(); return; }
+    timer = setTimeout(() => fetchList(q), 180);
+  });
+  input.addEventListener('focus', () => {
+    const q = input.value.trim();
+    if (q.length >= 2) fetchList(q);
+  });
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  });
+
+  const form = document.querySelector('form[action="/audit-entries"]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const vis = (input.value || '').trim();
+      const sel = (hidden.value || '').trim();
+      if (vis === '' || sel === '') { e.preventDefault(); alert('Selecione uma categoria válida da lista.'); input.focus(); return; }
+      if (vis !== sel)              { e.preventDefault(); alert('O valor informado não corresponde a uma categoria válida. Selecione na lista.'); input.focus(); return; }
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  const input  = document.getElementById('resolver_group_input');
+  const hidden = document.getElementById('resolver_group_value');
+  const hidId  = document.getElementById('resolver_group_id');
+  const popup  = document.getElementById('resolver_suggest');
+  if (!input || !hidden || !hidId || !popup) return;
+
+  let timer = null, cache = [];
+
+  function closePopup(){ popup.style.display='none'; popup.innerHTML=''; }
+  function openPopup(){ popup.style.display='block'; }
+  function clearSelection(){ hidden.value=''; hidId.value=''; }
+
+  function selectItem(it){
+    const name = (it && (it.name || it.resolver_group || it.label || '')) || '';
+    input.value  = name;
+    hidden.value = name;
+    hidId.value  = String(it.id ?? '');
+    closePopup();
+  }
+
+  function renderList(items){
+    popup.innerHTML = '';
+    if (!items?.length) { closePopup(); return; }
+    const list = document.createElement('div');
+    list.style.display = 'flex';
+    list.style.flexDirection = 'column';
+    items.forEach(it => {
+      const name = (it && (it.name || it.resolver_group || it.label || '')) || '';
+      const btn  = document.createElement('button');
+      btn.type   = 'button';
+      btn.className = 'preset-badge';
+      btn.style.textAlign = 'left';
+      btn.style.margin    = '4px';
+      btn.textContent = name;
+      btn.title      = name;
+      btn.onclick    = () => selectItem(it);
+      list.appendChild(btn);
+    });
+    popup.appendChild(list);
+    openPopup();
+  }
+
+  async function fetchList(q){
+    try {
+      const url = '/api/catalog?resource=resolver-groups&q=' + encodeURIComponent(q || '');
+      const res = await fetch(url, { headers: { 'Accept':'application/json' } });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      cache = Array.isArray(data) ? data : [];
+      renderList(cache);
+    } catch(e){ cache=[]; closePopup(); console.error(e); }
+  }
+
+  input.addEventListener('input', () => {
+    clearSelection();
+    const q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closePopup(); return; }
+    timer = setTimeout(() => fetchList(q), 180);
+  });
+  input.addEventListener('focus', () => {
+    const q = input.value.trim();
+    if (q.length >= 2) fetchList(q);
+  });
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  });
+
+  const form = document.querySelector('form[action="/audit-entries"]');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const vis = (input.value || '').trim();
+      const sel = (hidden.value || '').trim();
+      if (vis === '' || sel === '') { e.preventDefault(); alert('Selecione uma mesa solucionadora válida da lista.'); input.focus(); return; }
+      if (vis !== sel)              { e.preventDefault(); alert('O valor informado não corresponde a uma mesa solucionadora válida. Selecione na lista.'); input.focus(); return; }
+    });
+  }
+})();
+</script>
 </body>
 </html>

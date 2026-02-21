@@ -85,6 +85,7 @@ private function parseReasonIds(string $idsStr): array
 
 public function handle(array $post): int
 {
+    // 1) Monta payload base
     $data = [
         'ticket_number'       => trim((string)($post['ticket_number'] ?? '')),
         'ticket_type'         => trim((string)($post['ticket_type'] ?? '')),
@@ -101,181 +102,92 @@ public function handle(array $post): int
         'is_compliant'        => (int)($post['is_compliant'] ?? 1),
     ];
 
-    
-// --- SEMPRE inicialize o array:
-// --- GARANTIR reasonIds como array<int> independente do formato vindo do POST
-$reasonIds = [];
+    // 2) Parse ÚNICO e robusto dos reasonIds (aceita string/array/fallbacks)
+    $reasonIds = [];
+    $idsStr = null;
 
-// 1) Aceita "noncompliance_reason_ids" como string "10;5;1" (padrão)
-$idsStr = null;
-if (isset($post['noncompliance_reason_ids']) && is_string($post['noncompliance_reason_ids'])) {
-    $idsStr = $post['noncompliance_reason_ids'];
-}
+    if (isset($post['noncompliance_reason_ids']) && is_string($post['noncompliance_reason_ids'])) {
+        $idsStr = $post['noncompliance_reason_ids'];
+    } elseif (isset($post['noncompliance_reason_ids']) && is_array($post['noncompliance_reason_ids'])) {
+        $idsStr = implode(';', $post['noncompliance_reason_ids']);
+    } elseif (isset($post['nc_ids'])) { // fallback eventual
+        $idsStr = (string)$post['nc_ids'];
+    } elseif (isset($post['noncompliance_reasons_ids'])) { // typo comum
+        $idsStr = (string)$post['noncompliance_reasons_ids'];
+    }
 
-// 2) Aceita "noncompliance_reason_ids[]" como array (caso o browser envie assim)
-if ($idsStr === null && isset($post['noncompliance_reason_ids']) && is_array($post['noncompliance_reason_ids'])) {
-    $idsStr = implode(';', $post['noncompliance_reason_ids']);
-}
+    $reasonIds = $this->parseReasonIds((string)$idsStr);
 
-// 3) Fallbacks (se alguém mudou o nome do campo no HTML sem querer)
-if ($idsStr === null && isset($post['nc_ids'])) { // não recomendado, mas cobre acidente
-    $idsStr = (string)$post['nc_ids'];
-}
-if ($idsStr === null && isset($post['noncompliance_reasons_ids'])) { // typo comum
-    $idsStr = (string)$post['noncompliance_reasons_ids'];
-}
+    // 3) Normaliza e valida ticket_type (mantém sua regra)
+    $rawType = strtoupper(trim((string)$data['ticket_type']));
+    $rawType = strtr($rawType, [
+        'Ç'=>'C','Ã'=>'A','Õ'=>'O','Ê'=>'E','É'=>'E','Í'=>'I','Á'=>'A','À'=>'A','Ú'=>'U','Ó'=>'O',
+    ]);
+    if ($rawType === 'REQUISICAO') { $rawType = 'REQUISIÇÃO'; }
 
-// 4) Parse robusto (aceita ; , | espaço e limpa sujeira)
-$reasonIds = $this->parseReasonIds((string)$idsStr);
+    $allowedUpper = ['INCIDENTE','REQUISIÇÃO','TASK'];
+    if (!in_array($rawType, $allowedUpper, true)) {
+        throw new \InvalidArgumentException('Tipo do Ticket inválido. Use: Incidente, Requisição ou Task.');
+    }
+    $mapTitle = [
+        'INCIDENTE'  => 'Incidente',
+        'REQUISIÇÃO' => 'Requisição',
+        'TASK'       => 'Task',
+    ];
+    $data['ticket_type'] = $mapTitle[$rawType];
 
-// 5) Regra: Não conforme exige ao menos 1 justificativa
-if ((int)$data['is_compliant'] === 0 && empty($reasonIds)) {
-    throw new \InvalidArgumentException('Selecione ao menos uma justificativa.');
-}
-
-
-if ((int)$data['is_compliant'] === 0 && empty($reasonIds)) {
-    throw new \InvalidArgumentException('Selecione ao menos uma justificativa.');
-}
-
-// Pega do POST, parseia para array<int> (aceita ; , | espaço)
-$idsStr = (string)($post['noncompliance_reason_ids'] ?? '');
-$reasonIds = $this->parseReasonIds($idsStr); // garante array<int>
-
-
-    
-// Depois de parsear $reasonIds (array<int>):
-$data['noncompliance_reason_ids'] = implode(';', $reasonIds);
-
-// Opcional: também salvar os labels (recomendado para CSV autoexplicativo)
-if (!empty($reasonIds)) {
-    $placeholders = implode(',', array_fill(0, count($reasonIds), '?'));
-    $pdo = $this->repo->rawPdo(); // crie um getter simples no repo para expor o PDO
-    $stmt = $pdo->prepare("SELECT noncompliance_reason FROM noncompliance_reasons WHERE id IN ($placeholders)");
-    $stmt->execute($reasonIds);
-    $labels = $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
-    $data['noncompliance_reasons'] = implode(';', $labels);
-} else {
-    $data['noncompliance_reasons'] = null;
-}
-
-    
-    // --- Normaliza ticket_type ---
-// 1) converte para maiúsculas e trata variações sem acento
-$rawType = strtoupper(trim((string)$data['ticket_type']));
-$rawType = strtr($rawType, [
-    'Ç' => 'C',
-    'Ã' => 'A',
-    'Õ' => 'O',
-    'Ê' => 'E',
-    'É' => 'E',
-    'Í' => 'I',
-    'Á' => 'A',
-    'À' => 'A',
-    'Ú' => 'U',
-    'Ó' => 'O',
-]);
-// aceita com e sem acento
-if ($rawType === 'REQUISICAO') { $rawType = 'REQUISIÇÃO'; }
-
-// 2) valida contra os 3 tipos suportados
-$allowedUpper = ['INCIDENTE','REQUISIÇÃO','TASK'];
-if (!in_array($rawType, $allowedUpper, true)) {
-    throw new \InvalidArgumentException('Tipo do Ticket inválido. Use: Incidente, Requisição ou Task.');
-}
-
-// 3) mapeia para Title Case (o formato que o CHECK do banco costuma exigir)
-$mapTitle = [
-    'INCIDENTE'  => 'Incidente',
-    'REQUISIÇÃO' => 'Requisição',
-    'TASK'       => 'Task',
-];
-$data['ticket_type'] = $mapTitle[$rawType];
-    
-// Normaliza ticket_type para Title Case esperado pelo banco
-$mapType = [
-    'INCIDENTE'   => 'Incidente',
-    'REQUISIÇÃO'  => 'Requisição',
-    'TASK'        => 'Task',
-];
-$data['ticket_type'] = $mapType[strtoupper($data['ticket_type'])] ?? $data['ticket_type'];
-
-
+    // 4) Validações base (mantidas)
     if ($data['ticket_number'] === '' || !preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $data['ticket_number'])) {
         throw new \InvalidArgumentException('Informe um Número de Ticket válido (INC/RITM/SCTASK + dígitos).');
     }
     if ($data['audit_month'] === null || !preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $data['audit_month'])) {
         throw new \InvalidArgumentException('Informe o Mês da Auditoria em um formato válido (ex.: 2026-02, 02/2026, fev 2026).');
     }
+    if (!in_array($data['priority'], [1,2,3,4], true)) {
+        throw new \InvalidArgumentException('Selecione a Prioridade entre 1 e 4.');
+    }
+    if (!in_array($data['sla_met'], [0,1], true)) {
+        throw new \InvalidArgumentException('Valor inválido para "SLA Atingido?".');
+    }
+    if (!in_array($data['is_compliant'], [0,1], true)) {
+        throw new \InvalidArgumentException('Valor inválido para "Chamado Conforme?".');
+    }
 
-    $idsStr    = (string)($post['noncompliance_reason_ids'] ?? '');
-    $reasonIds = $this->parseReasonIds($idsStr);
+    // 5) Regra de negócio: Não conforme → exige ao menos 1 justificativa
+    if ((int)$data['is_compliant'] === 0 && empty($reasonIds)) {
+        throw new \InvalidArgumentException('Selecione ao menos uma justificativa.');
+    }
 
-    
-    
-if (!in_array($data['priority'], [1,2,3,4], true)) {
-    throw new \InvalidArgumentException('Selecione a Prioridade entre 1 e 4.');
-}
+    // 6) Strings para salvar (IDs sempre; labels opcional)
+    $data['noncompliance_reason_ids'] = !empty($reasonIds) ? implode(';', $reasonIds) : null;
 
-// ticket_type coerente (se quiser reforçar)
-/*if (!in_array($data['ticket_type'], ['INCIDENTE','REQUISIÇÃO','TASK'], true)) {
-    throw new \InvalidArgumentException('Tipo do Ticket inválido. Use: Incidente, Requisição ou Task.');
-}*/
+    // Labels → opcional; se falhar por qualquer motivo, segue só com IDs (não quebra)
+    $data['noncompliance_reasons'] = null;
+    if (!empty($reasonIds)) {
+        try {
+            if (method_exists($this->repo, 'rawPdo')) {
+                $pdo = $this->repo->rawPdo();
+                $placeholders = implode(',', array_fill(0, count($reasonIds), '?'));
+                $stmt = $pdo->prepare("SELECT noncompliance_reason FROM noncompliance_reasons WHERE id IN ($placeholders)");
+                $stmt->execute($reasonIds);
+                $labels = $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+                $data['noncompliance_reasons'] = !empty($labels) ? implode(';', $labels) : null;
+            }
+        } catch (\Throwable $e) {
+            // silenciosamente ignora; segue só com IDs
+            $data['noncompliance_reasons'] = null;
+        }
+    }
 
-// flags binárias (sanidade)
-if (!in_array($data['sla_met'], [0,1], true)) {
-    throw new \InvalidArgumentException('Valor inválido para "SLA Atingido?".');
-}
-if (!in_array($data['is_compliant'], [0,1], true)) {
-    throw new \InvalidArgumentException('Valor inválido para "Chamado Conforme?".');
-}
+    // 7) Log de sanidade (opcional)
+    (new \App\Support\Logger())->write(
+        'debug.log',
+        date('c') . ' SERVICE data=' . json_encode($data, JSON_UNESCAPED_UNICODE)
+        . ' reasonIds=' . json_encode($reasonIds) . PHP_EOL
+    );
 
-
-// Sempre array -> string "10;5;1;3" (ou null se vazio)
-$data['noncompliance_reason_ids'] = !empty($reasonIds) ? implode(';', $reasonIds) : null;
-
-// (Opcional, mas recomendado) também salvar os labels para facilitar CSV
-$data['noncompliance_reasons'] = null;
-/*if (!empty($reasonIds)) {
-    try {
-        // Exige que o repo expose o PDO (veja helper abaixo)
-        $pdo = $this->repo->rawPdo();
-        $placeholders = implode(',', array_fill(0, count($reasonIds), '?'));
-        $stmt = $pdo->prepare("SELECT noncompliance_reason FROM noncompliance_reasons WHERE id IN ($placeholders)");
-        $stmt->execute($reasonIds);
-        $labels = $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
-        // OBS: a ordem do SELECT pode não bater 1:1 com a ordem dos IDs;
-        // se quiser manter ordem dos IDs, reordene as labels usando um map id->label.
-        $data['noncompliance_reasons'] = !empty($labels) ? implode(';', $labels) : null;
-    } catch (\Throwable $e) {
-        // Se der qualquer erro ao buscar labels, segue só com IDs
-        $data['noncompliance_reasons'] = null;
-    }*/
-    
-        // LOG de sanidade: ver o que está indo pro repo (sem depender de $this->logger)
-
-// strings para salvar
-$data['noncompliance_reason_ids'] = !empty($reasonIds) ? implode(';', $reasonIds) : null;
-
-// (opcional) labels: pode comentar se não usar agora
-$data['noncompliance_reasons'] = null;
-if (!empty($reasonIds)) {
-    $pdo = $this->repo->rawPdo();
-    $placeholders = implode(',', array_fill(0, count($reasonIds), '?'));
-    $stmt = $pdo->prepare("SELECT noncompliance_reason FROM noncompliance_reasons WHERE id IN ($placeholders)");
-    $stmt->execute($reasonIds);
-    $labels = $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
-    $data['noncompliance_reasons'] = !empty($labels) ? implode(';', $labels) : null;
-}
-// (opcional) log
-(new \App\Support\Logger())->write('debug.log',
-    date('c') . ' SERVICE data=' . json_encode($data, JSON_UNESCAPED_UNICODE)
-    . ' reasonIds=' . json_encode($reasonIds) . PHP_EOL
-);
-
-  // 5) Delegar ao repositório
-    return $this->repo->create($data, []); // ou só $data, se você já ajustou a assinatura
-
+    // 8) Delegar ao repositório (preserva sua assinatura atual)
+    return $this->repo->create($data, []);
 }
 
 

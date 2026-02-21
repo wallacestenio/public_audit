@@ -3153,3 +3153,107 @@ Array
 2026-02-21T08:21:34+00:00 MODEL.insert ok=1 rc=1 lastId=19
 2026-02-21T08:21:34+00:00 MODEL.check row={"ticket_number":"RITM0201904930","noncompliance_reason_ids":"5;10;1;2"}
 2026-02-21T08:21:34+00:00 OK id=19
+2026-02-21T15:19:49+00:00 SERVICE data={"ticket_number":"RITM098978765","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Marcio Ferrari","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Andre Almeida","category":"REDES","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"10;2","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Utilização incorreta do KB no chamado"} reasonIds=[10,2]
+2026-02-21T15:19:49+00:00 MODEL.insert ok=1 rc=1 lastId=20
+2026-02-21T15:19:49+00:00 MODEL.check row={"ticket_number":"RITM098978765","noncompliance_reason_ids":"10;2"}
+2026-02-21T15:19:49+00:00 OK id=20
+2026-02-21T15:35:20+00:00 SERVICE data={"ticket_number":"SCTASK0989786532","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Aldenir Marcedo","category":"REDE","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;10;7;6","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado"} reasonIds=[3,10,7,6]
+2026-02-21T15:35:20+00:00 MODEL.insert ok=1 rc=1 lastId=21
+2026-02-21T15:35:20+00:00 MODEL.check row={"ticket_number":"SCTASK0989786532","noncompliance_reason_ids":"3;10;7;6"}
+2026-02-21T15:35:20+00:00 OK id=21
+2026-02-21T15:55:00+00:00 SERVICE data={"ticket_number":"SCTASK09087865","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Aldenir Marcedo","category":"REDE","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"5;4;11;6;8;10;3","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Não revogou a custódia do rádio;Utilização incorreta do KB no chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[5,4,11,6,8,10,3]
+2026-02-21T15:55:00+00:00 MODEL.insert ok=1 rc=1 lastId=22
+2026-02-21T15:55:00+00:00 MODEL.check row={"ticket_number":"SCTASK09087865","noncompliance_reason_ids":"5;4;11;6;8;10;3"}
+2026-02-21T15:55:00+00:00 OK id=22
+2026-02-21T16:02:26+00:00 SERVICE data={"ticket_number":"INC090865674","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Alexandra Barbosa","audited_supplier":"MINSIT","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"MARCOS ALMEIDA","category":"REDES","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;5;1;7;6","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Chamado atribuído a um técnico que não está mais ativo;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC"} reasonIds=[3,5,1,7,6]
+2026-02-21T16:02:26+00:00 MODEL.insert ok=1 rc=1 lastId=23
+2026-02-21T16:02:26+00:00 MODEL.check row={"ticket_number":"INC090865674","noncompliance_reason_ids":"3;5;1;7;6"}
+2026-02-21T16:02:26+00:00 OK id=23
+2026-02-21T16:25:01+00:00 SERVICE data={"ticket_number":"INC980765643","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Aldenir Marcedo","category":"REDE","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"5;10;1;2;7;6","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado"} reasonIds=[5,10,1,2,7,6]
+2026-02-21T16:25:01+00:00 MODEL.insert ok=1 rc=1 lastId=24
+2026-02-21T16:25:01+00:00 MODEL.check row={"ticket_number":"INC980765643","noncompliance_reason_ids":"5;10;1;2;7;6"}
+2026-02-21T16:25:01+00:00 OK id=24
+2026-02-21T16:40:32+00:00 SERVICE data={"ticket_number":"INC090878654","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Spread","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcio santos","category":"Software","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;5;10;7;11;4","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,5,10,7,11,4]
+2026-02-21T16:40:32+00:00 MODEL.insert ok=1 rc=1 lastId=25
+2026-02-21T16:40:32+00:00 MODEL.check row={"ticket_number":"INC090878654","noncompliance_reason_ids":"3;5;10;7;11;4"}
+2026-02-21T16:40:32+00:00 OK id=25
+2026-02-21T16:40:45+00:00 SERVICE data={"ticket_number":"INC090878654","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Spread","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcio santos","category":"Software","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;5;10;7;11;4","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,5,10,7,11,4]
+2026-02-21T16:40:45+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T16:40:45+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T16:41:08+00:00 SERVICE data={"ticket_number":"INC090878659","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Spread","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcio santos","category":"Software","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"3;5;10;7;11;4","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,5,10,7,11,4]
+2026-02-21T16:41:08+00:00 MODEL.insert ok=1 rc=1 lastId=26
+2026-02-21T16:41:08+00:00 MODEL.check row={"ticket_number":"INC090878659","noncompliance_reason_ids":"3;5;10;7;11;4"}
+2026-02-21T16:41:08+00:00 OK id=26
+2026-02-21T16:44:37+00:00 SERVICE data={"ticket_number":"RITM09087675","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Marcio Ferrari","audited_supplier":"Sonda","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"MARCOS ALMEIDA","category":"REDES","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"5;10;7;6","noncompliance_reasons":"Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado"} reasonIds=[5,10,7,6]
+2026-02-21T16:44:37+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T16:44:37+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T16:44:46+00:00 SERVICE data={"ticket_number":"RITM09087678","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Marcio Ferrari","audited_supplier":"Sonda","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"MARCOS ALMEIDA","category":"REDES","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"5;10;7;6","noncompliance_reasons":"Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado"} reasonIds=[5,10,7,6]
+2026-02-21T16:44:46+00:00 MODEL.insert ok=1 rc=1 lastId=27
+2026-02-21T16:44:46+00:00 MODEL.check row={"ticket_number":"RITM09087678","noncompliance_reason_ids":"5;10;7;6"}
+2026-02-21T16:44:46+00:00 OK id=27
+2026-02-21T16:49:28+00:00 SERVICE data={"ticket_number":"INC09087865463","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":3,"requester_name":"MARCOS ALMEIDA","category":"REDES","resolver_group":"N2-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"5;10;2;7","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado"} reasonIds=[5,10,2,7]
+2026-02-21T16:49:28+00:00 MODEL.insert ok=1 rc=1 lastId=28
+2026-02-21T16:49:28+00:00 MODEL.check row={"ticket_number":"INC09087865463","noncompliance_reason_ids":"5;10;2;7"}
+2026-02-21T16:49:28+00:00 OK id=28
+2026-02-21T20:34:50+00:00 SERVICE data={"ticket_number":"SCTASK090876785","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcio Amaral","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"5;8;11;6;2;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Não revogou a custódia do rádio;Utilização incorreta do Status \"Em andamento\""} reasonIds=[5,8,11,6,2,1]
+2026-02-21T20:34:50+00:00 MODEL.insert ok=1 rc=1 lastId=29
+2026-02-21T20:34:50+00:00 MODEL.check row={"ticket_number":"SCTASK090876785","noncompliance_reason_ids":"5;8;11;6;2;1"}
+2026-02-21T20:34:50+00:00 OK id=29
+2026-02-21T20:35:07+00:00 SERVICE data={"ticket_number":"SCTASK090876785","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcio Amaral","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"5;8;11;6;2;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Não revogou a custódia do rádio;Utilização incorreta do Status \"Em andamento\""} reasonIds=[5,8,11,6,2,1]
+2026-02-21T20:35:07+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T20:35:07+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T20:35:17+00:00 SERVICE data={"ticket_number":"SCTASK090876785","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcio Amaral","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":1,"noncompliance_reason_ids":"5;8;11;6;2;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Não revogou a custódia do rádio;Utilização incorreta do Status \"Em andamento\""} reasonIds=[5,8,11,6,2,1]
+2026-02-21T20:35:17+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T20:35:17+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T20:35:25+00:00 SERVICE data={"ticket_number":"SCTASK090876786","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcio Amaral","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"5;8;11;6;2;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Não revogou a custódia do rádio;Utilização incorreta do Status \"Em andamento\""} reasonIds=[5,8,11,6,2,1]
+2026-02-21T20:35:25+00:00 MODEL.insert ok=1 rc=1 lastId=30
+2026-02-21T20:35:25+00:00 MODEL.check row={"ticket_number":"SCTASK090876786","noncompliance_reason_ids":"5;8;11;6;2;1"}
+2026-02-21T20:35:25+00:00 OK id=30
