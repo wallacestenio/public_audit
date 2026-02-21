@@ -3153,3 +3153,7 @@ Array
 2026-02-21T08:21:34+00:00 MODEL.insert ok=1 rc=1 lastId=19
 2026-02-21T08:21:34+00:00 MODEL.check row={"ticket_number":"RITM0201904930","noncompliance_reason_ids":"5;10;1;2"}
 2026-02-21T08:21:34+00:00 OK id=19
+2026-02-21T09:01:52+00:00 SERVICE data={"ticket_number":"RITM090876554433","ticket_type":"Requisição","kyndryl_auditor":"Wallace Stenio da Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsit","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Software","resolver_group":"N2-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;10;9;7;11","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Equipamento entregue no DSB e não atualizado no BDGC;Preenchimento incorreto nos campos do chamado;Utilização incorreta do KB no chamado;Utilização incorreta do Status \"Em andamento\""} reasonIds=[3,10,9,7,11]
+2026-02-21T09:01:52+00:00 MODEL.insert ok=1 rc=1 lastId=20
+2026-02-21T09:01:52+00:00 MODEL.check row={"ticket_number":"RITM090876554433","noncompliance_reason_ids":"3;10;9;7;11"}
+2026-02-21T09:01:52+00:00 OK id=20
