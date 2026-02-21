@@ -19,9 +19,9 @@ final class Response
         fwrite($out, "\xEF\xBB\xBF");
 
         // Sempre passe o 5º parâmetro ($escape) para evitar deprecation
-        fputcsv($out, $header, ',', '"', '\\'); // <-- 5º parâmetro $escape
+        fputcsv(resource $stream, array $fields, string $separator = ",", string $enclosure = "\"", string $escape = "\\", string $eol = "\n"): int|false // <-- 5º parâmetro $escape
 foreach ($rows as $r) {
-    fputcsv($out, $r, ',', '"', '\\');
+    fputcsv(resource $stream, array $fields, string $separator = ",", string $enclosure = "\"", string $escape = "\\", string $eol = "\n"): int|false
 }
         fclose($out);
     }
