@@ -3257,3 +3257,198 @@ Array
 2026-02-21T20:35:25+00:00 MODEL.insert ok=1 rc=1 lastId=30
 2026-02-21T20:35:25+00:00 MODEL.check row={"ticket_number":"SCTASK090876786","noncompliance_reason_ids":"5;8;11;6;2;1"}
 2026-02-21T20:35:25+00:00 OK id=30
+2026-02-21T20:44:01+00:00 SERVICE data={"ticket_number":"INC0908786785","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Marcio Ferrari","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"5;10;1;8","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Chamado encerrado sem utilização do KB;Não revogou a custódia do rádio;Utilização incorreta do KB no chamado"} reasonIds=[5,10,1,8]
+2026-02-21T20:44:01+00:00 MODEL.insert ok=1 rc=1 lastId=31
+2026-02-21T20:44:01+00:00 MODEL.check row={"ticket_number":"INC0908786785","noncompliance_reason_ids":"5;10;1;8"}
+2026-02-21T20:44:01+00:00 OK id=31
+2026-02-21T23:31:26+00:00 SERVICE create data={"ticket_number":"RITM09897654","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:31:26+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:31:26+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:31:59+00:00 SERVICE create data={"ticket_number":"RITM09897659","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:31:59+00:00 MODEL.insert ok=1 rc=1 lastId=32
+2026-02-21T23:31:59+00:00 MODEL.check row={"ticket_number":"RITM09897659","noncompliance_reason_ids":null}
+2026-02-21T23:31:59+00:00 OK id=32
+2026-02-21T23:32:24+00:00 SERVICE create data={"ticket_number":"RITM09897659","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:32:24+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:32:24+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:32:51+00:00 SERVICE create data={"ticket_number":"RITM09897650","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:32:51+00:00 MODEL.insert ok=1 rc=1 lastId=33
+2026-02-21T23:32:51+00:00 MODEL.check row={"ticket_number":"RITM09897650","noncompliance_reason_ids":null}
+2026-02-21T23:32:51+00:00 OK id=33
+2026-02-21T23:33:07+00:00 SERVICE create data={"ticket_number":"RITM09897650","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":0,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:33:07+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:33:07+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:33:23+00:00 SERVICE create data={"ticket_number":"RITM09897651","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:33:23+00:00 MODEL.insert ok=1 rc=1 lastId=34
+2026-02-21T23:33:23+00:00 MODEL.check row={"ticket_number":"RITM09897651","noncompliance_reason_ids":null}
+2026-02-21T23:33:23+00:00 OK id=34
+2026-02-21T23:33:39+00:00 SERVICE create data={"ticket_number":"RITM09897650","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":0,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:33:39+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:33:39+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:33:52+00:00 SERVICE create data={"ticket_number":"RITM09897650","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Telefonia, TV, Rádio e Videoconferência - Suporte TIC para ambientes com Multimidia","resolver_group":"N2-MAC-RJ-SLRVC-CENPES","sla_met":0,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:33:52+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:33:52+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:35:07+00:00 SERVICE create data={"ticket_number":"INC907865332","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:35:07+00:00 MODEL.insert ok=1 rc=1 lastId=35
+2026-02-21T23:35:07+00:00 MODEL.check row={"ticket_number":"INC907865332","noncompliance_reason_ids":null}
+2026-02-21T23:35:07+00:00 OK id=35
+2026-02-21T23:35:53+00:00 SERVICE create data={"ticket_number":"INC907865332","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:35:53+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:35:53+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:36:26+00:00 SERVICE create data={"ticket_number":"INC907865335","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"10;5","noncompliance_reasons":"Chamado encerrado sem utilização do KB;Utilização incorreta do KB no chamado"} reasonIds=[10,5]
+2026-02-21T23:36:26+00:00 MODEL.insert ok=1 rc=1 lastId=36
+2026-02-21T23:36:26+00:00 MODEL.check row={"ticket_number":"INC907865335","noncompliance_reason_ids":"10;5"}
+2026-02-21T23:36:26+00:00 OK id=36
+2026-02-21T23:54:26+00:00 SERVICE create data={"ticket_number":"INC907865339","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:54:26+00:00 MODEL.insert ok=1 rc=1 lastId=37
+2026-02-21T23:54:26+00:00 MODEL.check row={"ticket_number":"INC907865339","noncompliance_reason_ids":null}
+2026-02-21T23:54:26+00:00 OK id=37
+2026-02-21T23:54:35+00:00 SERVICE create data={"ticket_number":"INC907865339","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:54:35+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:54:35+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:55:11+00:00 SERVICE create data={"ticket_number":"INC907865339","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Maria Angela","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-21T23:55:11+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-21T23:55:11+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-22T00:31:31+00:00 SERVICE create data={"ticket_number":"INC907865339","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcos Souza","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"3;5;4;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB"} reasonIds=[3,5,4,1]
+2026-02-22T00:31:31+00:00 MODEL.PDOEX code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-22T00:31:31+00:00 PDOEX: code=23000 info=Array
+(
+    [0] => 23000
+    [1] => 19
+    [2] => UNIQUE constraint failed: audit_entries.ticket_number
+)
+ msg=SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: audit_entries.ticket_number
+2026-02-22T00:31:52+00:00 SERVICE create data={"ticket_number":"INC907865330","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcos Souza","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;5;4;1","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB"} reasonIds=[3,5,4,1]
+2026-02-22T00:31:52+00:00 MODEL.insert ok=1 rc=1 lastId=38
+2026-02-22T00:31:52+00:00 MODEL.check row={"ticket_number":"INC907865330","noncompliance_reason_ids":"3;5;4;1"}
+2026-02-22T00:31:52+00:00 OK id=38
+2026-02-22T12:02:14+00:00 SERVICE create data={"ticket_number":"RITM09897867543","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcio Santos","category":"Aplicações e Softwares - Service Now","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-22T12:02:14+00:00 MODEL.insert ok=1 rc=1 lastId=39
+2026-02-22T12:02:14+00:00 MODEL.check row={"ticket_number":"RITM09897867543","noncompliance_reason_ids":null}
+2026-02-22T12:02:14+00:00 OK id=39
+2026-02-22T12:03:03+00:00 SERVICE create data={"ticket_number":"RITM09897867544","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Marcio Santos","category":"Aplicações e Softwares - Service Now","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-22T12:03:03+00:00 MODEL.insert ok=1 rc=1 lastId=40
+2026-02-22T12:03:03+00:00 MODEL.check row={"ticket_number":"RITM09897867544","noncompliance_reason_ids":null}
+2026-02-22T12:03:03+00:00 OK id=40
+2026-02-22T12:08:29+00:00 SERVICE create data={"ticket_number":"SCTASK090876787","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-02","priority":4,"requester_name":"Adriano de Paula","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"9;12;8;7","noncompliance_reasons":"Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Outros"} reasonIds=[9,12,8,7]
+2026-02-22T12:08:29+00:00 MODEL.insert ok=1 rc=1 lastId=41
+2026-02-22T12:08:29+00:00 MODEL.check row={"ticket_number":"SCTASK090876787","noncompliance_reason_ids":"9;12;8;7"}
+2026-02-22T12:08:29+00:00 OK id=41
+2026-02-22T12:12:25+00:00 SERVICE create data={"ticket_number":"SCTASK090876764","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Maria Angela","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-EXTERNOS","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Utilização incorreta do KB no chamado;Outros"} reasonIds=[9,2,8,7,1,12,4,5,10,3]
+2026-02-22T12:12:25+00:00 MODEL.insert ok=1 rc=1 lastId=42
+2026-02-22T12:12:25+00:00 MODEL.check row={"ticket_number":"SCTASK090876764","noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3"}
+2026-02-22T12:12:25+00:00 OK id=42
+2026-02-22T12:12:45+00:00 SERVICE create data={"ticket_number":"SCTASK090876765","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Maria Angela","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-EXTERNOS","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Utilização incorreta do KB no chamado;Outros"} reasonIds=[9,2,8,7,1,12,4,5,10,3]
+2026-02-22T12:12:45+00:00 MODEL.insert ok=1 rc=1 lastId=43
+2026-02-22T12:12:45+00:00 MODEL.check row={"ticket_number":"SCTASK090876765","noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3"}
+2026-02-22T12:12:45+00:00 OK id=43
+2026-02-22T12:13:02+00:00 SERVICE create data={"ticket_number":"SCTASK090876766","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Maria Angela","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-EXTERNOS","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Utilização incorreta do KB no chamado;Outros"} reasonIds=[9,2,8,7,1,12,4,5,10,3]
+2026-02-22T12:13:02+00:00 MODEL.insert ok=1 rc=1 lastId=44
+2026-02-22T12:13:02+00:00 MODEL.check row={"ticket_number":"SCTASK090876766","noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3"}
+2026-02-22T12:13:02+00:00 OK id=44
+2026-02-22T12:13:23+00:00 SERVICE create data={"ticket_number":"SCTASK090876767","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Maria Angela","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-EXTERNOS","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Preenchimento incorreto nos campos do chamado;Utilização incorreta do KB no chamado;Outros"} reasonIds=[9,2,8,7,1,12,4,5,10,3]
+2026-02-22T12:13:23+00:00 MODEL.insert ok=1 rc=1 lastId=45
+2026-02-22T12:13:23+00:00 MODEL.check row={"ticket_number":"SCTASK090876767","noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3"}
+2026-02-22T12:13:23+00:00 OK id=45
