@@ -1,33 +1,18 @@
-<?php
-declare(strict_types=1);
-
-/**
- * Layout base das páginas.
- *
- * Espera variáveis:
- *  - string $title
- *  - string $content (HTML da página)
- *
- * Este layout carrega:
- *  - /assets/style.css
- *  - /assets/scripts.js (defer)
- */
-
-$title  = $title  ?? 'Aplicação';
-$content = $content ?? '';
-?>
 <!doctype html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></title>
+  <title><?= htmlspecialchars($title ?? 'Formulário de Chamados') ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/assets/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <?= $content ?>
-
-  <!-- Scripts globais deferidos (não bloqueiam renderização) -->
-  <script src="/assets/scripts.js" defer></script>
+<body class="bg-light">
+  <main class="container py-3">
+    <?php if (!empty($error)): ?>
+      <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+    <?php include __DIR__ . '/' . $view . '.php'; ?>
+  </main>
+  <script src="/assets/app.js"></script>
 </body>
 </html>
