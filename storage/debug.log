@@ -3452,3 +3452,160 @@ Array
 2026-02-22T12:13:23+00:00 MODEL.insert ok=1 rc=1 lastId=45
 2026-02-22T12:13:23+00:00 MODEL.check row={"ticket_number":"SCTASK090876767","noncompliance_reason_ids":"9;2;8;7;1;12;4;5;10;3"}
 2026-02-22T12:13:23+00:00 OK id=45
+2026-02-23T11:29:13+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CE%"]
+2026-02-23T11:29:14+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CENPE%"]
+2026-02-23T11:29:14+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CENPES%"]
+2026-02-23T11:29:16+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CENP%"]
+2026-02-23T11:29:17+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CEN%"]
+2026-02-23T11:29:18+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CE%"]
+2026-02-23T11:29:21+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CEN%"]
+2026-02-23T11:29:21+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM locations
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%CENPES%"]
+2026-02-23T11:29:25+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SO%"]
+2026-02-23T11:29:26+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SOFY%"]
+2026-02-23T11:29:27+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SO%"]
+2026-02-23T11:29:27+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SOF%"]
+2026-02-23T11:29:28+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SOFT%"]
+2026-02-23T11:30:18+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SOFT%"]
+2026-02-23T11:30:20+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM resolver_groups
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%N2%"]
+2026-02-23T11:30:21+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%SOFT%"]
+2026-02-23T11:30:25+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%TE%"]
+2026-02-23T11:30:26+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%TEE%"]
+2026-02-23T11:30:26+00:00 REPO.run SQLERR: SQLSTATE[HY000]: General error: 1 no such column: name | SQL=
+            SELECT id, name
+            FROM categories
+            WHERE LOWER(name) LIKE LOWER(?)
+            ORDER BY name ASC
+            LIMIT 20
+         | params=["%TEAM%"]
+2026-02-23T11:47:21+00:00 SERVICE create data={"ticket_number":"RITM090897867564","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"2;3;4;6;1;10;7;5;9","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Preenchimento incorreto nos campos do chamado;Utilização incorreta do KB no chamado"} reasonIds=[2,3,4,6,1,10,7,5,9]
+2026-02-23T11:47:21+00:00 MODEL.insert ok=1 rc=1 lastId=46
+2026-02-23T11:47:21+00:00 OK id=46
+2026-02-23T11:50:40+00:00 SERVICE create data={"ticket_number":"INC0908978654321","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Adriano de Paula","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"1;3;4;5;6","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente"} reasonIds=[1,3,4,5,6]
+2026-02-23T11:50:40+00:00 MODEL.insert ok=1 rc=1 lastId=47
+2026-02-23T11:50:40+00:00 OK id=47
+2026-02-23T11:54:40+00:00 SERVICE create data={"ticket_number":"SCTASK090878654","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcio Amaral","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"2;1;4;10","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado cancelado incorretamente;Utilização incorreta do KB no chamado"} reasonIds=[2,1,4,10]
+2026-02-23T11:54:40+00:00 MODEL.insert ok=1 rc=1 lastId=48
+2026-02-23T11:54:40+00:00 OK id=48
+2026-02-23T11:57:24+00:00 SERVICE create data={"ticket_number":"INC09087654342","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcos Aurelho","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":0,"noncompliance_reason_ids":"1;2;3;4;5","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB"} reasonIds=[1,2,3,4,5]
+2026-02-23T11:57:24+00:00 MODEL.insert ok=1 rc=1 lastId=49
+2026-02-23T11:57:24+00:00 OK id=49
+2026-02-23T12:00:02+00:00 SERVICE create data={"ticket_number":"RITM09087679","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":3,"requester_name":"Marcio santos","category":"Estação de Trabalho e Impressão - Impressora e Scanner","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"2;3;4;5;10;6;7","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Utilização incorreta do KB no chamado"} reasonIds=[2,3,4,5,10,6,7]
+2026-02-23T12:00:02+00:00 MODEL.insert ok=1 rc=1 lastId=50
+2026-02-23T12:00:02+00:00 OK id=50
+2026-02-23T12:01:09+00:00 SERVICE create data={"ticket_number":"SCTASK090987865434","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Maria Angela","category":"Aplicações e Softwares - SOX","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"2;3;4;5;10;6;7;8","noncompliance_reasons":"Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Utilização incorreta do KB no chamado"} reasonIds=[2,3,4,5,10,6,7,8]
+2026-02-23T12:01:10+00:00 MODEL.insert ok=1 rc=1 lastId=51
+2026-02-23T12:01:10+00:00 OK id=51
+2026-02-23T12:02:57+00:00 SERVICE create data={"ticket_number":"INC090897865647","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":3,"requester_name":"Marcio santos","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":null,"noncompliance_reasons":null} reasonIds=[]
+2026-02-23T12:02:57+00:00 MODEL.insert ok=1 rc=1 lastId=52
+2026-02-23T12:02:57+00:00 OK id=52
+2026-02-23T12:12:18+00:00 SERVICE create data={"ticket_number":"INC90878656432","ticket_type":"Incidente","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":3,"requester_name":"Maria Angela","category":"Aplicações e Softwares - M365","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":0,"noncompliance_reason_ids":"3;4;5;10;6","noncompliance_reasons":"Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Utilização incorreta do KB no chamado"} reasonIds=[3,4,5,10,6]
+2026-02-23T12:12:18+00:00 MODEL.insert ok=1 rc=1 lastId=53
+2026-02-23T12:12:18+00:00 OK id=53
