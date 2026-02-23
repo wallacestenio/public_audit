@@ -1,18 +1,37 @@
+<?php
+/**
+ * Layout base.
+ * Detecta automaticamente o base path (subpasta) e expõe em JS: window.APP_BASE
+ * Espera: $title, $view, $base (injetado pelo Controller).
+ */
+
+// $base vem do Controller::render()
+$title = $title ?? 'Formulário de Chamados';
+$view  = $view  ?? null;
+?>
 <!doctype html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <title><?= htmlspecialchars($title ?? 'Formulário de Chamados') ?></title>
+  <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <script>window.APP_BASE = <?= json_encode($base, JSON_UNESCAPED_SLASHES) ?>;</script>
+
+  <link rel="stylesheet" href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/assets/style.css">
 </head>
-<body class="bg-light">
-  <main class="container py-3">
-    <?php if (!empty($error)): ?>
-      <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-    <?php include __DIR__ . '/' . $view . '.php'; ?>
+<body>
+  <main class="container">
+    <?php
+      $file = __DIR__ . '/' . $view . '.php';
+      if (!empty($view) && is_file($file)) {
+        include $file;
+      } else {
+        echo '<div class="alert alert-warning">Nenhuma view definida ou arquivo não encontrado.</div>';
+      }
+    ?>
   </main>
-  <script src="/assets/app.js"></script>
+
+  <script defer src="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/assets/scripts.js"></script>
 </body>
 </html>

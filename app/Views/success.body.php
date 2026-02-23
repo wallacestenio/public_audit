@@ -5,8 +5,8 @@
      style="max-width:780px;margin:20px auto;padding:16px;border:1px solid #10b981;background:#d1fae5;
             color:#065f46;border-radius:6px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
             font-size:1.1rem;line-height:1.45">
-  <strong>✔ Chamado criado com sucesso!</strong><br>
-  Você será redirecionado para a página principal em <strong><span id="count">3</span></strong> segundos...
+  <strong>✔ Auditoria criada com sucesso!</strong><br>
+ <!-- Você será redirecionado para a página principal em <strong><span id="count">3</span></strong> segundos... -->
   <div id="motivation" style="margin-top:10px;opacity:1;transition:opacity .28s ease">
     <em>Construindo excelência, um chamado por vez.</em>
   </div>

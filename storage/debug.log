@@ -3637,3 +3637,11 @@ Array
 2026-02-23T12:12:18+00:00 MODEL.insert ok=1 rc=1 lastId=53
 2026-02-23T12:12:18+00:00 OK id=53
 >>>>>>> database-to-form
+2026-02-23T15:10:15+00:00 SERVICE data={"ticket_number":"RITM09086876564","ticket_type":"Requisição","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Minsait","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Marcio Ferreira","category":"Aplicações e Softwares - SOX","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":1,"is_compliant":1,"noncompliance_reason_ids":"1;2;3;4;5;10;6","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Utilização incorreta do KB no chamado"} reasonIds=[1,2,3,4,5,10,6]
+2026-02-23T15:10:15+00:00 MODEL.insert ok=1 rc=1 lastId=54
+2026-02-23T15:10:15+00:00 MODEL.check row={"ticket_number":"RITM09086876564","noncompliance_reason_ids":"1;2;3;4;5;10;6"}
+2026-02-23T15:10:15+00:00 OK id=54
+2026-02-23T15:13:31+00:00 SERVICE data={"ticket_number":"SCTASK0908978675678","ticket_type":"Task","kyndryl_auditor":"Wallace Silva","petrobras_inspector":"Paulo Cesar","audited_supplier":"Sonda","location":"CENPES","audit_month":"2026-03","priority":4,"requester_name":"Mauro Almeira","category":"Estação de Trabalho e Impressão - Notebook, Desktop ou Workstation","resolver_group":"N2-MAC-RJ-ATEND-CENPES","sla_met":0,"is_compliant":1,"noncompliance_reason_ids":"2;3;4;5;10;6;8;7;1;12","noncompliance_reasons":"Ausência de evidência de contato com o usuário;Ausência de informação de anotações de encerramento;Chamado atribuído a um técnico que não está mais ativo;Chamado cancelado incorretamente;Chamado encerrado sem utilização do KB;Chamado pausado indevidamente;Equipamento entregue no DSB e não atualizado no BDGC;Não revogou a custódia do rádio;Utilização incorreta do KB no chamado;Outros"} reasonIds=[2,3,4,5,10,6,8,7,1,12]
+2026-02-23T15:13:31+00:00 MODEL.insert ok=1 rc=1 lastId=55
+2026-02-23T15:13:31+00:00 MODEL.check row={"ticket_number":"SCTASK0908978675678","noncompliance_reason_ids":"2;3;4;5;10;6;8;7;1;12"}
+2026-02-23T15:13:31+00:00 OK id=55
