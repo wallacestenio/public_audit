@@ -1,10 +1,10 @@
 /**
- * scripts.js — Formulário de Chamados
+ * scripts.js — Auditoria de Chamados
  * - Autocomplete (6 campos) puxando do /api/catalog (tabelas: kyndryl_auditors, petrobras_inspectors, audited_suppliers, locations, categories, resolver_groups)
  * - Sanfona de "Opções de exportação"
  * - Export por mês (global window.exportByMonth)
  * - Modal de confirmação
- * - Banner sucess + toggle de "Justificativas" + normalizadores
+ * - Banner success + toggle de "Justificativas" + normalizadores
  */
 
 /* ===== Utils base ===== */
@@ -334,8 +334,14 @@ function makeAutocomplete(opts){
   const hidden = document.getElementById(hiddenNameId);
   const hidId  = document.getElementById(hiddenIdId);
   const popup  = document.getElementById(popupId);
-
   if (!input || !hidden || !hidId || !popup) return;
+
+  // 🔒 se travado pela sessão, NÃO liga autocomplete/validação
+  const isLocked = input.hasAttribute('data-locked');
+  if (isLocked) {
+    hidden.value = input.value || '';
+    return; // não liga listeners; segue com os demais campos normalmente
+  }
 
   let timer = null;
   let cache = [];

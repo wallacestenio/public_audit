@@ -1,9 +1,10 @@
 <?php
+//echo password_hash('admin123', PASSWORD_DEFAULT);
 /**
- * View: Formulário de Chamados
+ * View: Auditoria de Chamados
  * Variáveis: $title (string), $error (?string), $old (array), $base (string)
  */
-$title = $title ?? 'Formulário de Chamados';
+$title = $title ?? 'Auditoria de Chamados';
 $old   = is_array($old ?? null) ? $old : [];
 $error = $error ?? null;
 
@@ -73,15 +74,32 @@ $created = $_GET['created'] ?? null;
       <!-- Auditor Kyndryl -->
       <div class="col" style="position:relative">
         <label for="kyndryl_auditor_input">Auditor Kyndryl *</label>
-        <input id="kyndryl_auditor_input" type="text" autocomplete="off"
-               placeholder="Comece a digitar para buscar..."
-               value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required>
-        <input type="hidden" name="kyndryl_auditor" id="kyndryl_auditor_value"
-               value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        <input type="hidden" name="kyndryl_auditor_id" id="kyndryl_auditor_id"
-               value="<?= htmlspecialchars((string)($old['kyndryl_auditor_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+        <input
+          id="kyndryl_auditor_input"
+          type="text"
+          autocomplete="off"
+          placeholder="Seu usuário (preenchido automaticamente)"
+          value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+          <?= !empty($old['_lock_kyndryl_field']) ? 'readonly data-locked="1" aria-readonly="true" tabindex="-1"' : 'required' ?>
+        >
+        <input
+          type="hidden"
+          name="kyndryl_auditor"
+          id="kyndryl_auditor_value"
+          value="<?= htmlspecialchars((string)($old['kyndryl_auditor'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+        >
+        <input
+          type="hidden"
+          name="kyndryl_auditor_id"
+          id="kyndryl_auditor_id"
+          value="<?= htmlspecialchars((string)($old['kyndryl_auditor_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+        >
         <div id="auditor_suggest"></div>
-        <div class="muted">Selecione um nome da lista.</div>
+        <div class="muted">
+          <?= !empty($old['_lock_kyndryl_field'])
+            ? 'Este campo é determinado pela sua sessão.'
+            : 'Selecione um nome da lista.' ?>
+        </div>
       </div>
 
       <!-- Inspetor Petrobras -->
@@ -164,7 +182,7 @@ $created = $_GET['created'] ?? null;
       <div class="col">
         <label for="requester_name">Solicitante *</label>
         <input id="requester_name" name="requester_name" required
-               value="<?= htmlspecialchars((string)($old['requester_name'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+               value="" placeholder="Campos Solicitante no ServiceNow">
       </div>
 
       <!-- Categoria -->

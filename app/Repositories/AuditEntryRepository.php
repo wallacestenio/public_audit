@@ -4,93 +4,105 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\AuditEntry;
+use PDO;
 
 final class AuditEntryRepository
 {
-    public function __construct(
-        private AuditEntry $model
-    ) {}
+    public function __construct(private AuditEntry $model) {}
+
+    public function rawPdo(): PDO { return $this->model->getPdo(); }
 
     /**
-     * Cria a entrada e vincula as razões (IDs) na ponte.
-     *
-     * @param array $data
-     * @param int[] $reasonIds
-     * @return int
+     * Cria um registro em audit_entries (tudo em uma única tabela).
+     * Espera $data com as chaves abaixo (strings/int coerentes).
      */
-    public function create(array $data, array $reasonIds = []): int
-    {
-        return $this->model->insertWithReasons($data, $reasonIds);
-    }
-
-    
-
-
-public function rawPdo(): \PDO
+    public function create(array $data, array $unused = []): int
 {
-    return $this->model->getPdo();
-}
-/**
- * Retorna linhas para export CSV, nas colunas e ordem exatas solicitadas.
- * Filtro opcional por audit_month (YYYY-MM) via $filters['audit_month'].
- */
-public function exportRows(array $filters = []): array
-{
-    // Ordem exata que você pediu
-    $cols = [
-        'ticket_number',
-        'ticket_type',
-        'kyndryl_auditor',
-        'petrobras_inspector',
-        'audited_supplier',
-        'location',
-        'audit_month',
-        'priority',
-        'requester_name',
-        'category',
-        'resolver_group',
-        'sla_met',
-        'is_compliant',
-        'noncompliance_reasons',
-    ];
+    $pdo = $this->rawPdo();
 
-    $sql    = 'SELECT ' . implode(',', $cols) . ' FROM audit_entries';
-    $where  = [];
-    $params = [];
+    $sql = "INSERT INTO audit_entries
+        (ticket_number, ticket_type, kyndryl_auditor, petrobras_inspector, audited_supplier, location,
+         audit_month, priority, requester_name, category, resolver_group, sla_met, is_compliant,
+         noncompliance_reason_ids, noncompliance_reasons, user_id)
+        VALUES
+        (:ticket_number, :ticket_type, :kyndryl_auditor, :petrobras_inspector, :audited_supplier, :location,
+         :audit_month, :priority, :requester_name, :category, :resolver_group, :sla_met, :is_compliant,
+         :nc_ids, :nc_labels, :user_id)";
 
-    // Filtro opcional (ex.: ?audit_month=2026-02)
-    if (!empty($filters['audit_month'])) {
-        $where[] = 'audit_month = :audit_month';
-        $params[':audit_month'] = (string)$filters['audit_month'];
-    }
-    if ($where) {
-        $sql .= ' WHERE ' . implode(' AND ', $where);
-    }
-    $sql .= ' ORDER BY rowid ASC';
-
-    // PDO via getter limpo (sem Reflection)
-    if (!method_exists($this->model, 'getPdo')) {
-        throw new \RuntimeException('Model não expõe getPdo(). Adicione o getter getPdo(): \PDO no Model.');
-    }
-    $pdo  = $this->model->getPdo();
     $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
+    $stmt->execute([
+        ':ticket_number'       => (string)$data['ticket_number'],
+        ':ticket_type'         => (string)$data['ticket_type'],
+        ':kyndryl_auditor'     => (string)$data['kyndryl_auditor'],
+        ':petrobras_inspector' => (string)$data['petrobras_inspector'],
+        ':audited_supplier'    => (string)$data['audited_supplier'],
+        ':location'            => (string)$data['location'],
+        ':audit_month'         => (string)$data['audit_month'],
+        ':priority'            => (int)$data['priority'],
+        ':requester_name'      => (string)$data['requester_name'],
+        ':category'            => (string)$data['category'],
+        ':resolver_group'      => (string)$data['resolver_group'],
+        ':sla_met'             => (int)$data['sla_met'],
+        ':is_compliant'        => (int)$data['is_compliant'],
+        ':nc_ids'              => $data['noncompliance_reason_ids'] ?? null,
+        ':nc_labels'           => $data['noncompliance_reasons'] ?? null,
+        ':user_id'             => isset($data['user_id']) ? (int)$data['user_id'] : null, // << AQUI
+    ]);
 
-    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
-
-    // Normaliza: só as colunas pedidas, na ordem, null -> ''
-    $normalized = [];
-    foreach ($rows as $r) {
-        $line = [];
-        foreach ($cols as $c) {
-            $v = $r[$c] ?? '';
-            if ($v === null) $v = '';
-            $line[$c] = (string)$v;
-        }
-        $normalized[] = $line;
+    $id = (int)$pdo->lastInsertId();
+    if ($id === 0) {
+        $ridStmt = $pdo->prepare('SELECT rowid FROM audit_entries WHERE ticket_number = :tk');
+        $ridStmt->execute([':tk' => (string)$data['ticket_number']]);
+        $id = (int)($ridStmt->fetchColumn() ?: 0);
     }
-
-    return $normalized;
+    return $id;
 }
 
+    /**
+     * Exporta dados para CSV (ordem de colunas e filtro por mês).
+     */
+    public function exportRows(array $filters = []): array
+    {
+        $cols = [
+            'ticket_number',
+            'ticket_type',
+            'kyndryl_auditor',
+            'petrobras_inspector',
+            'audited_supplier',
+            'location',
+            'audit_month',
+            'priority',
+            'requester_name',
+            'category',
+            'resolver_group',
+            'sla_met',
+            'is_compliant',
+            'noncompliance_reasons',
+        ];
+
+        $sql = 'SELECT ' . implode(',', $cols) . ' FROM audit_entries';
+        $where = []; $params = [];
+
+        if (!empty($filters['audit_month'])) {
+            $where[] = 'audit_month = :audit_month';
+            $params[':audit_month'] = (string)$filters['audit_month'];
+        }
+
+        if ($where) $sql .= ' WHERE ' . implode(' AND ', $where);
+        $sql .= ' ORDER BY rowid ASC';
+
+        $pdo = $this->rawPdo();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        // Normaliza null->'' e mantém ordem
+        $out = [];
+        foreach ($rows as $r) {
+            $line = [];
+            foreach ($cols as $c) $line[$c] = (string)($r[$c] ?? '');
+            $out[] = $line;
+        }
+        return $out;
+    }
 }

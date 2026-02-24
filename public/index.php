@@ -4,12 +4,12 @@ declare(strict_types=1);
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-/* ================= Autoloader PSR-4 (sem Composer) ================= */
+/* Sessão */
+session_start();
+
+/* Autoloader PSR-4 (sem Composer) */
 spl_autoload_register(function (string $class): void {
-    $prefixes = [
-        'App\\' => __DIR__ . '/../app/',
-        'Src\\' => __DIR__ . '/../src/',
-    ];
+    $prefixes = ['App\\' => __DIR__ . '/../app/', 'Src\\' => __DIR__ . '/../src/'];
     foreach ($prefixes as $prefix => $baseDir) {
         if (strncmp($class, $prefix, strlen($prefix)) !== 0) continue;
         $relative = substr($class, strlen($prefix));
@@ -18,99 +18,91 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
-/* ================= Config ================= */
+function base_path(): string {
+    $s = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+    $d = rtrim(str_replace('\\', '/', dirname($s)), '/');
+    return ($d === '/' || $d === '.') ? '' : $d;
+}
+
+/* Config / DB */
 $configPath = __DIR__ . '/../config/config.php';
 $config = is_file($configPath) ? require $configPath : [
     'sqlite_path' => __DIR__ . '/../database/tickets.db',
     'schema_sql'  => __DIR__ . '/../database/tickets.sql',
 ];
 
-/* ================= DB (via Src\Database) ================= */
 use Src\Database;
 
 try {
     $db  = new Database($config['sqlite_path'], $config['schema_sql']);
-    $pdo = $db->pdo();
+    $pdo = $db->pdo(); // PRAGMA foreign_keys ON dentro do Database (garanta isso)
 } catch (\Throwable $e) {
     http_response_code(500);
     header('Content-Type: text/plain; charset=utf-8');
-    echo "Falha ao inicializar o banco de dados.\n";
-    echo "Caminho SQLite: {$config['sqlite_path']}\n";
-    echo "Erro: " . $e->getMessage() . "\n";
+    echo "Falha ao inicializar o banco de dados.\nErro: " . $e->getMessage() . "\n";
     exit;
 }
 
-/* ================= DI manual ================= */
+/* DI */
 use App\Core\Router;
-
 use App\Models\{Presets, AuditEntry, SchemaInspector};
 use App\Repositories\{CatalogRepository, AuditEntryRepository};
 use App\Services\{PayloadMapper, CreateAuditEntryService};
-use App\Controllers\{CatalogController, AuditEntriesController};
+use App\Controllers\{CatalogController, AuditEntriesController, LoginController};
+use App\Support\Auth;
 
-// (Opcional) Logger
-$logger = class_exists(\App\Support\Logger::class) ? new \App\Support\Logger() : null;
+$router = new Router();
 
-// Auxiliares p/ Mapper/Schema
 $schema = new SchemaInspector($pdo);
 $mapper = new PayloadMapper($schema, $pdo);
 
-// Presets/Catálogo
 $presets     = new Presets($pdo);
 $catalogRepo = new CatalogRepository($pdo);
 $catalogCtrl = new CatalogController($catalogRepo);
 
-// Auditoria
 $auditModel = new AuditEntry($pdo);
 $auditRepo  = new AuditEntryRepository($auditModel);
 $createSvc  = new CreateAuditEntryService($auditRepo);
+$logger     = class_exists(\App\Support\Logger::class) ? new \App\Support\Logger() : null;
 $auditCtrl  = new AuditEntriesController($createSvc, $auditRepo, $logger);
 
-/* ================= Router e Rotas ================= */
-$router = new Router();
+$auth      = new Auth($pdo);
+$loginCtrl = new LoginController($auth);
 
-// Feito com Closures -> compatível com o Router atual
-$router->get('/',               fn() => $auditCtrl->form());
-$router->post('/audit-entries', fn() => $auditCtrl->store());
+/* Guards simples */
+$mustAuth  = function () use ($auth) { if (!$auth->check()) { header('Location: ' . base_path() . '/login'); exit; } };
+$mustAdmin = function () use ($auth) { if (!$auth->isAdmin()) { header('Location: ' . base_path() . '/'); exit; } };
 
-$router->get('/api/catalog',    fn() => $catalogCtrl->autocomplete());
+/* Rotas públicas (login) */
+$router->get('/login',  fn() => $loginCtrl->show());
+$router->post('/login', fn() => $loginCtrl->login());
+$router->post('/logout', fn() => $loginCtrl->logout());
 
-$router->get('/export/csv',     fn() => $auditCtrl->exportCsv());
+/* Rotas protegidas (ambos os perfis) */
+$router->get('/',               function () use ($mustAuth, $auditCtrl) { $mustAuth(); $auditCtrl->form(); });
+$router->post('/audit-entries', function () use ($mustAuth, $auditCtrl) { $mustAuth(); $auditCtrl->store(); });
 
-// (Opcional) export ponte (se sua camada suportar)
-if (method_exists($auditCtrl, 'exportBridgeCsv')) {
-    $router->get('/export/bridge', fn() => $auditCtrl->exportBridgeCsv());
-}
+/* API de catálogo (pode ser pública ou protegida; aqui deixei pública) */
+$router->get('/api/catalog', fn() => $catalogCtrl->autocomplete());
 
-// Diagnóstico rápido
-$router->get('/debug/health', function () use ($config, $pdo) {
-    header('Content-Type: text/plain; charset=utf-8');
-    echo "sqlite_path: {$config['sqlite_path']}\n";
+/* Export (protegida) */
+$router->get('/export/csv', function () use ($mustAuth, $auditCtrl) { $mustAuth(); $auditCtrl->exportCsv(); });
 
-    try {
-        $rows = $pdo->query("PRAGMA database_list;")->fetchAll(PDO::FETCH_ASSOC);
-        echo "PRAGMA database_list:\n";
-        foreach ($rows as $r) {
-            echo "- {$r['name']}: {$r['file']}\n";
-        }
-    } catch (\Throwable $e) {
-        echo "Erro PRAGMA database_list: " . $e->getMessage() . "\n";
-    }
-
-    echo "\nColumns in audit_entries:\n";
-    try {
-        $cols = $pdo->query("PRAGMA table_info(audit_entries)")->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($cols as $c) {
-            $name = $c['name'] ?? '?';
-            $type = $c['type'] ?? '?';
-            echo "- {$name} ({$type})\n";
-        }
-    } catch (\Throwable $e) {
-        echo "Erro PRAGMA table_info(audit_entries): " . $e->getMessage() . "\n";
-    }
+/* (Opcional) /admin — por enquanto só uma página placeholder */
+$router->get('/admin', function () use ($mustAdmin) {
+    $mustAdmin();
+    $baseDir = __DIR__ . '/../app/Views';
+    $layout  = $baseDir . '/layout.php';
+    $view    = 'admin';
+    $base    = base_path();
+    $title   = 'Admin';
+    require $layout;
 });
 
-/* ================= Dispatch ================= */
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$uri    = $_SERVER['REQUEST_URI']   ?? '/';
-$router->dispatch($method, $uri);
+/* Diagnóstico */
+$router->get('/debug/health', function () use ($pdo) {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "OK\n";
+});
+
+$router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

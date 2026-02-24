@@ -1,41 +1,30 @@
 <?php
+declare(strict_types=1);
+
 namespace Src;
 
 use PDO;
-use RuntimeException;
 
-class Database
+final class Database
 {
     private PDO $pdo;
 
-    public function __construct(private string $sqlitePath, private string $schemaSqlPath)
+    public function __construct(string $sqlitePath, string $schemaSqlPath)
     {
-        $dir = dirname($this->sqlitePath);
-        if (!is_dir($dir)) {
-            if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
-                throw new RuntimeException("Cannot create dir: $dir");
-            }
-        }
+        $needInit = !is_file($sqlitePath);
+        $this->pdo = new PDO('sqlite:' . $sqlitePath, null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
 
-        $this->pdo = new PDO('sqlite:' . $this->sqlitePath);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // Sempre ligar FK
         $this->pdo->exec('PRAGMA foreign_keys = ON;');
 
-        // Se o DB está vazio, aplica o schema
-        if (!$this->hasAnyTable() && file_exists($this->schemaSqlPath)) {
-            $sql = file_get_contents($this->schemaSqlPath);
-            $this->pdo->exec($sql);
+        if ($needInit && is_file($schemaSqlPath)) {
+            $sql = file_get_contents($schemaSqlPath) ?: '';
+            if ($sql !== '') $this->pdo->exec($sql);
         }
     }
 
-    private function hasAnyTable(): bool
-    {
-        $stmt = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' LIMIT 1;");
-        return (bool) $stmt->fetchColumn();
-    }
-
-    public function pdo(): PDO
-    {
-        return $this->pdo;
-    }
+    public function pdo(): PDO { return $this->pdo; }
 }
