@@ -35,7 +35,7 @@ use Src\Database;
 
 try {
     $db  = new Database($config['sqlite_path'], $config['schema_sql']);
-    $pdo = $db->pdo(); // PRAGMA foreign_keys ON dentro do Database (garanta isso)
+    $pdo = $db->pdo();
 } catch (\Throwable $e) {
     http_response_code(500);
     header('Content-Type: text/plain; charset=utf-8');
@@ -69,26 +69,75 @@ $auditCtrl  = new AuditEntriesController($createSvc, $auditRepo, $logger);
 $auth      = new Auth($pdo);
 $loginCtrl = new LoginController($auth);
 
-/* Guards simples */
+/* Guards de páginas (redirect) */
 $mustAuth  = function () use ($auth) { if (!$auth->check()) { header('Location: ' . base_path() . '/login'); exit; } };
 $mustAdmin = function () use ($auth) { if (!$auth->isAdmin()) { header('Location: ' . base_path() . '/'); exit; } };
+
+/* Helpers/Guards para API (JSON) */
+$sendJson = function (int $status, array $payload) {
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit;
+};
+$mustAuthApi = function () use ($auth, $sendJson) {
+    if (!$auth->check()) $sendJson(401, ['error' => 'Unauthorized']);
+};
+$mustAdminApi = function () use ($auth, $sendJson) {
+    if (!$auth->check()) $sendJson(401, ['error' => 'Unauthorized']);
+    if (!$auth->isAdmin()) $sendJson(403, ['error' => 'Forbidden']);
+};
+
+/** Valida que a chamada veio do formulário (para user) */
+$validateFormOriginForApi = function () use ($sendJson) {
+    // AJAX header
+    $xhr = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+    if (strcasecmp($xhr, 'XMLHttpRequest') !== 0) {
+        $sendJson(403, ['error' => 'Forbidden']);
+    }
+    // Token
+    $token = $_SERVER['HTTP_X_FORM_TOKEN'] ?? '';
+    $reg   = $_SESSION['form_token_catalog'] ?? null;
+    $now   = time();
+    if (!is_array($reg) || empty($reg['v']) || empty($reg['exp']) || $reg['v'] !== $token || (int)$reg['exp'] < $now) {
+        $sendJson(403, ['error' => 'Forbidden']);
+    }
+    // (Opcional) validar Origin/Referer com o mesmo host
+    // $host = ($_SERVER['HTTP_HOST'] ?? '');
+    // $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    // if ($origin && !str_contains($origin, $host)) $sendJson(403, ['error'=>'Forbidden']);
+};
 
 /* Rotas públicas (login) */
 $router->get('/login',  fn() => $loginCtrl->show());
 $router->post('/login', fn() => $loginCtrl->login());
 $router->post('/logout', fn() => $loginCtrl->logout());
 
-/* Rotas protegidas (ambos os perfis) */
+/* Rotas protegidas (ambos perfis) */
 $router->get('/',               function () use ($mustAuth, $auditCtrl) { $mustAuth(); $auditCtrl->form(); });
 $router->post('/audit-entries', function () use ($mustAuth, $auditCtrl) { $mustAuth(); $auditCtrl->store(); });
 
-/* API de catálogo (pode ser pública ou protegida; aqui deixei pública) */
-$router->get('/api/catalog', fn() => $catalogCtrl->autocomplete());
+/* ===================== API de catálogo ===================== */
+$router->get('/api/catalog', function () use ($mustAuthApi, $auth, $validateFormOriginForApi, $catalogCtrl) {
+    $mustAuthApi(); // exige sessão
+
+    if ($auth->isAdmin()) {
+        // Admin pode usar direto (opcional: liberar _debug=1)
+        $catalogCtrl->autocomplete();
+        return;
+    }
+
+    // User comum -> só via formulário (AJAX + token)
+    $validateFormOriginForApi();
+    // remove _debug para user
+    if (isset($_GET['_debug'])) unset($_GET['_debug']);
+    $catalogCtrl->autocomplete();
+});
 
 /* Export (protegida) */
 $router->get('/export/csv', function () use ($mustAuth, $auditCtrl) { $mustAuth(); $auditCtrl->exportCsv(); });
 
-/* (Opcional) /admin — por enquanto só uma página placeholder */
+/* Admin (placeholder) */
 $router->get('/admin', function () use ($mustAdmin) {
     $mustAdmin();
     $baseDir = __DIR__ . '/../app/Views';
@@ -100,7 +149,7 @@ $router->get('/admin', function () use ($mustAdmin) {
 });
 
 /* Diagnóstico */
-$router->get('/debug/health', function () use ($pdo) {
+$router->get('/debug/health', function () {
     header('Content-Type: text/plain; charset=utf-8');
     echo "OK\n";
 });

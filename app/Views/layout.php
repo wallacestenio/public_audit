@@ -1,24 +1,16 @@
 <?php
-/**
- * Layout base.
- * Exige: $title, $view, $base
- */
 $title = $title ?? 'Auditoria de Chamados';
 $view  = $view  ?? null;
 
-// base dinâmico (caso não venha do controller)
 $base  = $base  ?? (function(){
     $s = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
     $d = rtrim(str_replace('\\','/',dirname($s)), '/');
     return ($d==='/'||$d==='.')?'':$d;
 })();
 
-// sessão corrente
 $user = $_SESSION['user'] ?? null;
-
-// caminho da requisição atual (para esconder a saudação em /audit-entries)
 $reqPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-$hideUserGreeting = ($reqPath === $base . '/audit-entries'); // 👈 Aqui a mágica
+$hideUserGreeting = ($reqPath === $base . '/audit-entries');
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -27,6 +19,9 @@ $hideUserGreeting = ($reqPath === $base . '/audit-entries'); // 👈 Aqui a mág
   <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>window.APP_BASE = <?= json_encode($base, JSON_UNESCAPED_SLASHES) ?>;</script>
+  <?php if (!empty($form_token_catalog)): ?>
+    <script>window.CATALOG_TOKEN = <?= json_encode($form_token_catalog, JSON_UNESCAPED_SLASHES) ?>;</script>
+  <?php endif; ?>
   <link rel="stylesheet" href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/assets/style.css">
   <style>
     .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:0 auto 12px;max-width:1100px}
@@ -39,8 +34,7 @@ $hideUserGreeting = ($reqPath === $base . '/audit-entries'); // 👈 Aqui a mág
 
   <div class="topbar">
     <div><a href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/"></a></div>
-
-    <?php if (!$hideUserGreeting): // 👈 Esconde o bloco à direita somente em /audit-entries ?>
+    <?php if (!$hideUserGreeting): ?>
       <div>
         <?php if ($user): ?>
           <small>Olá, <strong><?= htmlspecialchars((string)$user['name'], ENT_QUOTES, 'UTF-8') ?></strong></small>

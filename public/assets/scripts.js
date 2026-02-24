@@ -15,6 +15,17 @@ function baseJoin(path) {
   const base = (window.APP_BASE || '').replace(/\/+$/,'');
   return base + path;
 }
+/* Cabeçalhos padrão para a API protegida (token do form + XHR) */
+function getCatalogHeaders() {
+  const headers = {
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  };
+  if (window.CATALOG_TOKEN) {
+    headers['X-Form-Token'] = window.CATALOG_TOKEN;
+  }
+  return headers;
+}
 
 /* ===== Export por mês ===== */
 window.exportByMonth = function exportByMonth(){
@@ -179,8 +190,16 @@ window.exportByMonth = function exportByMonth(){
 
   async function loadAll() {
     try {
-      let res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons'));
-      if (!res.ok) res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons&q='));
+      // 1ª tentativa (sem q)
+      let res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons'), {
+        headers: getCatalogHeaders()
+      });
+      // Fallback com q vazio (mantido o padrão, mas com headers e '&', não '&amp;')
+      if (!res.ok) {
+        res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons&q='), {
+          headers: getCatalogHeaders()
+        });
+      }
       if (!res.ok) throw new Error('Falha ao carregar presets');
 
       const data = await res.json();
@@ -392,9 +411,15 @@ function makeAutocomplete(opts){
 
   async function fetchList(q){
     try {
+      // ATENÇÃO: em JS use '&' (não '&amp;')
       const url = baseJoin(`/api/catalog?resource=${encodeURIComponent(resource)}&q=` + encodeURIComponent(q || ''));
-      const res = await fetch(url, { headers: { 'Accept':'application/json' } });
-      if (!res.ok) throw new Error('HTTP '+res.status);
+
+      const res = await fetch(url, { headers: getCatalogHeaders() });
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('Não autenticado.');
+        if (res.status === 403) throw new Error('Acesso negado.');
+        throw new Error('HTTP '+res.status);
+      }
       const data = await res.json();
       cache = Array.isArray(data) ? data : [];
       renderList(cache);

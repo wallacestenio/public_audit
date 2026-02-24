@@ -12,9 +12,9 @@ $error = $error ?? null;
   <form method="post" action="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/login" novalidate>
     <div class="row">
       <div class="col">
-        <label for="username">Usuário (Auditor Kyndryl)</label>
+        <label for="username">Usuário </label>
         <input id="username" name="username" required autocomplete="username"
-               placeholder="Seu usuário (kyndryl_auditor)">
+               placeholder="Seu usuário">
       </div>
       <div class="col">
         <label for="password">Senha</label>
