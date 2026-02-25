@@ -62,47 +62,68 @@ final class AuditEntryRepository
      * Exporta dados para CSV (ordem de colunas e filtro por mês).
      */
     public function exportRows(array $filters = []): array
-    {
-        $cols = [
-            'ticket_number',
-            'ticket_type',
-            'kyndryl_auditor',
-            'petrobras_inspector',
-            'audited_supplier',
-            'location',
-            'audit_month',
-            'priority',
-            'requester_name',
-            'category',
-            'resolver_group',
-            'sla_met',
-            'is_compliant',
-            'noncompliance_reasons',
-        ];
+{
+    // Colunas exportadas (mantidas)
+    $cols = [
+        'ticket_number',
+        'ticket_type',
+        'kyndryl_auditor',
+        'petrobras_inspector',
+        'audited_supplier',
+        'location',
+        'audit_month',
+        'priority',
+        'requester_name',
+        'category',
+        'resolver_group',
+        'sla_met',
+        'is_compliant',
+        'noncompliance_reasons',
+    ];
 
-        $sql = 'SELECT ' . implode(',', $cols) . ' FROM audit_entries';
-        $where = []; $params = [];
+    // Constroi SELECT
+    $sql = 'SELECT ' . implode(',', $cols) . ' FROM audit_entries';
 
-        if (!empty($filters['audit_month'])) {
-            $where[] = 'audit_month = :audit_month';
-            $params[':audit_month'] = (string)$filters['audit_month'];
+    $where  = [];
+    $params = [];
+
+    // 🔐 Filtro OBRIGATÓRIO por user_id (apenas registros do usuário logado)
+    $userId = isset($filters['user_id']) ? (int)$filters['user_id'] : 0;
+    if ($userId > 0) {
+        $where[] = 'user_id = :user_id';
+        $params[':user_id'] = $userId;
+    } else {
+        // Se por algum motivo vier sem user_id, não retornamos nada
+        // (proteção extra; na prática, o controller sempre envia)
+        return [];
+    }
+
+    // 🔎 Filtro opcional por mês (mantido)
+    if (!empty($filters['audit_month'])) {
+        $where[] = 'audit_month = :audit_month';
+        $params[':audit_month'] = (string)$filters['audit_month'];
+    }
+
+    if ($where) {
+        $sql .= ' WHERE ' . implode(' AND ', $where);
+    }
+    $sql .= ' ORDER BY rowid ASC';
+
+    $pdo = $this->rawPdo();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+    // Normaliza null->'' e mantém ordem das colunas
+    $out = [];
+    foreach ($rows as $r) {
+        $line = [];
+        foreach ($cols as $c) {
+            $line[$c] = (string)($r[$c] ?? '');
         }
-
-        if ($where) $sql .= ' WHERE ' . implode(' AND ', $where);
-        $sql .= ' ORDER BY rowid ASC';
-
-        $pdo = $this->rawPdo();
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-        // Normaliza null->'' e mantém ordem
-        $out = [];
-        foreach ($rows as $r) {
-            $line = [];
-            foreach ($cols as $c) $line[$c] = (string)($r[$c] ?? '');
-            $out[] = $line;
-        }
-        return $out;
+        $out[] = $line;
+    }
+    return $out;
     }
 }

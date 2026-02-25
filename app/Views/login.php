@@ -3,7 +3,7 @@ $title = $title ?? 'Entrar';
 $error = $error ?? null;
 ?>
 <div class="card" style="max-width:420px">
-  <h1 style="margin-top:0">Entrar</h1>
+  <h1 style="margin-top:0, text-center">Auditorias</h1>
 
   <?php if (!empty($error)): ?>
     <div class="alert alert-danger"><?= htmlspecialchars((string)$error, ENT_QUOTES, 'UTF-8') ?></div>

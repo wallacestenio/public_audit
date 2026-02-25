@@ -156,41 +156,61 @@ final class AuditEntriesController
 
     /** Export CSV (inalterado) */
     public function exportCsv(): void
-    {
-        $prev = error_reporting();
-        $old  = ini_get('display_errors');
-        error_reporting($prev & ~E_DEPRECATED);
-        ini_set('display_errors', '0');
+{
+    $prev = error_reporting();
+    $old  = ini_get('display_errors');
+    error_reporting($prev & ~E_DEPRECATED);
+    ini_set('display_errors', '0');
 
-        while (ob_get_level() > 0) @ob_end_clean();
+    while (ob_get_level() > 0) @ob_end_clean();
 
-        try {
-            $month = isset($_GET['audit_month']) ? trim((string)$_GET['audit_month']) : null;
-            $rows = $this->repo->exportRows(['audit_month' => $month ?: null]);
-
-            $filename = 'auditoria_chamados_' .
-                ($month && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $month) ? $month : 'base') . '.csv';
-
-            header('Content-Type: text/csv; charset=UTF-8');
-            header('Content-Disposition: attachment; filename="'.$filename.'"');
-            header('Cache-Control: no-store, no-cache, must-revalidate');
-            header('Pragma: no-cache');
-
-            $out = fopen('php://output', 'w');
-            fwrite($out, "\xEF\xBB\xBF");
-
-            foreach ($rows as $r) {
-                fputcsv($out, array_values($r), ';', '"', '\\', "\r\n");
-            }
-
-            fclose($out);
-            exit;
-
-        } finally {
-            ini_set('display_errors', $old);
-            error_reporting($prev);
+    try {
+        // 🔐 Obtém o user_id da sessão (obrigatório)
+        $userId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0;
+        if ($userId <= 0) {
+            // Em tese não ocorrerá pois a rota já está protegida por $mustAuth, mas fica a blindagem
+            http_response_code(401);
+            header('Content-Type: text/plain; charset=utf-8');
+            echo "Não autenticado.\n";
+            return;
         }
+
+        // Filtro opcional por mês (mantido como antes)
+        $month = isset($_GET['audit_month']) ? trim((string)$_GET['audit_month']) : null;
+
+        // 🔎 Agora passamos também o user_id
+        $rows = $this->repo->exportRows([
+            'audit_month' => $month ?: null,
+            'user_id'     => $userId,
+        ]);
+
+        // Nome do arquivo mantido; você pode acrescentar o userId se quiser
+        $filename = 'auditoria_chamados_' .
+            ($month && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $month) ? $month : 'base') . '.csv';
+
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Pragma: no-cache');
+
+        $out = fopen('php://output', 'w');
+
+        // BOM UTF-8
+        fwrite($out, "\xEF\xBB\xBF");
+
+        foreach ($rows as $r) {
+            // Mantém o separador ';' como no seu padrão atual
+            fputcsv($out, array_values($r), ';', '"', '\\', "\r\n");
+        }
+
+        fclose($out);
+        exit;
+
+    } finally {
+        ini_set('display_errors', $old);
+        error_reporting($prev);
     }
+}
 
     private function isTicketNumberDuplicate(\PDOException $e): bool
     {
