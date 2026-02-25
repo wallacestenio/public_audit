@@ -154,4 +154,16 @@ $router->get('/debug/health', function () {
     echo "OK\n";
 });
 
+/* ============ API de validação de ticket duplicado (JSON) ============ */
+/* Requer login; se usar validação de origem do formulário para users, aplique a mesma regra do catálogo */
+$router->get('/api/validate/ticket', function () use ($mustAuthApi, $auth, $validateFormOriginForApi, $auditCtrl) {
+    $mustAuthApi();
+    if (!$auth->isAdmin()) {
+        // se você já usa token/headers para chamadas do form, valide origem p/ user
+        $validateFormOriginForApi();
+    }
+    // Reaproveitamos o controller dos audit entries para manter coeso
+    $auditCtrl->validateTicket();
+});
+
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

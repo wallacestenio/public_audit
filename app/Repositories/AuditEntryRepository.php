@@ -10,6 +10,15 @@ final class AuditEntryRepository
 {
     public function __construct(private AuditEntry $model) {}
 
+    
+    public function existsTicket(string $ticketNumber): bool
+{
+    $pdo = $this->rawPdo();
+    $sql = "SELECT 1 FROM audit_entries WHERE ticket_number = :tk LIMIT 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':tk' => $ticketNumber]);
+    return (bool)$stmt->fetchColumn();
+}
     public function rawPdo(): PDO { return $this->model->getPdo(); }
 
     /**

@@ -15,8 +15,9 @@ $created = $_GET['created'] ?? null;
 
   <?php if ($created !== null && $created !== ''): ?>
     <div class="alert alert-success">
-      Chamado <strong>#<?= htmlspecialchars((string)$created, ENT_QUOTES, 'UTF-8') ?></strong> criado com sucesso.
-      <br>Você será redirecionado para o formulário em <span id="countdown">5</span> segundos…
+      Chamado <!-- <strong># //htmlspecialchars((string)$created, ENT_QUOTES, 'UTF-8') ?></strong>--> Auditado.
+      <br>Se precisar pode iniciar um novo registro.
+      <!--<br> Você será redirecionado para o formulário em <span id="countdown">5</span> segundos… -->
     </div>
   <?php endif; ?>
 

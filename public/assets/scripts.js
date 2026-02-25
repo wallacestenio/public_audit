@@ -638,6 +638,93 @@ makeAutocomplete({
     form.requestSubmit ? form.requestSubmit() : form.submit();
   });
 
+    /* ===== Validação de duplicidade do Número do Ticket (antes de enviar) ===== */
+(function(){
+  const tn = document.getElementById('ticket_number');
+  if (!tn) return;
+
+  let timer = null;
+  const btnOpen = document.getElementById('btn-open-confirm'); // botão "Salvar"
+  const helpId  = 'ticket_dupe_help';
+
+  function setSavingEnabled(enabled) {
+    if (!btnOpen) return;
+    btnOpen.disabled = !enabled;
+    btnOpen.style.opacity = enabled ? '1' : '.6';
+    btnOpen.style.cursor  = enabled ? 'pointer' : 'not-allowed';
+  }
+  function ensureHelp() {
+    let el = document.getElementById(helpId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = helpId;
+      el.className = 'muted';
+      el.style.color = '#b91c1c';
+      el.style.marginTop = '4px';
+      tn.parentElement?.appendChild(el);
+    }
+    return el;
+  }
+  function clearHelp() {
+    const el = document.getElementById(helpId);
+    if (el) el.textContent = '';
+  }
+
+  async function checkDuplicate() {
+    const v = (tn.value || '').trim().toUpperCase();
+    if (!/^(INC|RITM|SCTASK)\d{6,}$/.test(v)) {
+      // formato inválido -> já existe validação do próprio input
+      clearHelp();
+      setSavingEnabled(true);
+      return;
+    }
+
+    try {
+      const url = baseJoin('/api/validate/ticket?number=' + encodeURIComponent(v));
+      const headers = getCatalogHeaders ? getCatalogHeaders() : { 'Accept': 'application/json' };
+      const res = await fetch(url, { headers });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      if (data && data.duplicate === true) {
+        const el = ensureHelp();
+        el.textContent = 'Este Número de Ticket já está salvo.';
+        tn.setCustomValidity('Este Número de Ticket já está salvo.');
+        tn.reportValidity();
+        setSavingEnabled(false);
+      } else {
+        clearHelp();
+        tn.setCustomValidity('');
+        setSavingEnabled(true);
+      }
+    } catch (e) {
+      // Em caso de falha da API, não travar o usuário (apenas limpa mensagem)
+      clearHelp();
+      tn.setCustomValidity('');
+      setSavingEnabled(true);
+      console.error(e);
+    }
+  }
+
+  tn.addEventListener('input', () => {
+    clearTimeout(timer);
+    setSavingEnabled(true); // não travar enquanto digita
+    timer = setTimeout(checkDuplicate, 250);
+  });
+  tn.addEventListener('blur', checkDuplicate);
+
+  // No submit, checa novamente
+  const form = getForm();
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      if (!tn.checkValidity()) {
+        e.preventDefault();
+        tn.reportValidity();
+      }
+    });
+  }
+})();
+
   document.addEventListener('keydown', (e) => {
     if (modal.style.display !== 'flex') return;
     if (e.key === 'Escape') { e.preventDefault(); closeModal(); }

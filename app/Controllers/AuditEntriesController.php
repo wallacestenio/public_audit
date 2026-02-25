@@ -50,109 +50,137 @@ final class AuditEntriesController
 
     /** Página do formulário */
     public function form(): void
-    {
-        $old = [];
+{
+    // FLASH (erro e old) vindos de redirecionamento
+    $flashError = $_SESSION['flash_error'] ?? null;
+    $flashOld   = $_SESSION['flash_old']   ?? null;
+    unset($_SESSION['flash_error'], $_SESSION['flash_old']);
 
-        // Prefill: solicitante = nome do usuário
-        if (!empty($_SESSION['user']['name'])) {
-            $old['requester_name'] = (string)$_SESSION['user']['name'];
-        }
-        // Travar "Auditor Kyndryl" com sessão
-        if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
-            $old['kyndryl_auditor']     = (string)$_SESSION['user']['name'];
-            $old['kyndryl_auditor_id']  = (int)$_SESSION['user']['id'];
-            $old['_lock_kyndryl_field'] = 1;
-        }
+    $old = is_array($flashOld) ? $flashOld : [];
 
-        // 🔐 Token para a API de catálogos (somente via form)
-        $form_token_catalog = $this->ensureCatalogFormToken();
-
-        $this->render('form', [
-            'title'              => 'Auditoria de Chamados',
-            'error'              => null,
-            'old'                => $old,
-            'form_token_catalog' => $form_token_catalog, // <- injetado no layout
-        ]);
+    // Prefill: solicitante = nome do usuário
+    if (!empty($_SESSION['user']['name']) && empty($old['requester_name'])) {
+        $old['requester_name'] = (string)$_SESSION['user']['name'];
     }
+    // Travar "Auditor Kyndryl" com sessão
+    if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
+        $old['kyndryl_auditor']     = $old['kyndryl_auditor']    ?? (string)$_SESSION['user']['name'];
+        $old['kyndryl_auditor_id']  = $old['kyndryl_auditor_id'] ?? (int)$_SESSION['user']['id'];
+        $old['_lock_kyndryl_field'] = 1;
+    }
+
+    // 🔐 Token para a API de catálogos (somente via form)
+    $form_token_catalog = $this->ensureCatalogFormToken();
+
+    $this->render('form', [
+        'title'              => 'Auditoria de Chamados',
+        'error'              => $flashError,
+        'old'                => $old,
+        'form_token_catalog' => $form_token_catalog,
+    ]);
+}
+
+/** GET /api/validate/ticket?number=INC123... -> JSON { ok: true, duplicate: bool } */
+public function validateTicket(): void
+{
+    header('Content-Type: application/json; charset=utf-8');
+
+    $number = isset($_GET['number']) ? trim((string)$_GET['number']) : '';
+    if ($number === '' || !preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $number)) {
+        echo json_encode(['ok' => true, 'duplicate' => false, 'invalid' => true], JSON_UNESCAPED_UNICODE);
+        return;
+    }
+
+    $dup = $this->repo->existsTicket($number);
+    echo json_encode(['ok' => true, 'duplicate' => $dup], JSON_UNESCAPED_UNICODE);
+}
 
     /** Recebe o POST e salva (sem alterações além do já combinado) */
     public function store(): void
-    {
-        $post   = $_POST ?? [];
-        $logger = $this->logger;
+{
+    $post   = $_POST ?? [];
+    $logger = $this->logger;
 
-        // força user_id/kyndryl_auditor pela sessão
-        if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
-            $post['user_id']            = (int)$_SESSION['user']['id'];
-            $post['kyndryl_auditor_id'] = (int)$_SESSION['user']['id'];
-            $post['kyndryl_auditor']    = (string)$_SESSION['user']['name'];
-        } else {
-            unset($post['user_id'], $post['kyndryl_auditor_id']);
-        }
-
-        // Normalização das justificativas (mantido)
-        $raw = (string)($post['noncompliance_reason_ids'] ?? '');
-        $ids = preg_split('/[;,|\s]+/', $raw, -1, PREG_SPLIT_NO_EMPTY) ?: [];
-        $ids = array_values(array_unique(array_filter(
-            array_map(static fn($x) => (int)preg_replace('/\D+/', '', $x), $ids),
-            static fn($n) => $n > 0
-        )));
-        $post['noncompliance_reason_ids'] = implode(';', $ids);
-
-        $isNc = (string)($post['is_compliant'] ?? '1') === '0';
-        if ($isNc && empty($ids)) {
-            http_response_code(422);
-            $this->render('form', [
-                'title' => 'Auditoria de Chamados',
-                'error' => 'Selecione ao menos uma justificativa.',
-                'old'   => $post,
-            ]);
-            return;
-        }
-
-        try {
-            $id = $this->service->handle($post);
-            $logger?->write('debug.log', date('c') . " OK id={$id}" . PHP_EOL);
-
-            $this->render('success', [
-                'title' => 'Salvo',
-                'id'    => $id,
-            ]);
-            return;
-
-        } catch (\InvalidArgumentException $e) {
-            http_response_code(422);
-            $this->render('form', [
-                'title' => 'Auditoria de Chamados',
-                'error' => $e->getMessage(),
-                'old'   => $post,
-            ]);
-            return;
-
-        } catch (\PDOException $e) {
-            $detail = $e->errorInfo[2] ?? $e->getMessage();
-            if (str_contains(strtolower($e->getMessage() ?? ''), 'unique constraint failed')
-                && (str_contains(strtolower($e->getMessage() ?? ''), 'ticket_number'))) {
-                $ticket = (string)($post['ticket_number'] ?? '');
-                $msg = $ticket !== '' ? "{$ticket} já está salvo." : "Este Número de Ticket já está salvo.";
-            } elseif (stripos($detail, 'FOREIGN KEY constraint failed') !== false) {
-                $msg = 'Falha de integridade: alguma justificativa/entrada não existe. (' . $detail . ')';
-            } elseif (stripos($detail, 'CHECK constraint failed') !== false) {
-                $msg = 'Regra de validação do banco violada. (' . $detail . ')';
-            } elseif (str_contains($detail, 'NOT NULL constraint failed')) {
-                $msg = 'Campo obrigatório ausente. (' . $detail . ')';
-            } else {
-                $msg = 'Não foi possível salvar: ' . $detail;
-            }
-            http_response_code(422);
-            $this->render('form', [
-                'title' => 'Auditoria de Chamados',
-                'error' => $msg,
-                'old'   => $post,
-            ]);
-            return;
-        }
+    // 🔐 Força user_id/kyndryl_auditor pela sessão
+    if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
+        $post['user_id']            = (int)$_SESSION['user']['id'];
+        $post['kyndryl_auditor_id'] = (int)$_SESSION['user']['id'];
+        $post['kyndryl_auditor']    = (string)$_SESSION['user']['name'];
+    } else {
+        unset($post['user_id'], $post['kyndryl_auditor_id']);
     }
+
+    // 🔎 VERIFICA DUPLICIDADE ANTES DE QUALQUER OUTRA COISA
+    $ticket = trim((string)($post['ticket_number'] ?? ''));
+    if ($ticket !== '' && $this->repo->existsTicket($ticket)) {
+        // Salva flash e redireciona PRG para "/"
+        $_SESSION['flash_error'] = $ticket . ' já está salvo.';
+        $_SESSION['flash_old']   = $post;
+
+        $base = $this->base();
+        header('Location: ' . $base . '/?dupe=1', true, 303);
+        exit;
+    }
+
+    // Normalização das justificativas
+    $raw = (string)($post['noncompliance_reason_ids'] ?? '');
+    $ids = preg_split('/[;,|\s]+/', $raw, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+    $ids = array_values(array_unique(array_filter(
+        array_map(static fn($x) => (int)preg_replace('/\D+/', '', $x), $ids),
+        static fn($n) => $n > 0
+    )));
+    $post['noncompliance_reason_ids'] = implode(';', $ids);
+
+    $isNc = (string)($post['is_compliant'] ?? '1') === '0';
+    if ($isNc && empty($ids)) {
+        $_SESSION['flash_error'] = 'Selecione ao menos uma justificativa.';
+        $_SESSION['flash_old']   = $post;
+
+        $base = $this->base();
+        header('Location: ' . $base . '/?invalid=1', true, 303);
+        exit;
+    }
+
+    try {
+        $id = $this->service->handle($post);
+        $logger?->write('debug.log', date('c') . " OK id={$id}" . PHP_EOL);
+
+        // PRG pós-sucesso também é melhor UX (evita repost)
+        $base = $this->base();
+        header('Location: ' . $base . '/?created=' . urlencode((string)$id), true, 303);
+        exit;
+
+    } catch (\InvalidArgumentException $e) {
+        $_SESSION['flash_error'] = $e->getMessage();
+        $_SESSION['flash_old']   = $post;
+
+        $base = $this->base();
+        header('Location: ' . $base . '/?invalid=1', true, 303);
+        exit;
+
+    } catch (\PDOException $e) {
+        $detail = $e->errorInfo[2] ?? $e->getMessage();
+        if ($this->isTicketNumberDuplicate($e)) {
+            $ticket = (string)($post['ticket_number'] ?? '');
+            $msg = $ticket !== '' ? "{$ticket} já está salvo." : "Este Número de Ticket já está salvo.";
+        } elseif (stripos($detail, 'FOREIGN KEY constraint failed') !== false) {
+            $msg = 'Falha de integridade: alguma justificativa/entrada não existe. (' . $detail . ')';
+        } elseif (stripos($detail, 'CHECK constraint failed') !== false) {
+            $msg = 'Regra de validação do banco violada. (' . $detail . ')';
+        } elseif (str_contains($detail, 'NOT NULL constraint failed')) {
+            $msg = 'Campo obrigatório ausente. (' . $detail . ')';
+        } else {
+            $msg = 'Não foi possível salvar: ' . $detail;
+        }
+
+        $_SESSION['flash_error'] = $msg;
+        $_SESSION['flash_old']   = $post;
+
+        $base = $this->base();
+        header('Location: ' . $base . '/?invalid=1', true, 303);
+        exit;
+    }
+}
 
     /** Export CSV (inalterado) */
     public function exportCsv(): void
