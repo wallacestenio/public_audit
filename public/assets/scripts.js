@@ -4,7 +4,7 @@
  * - Sanfona de "Opções de exportação"
  * - Export por mês (global window.exportByMonth)
  * - Modal de confirmação
- * - Banner success + toggle de "Justificativas" + normalizadores
+ * - Banner success + controle completo do bloco de "Justificativas"
  */
 
 /* ===== Utils base ===== */
@@ -83,18 +83,6 @@ window.exportByMonth = function exportByMonth(){
   }, 1000);
 })();
 
-/* ===== Toggle do bloco de justificativas ===== */
-(function(){
-  function getIsCompliant(){ const el=document.querySelector('input[name="is_compliant"]:checked'); return el ? el.value : '1'; }
-  function toggleJust(){
-    const show = getIsCompliant()==='0';
-    const block=document.getElementById('just_block');
-    if (block) block.style.display = show ? 'block' : 'none';
-  }
-  document.querySelectorAll('input[name="is_compliant"]').forEach(r => r.addEventListener('change', toggleJust));
-  toggleJust();
-})();
-
 /* ===== TAG GROUP: busca / chips (IDs) para reasons ===== */
 (function(){
   const input   = document.getElementById('nc_search');
@@ -102,7 +90,14 @@ window.exportByMonth = function exportByMonth(){
   const chips   = document.getElementById('nc_chips');
   const hidden  = document.getElementById('nc_ids');
 
-  if (!input || !presets || !chips || !hidden) return;
+  if (!input || !presets || !chips || !hidden) {
+    // API mínima para não quebrar chamadas externas
+    window.NC = {
+      getCount: () => 0,
+      clearAll: () => { try { hidden.value = ''; } catch(e) {} }
+    };
+    return;
+  }
 
   const selectedIds = new Set(
     (hidden.value || '').split(/[;,]/)
@@ -190,11 +185,9 @@ window.exportByMonth = function exportByMonth(){
 
   async function loadAll() {
     try {
-      // 1ª tentativa (sem q)
       let res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons'), {
         headers: getCatalogHeaders()
       });
-      // Fallback com q vazio (mantido o padrão, mas com headers e '&', não '&amp;')
       if (!res.ok) {
         res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons&q='), {
           headers: getCatalogHeaders()
@@ -223,6 +216,19 @@ window.exportByMonth = function exportByMonth(){
     }
   }
 
+  // API pública para outros módulos (limpar/contar selecionadas)
+  function clearAllSelected() {
+    selectedIds.clear();
+    updateHidden();
+    renderChips();
+    renderPresets();
+  }
+
+  window.NC = {
+    getCount: () => selectedIds.size,
+    clearAll: clearAllSelected
+  };
+
   input.addEventListener('input', () => applyFilter(input.value));
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
@@ -236,10 +242,18 @@ window.exportByMonth = function exportByMonth(){
   if (form) {
     form.addEventListener('submit', (e) => {
       const isNC = (document.querySelector('input[name="is_compliant"]:checked')?.value === '0');
-      if (isNC && selectedIds.size === 0) {
+      // Se "Não conforme" exige ao menos 1 justificativa
+      if (isNC && window.NC.getCount() === 0) {
         e.preventDefault();
         alert('Selecione ao menos uma justificativa.');
         input.focus();
+        return;
+      }
+      // Se "Conforme", garante que não enviará justificativas
+      const isC = !isNC;
+      if (isC) {
+        const hidden = document.getElementById('nc_ids');
+        if (hidden) hidden.value = '';
       }
     });
   }
@@ -411,7 +425,6 @@ function makeAutocomplete(opts){
 
   async function fetchList(q){
     try {
-      // ATENÇÃO: em JS use '&' (não '&amp;')
       const url = baseJoin(`/api/catalog?resource=${encodeURIComponent(resource)}&q=` + encodeURIComponent(q || ''));
 
       const res = await fetch(url, { headers: getCatalogHeaders() });
@@ -519,15 +532,68 @@ makeAutocomplete({
   nameFallbacks:['name','label','resolver_group']
 });
 
+/* ===== Chamado Conforme? — confirmação e limpeza (único controlador) ===== */
+(function(){
+  const radios = Array.from(document.querySelectorAll('input[name="is_compliant"]'));
+  const block  = document.getElementById('just_block');
+  if (!radios.length || !block) return;
+
+  const yes = document.querySelector('input[name="is_compliant"][value="1"]');
+  const no  = document.querySelector('input[name="is_compliant"][value="0"]');
+
+  function showBlock(show){ block.style.display = show ? 'block' : 'none'; }
+  function updateICAriaPressed() {
+    radios.forEach(r => {
+      const lab = r.id ? document.querySelector(`label[for="${r.id}"]`) : null;
+      if (lab) lab.setAttribute('aria-pressed', r.checked ? 'true' : 'false');
+    });
+  }
+  function setInitialState(){
+    const isNC = (document.querySelector('input[name="is_compliant"]:checked')?.value === '0');
+    showBlock(isNC);
+    updateICAriaPressed();
+  }
+
+  function onChange(e) {
+    const val = e.target.value;
+    if (val === '1') { // SIM (Conforme)
+      const hasNC = (window.NC && typeof window.NC.getCount === 'function' && window.NC.getCount() > 0);
+      if (hasNC) {
+        const ok = window.confirm('Você alterou "Chamado Conforme?" para "Sim". As justificativas selecionadas serão removidas. Deseja continuar?');
+        if (ok) {
+          try { window.NC.clearAll(); } catch(_) {}
+          const hidden = document.getElementById('nc_ids');
+          if (hidden) hidden.value = '';
+          if (yes) yes.checked = true;         // 👈 garante SIM selecionado
+          showBlock(false);
+        } else {
+          if (no)  no.checked  = true;         // 👈 reverte para NÃO
+          showBlock(true);
+        }
+      } else {
+        if (yes) yes.checked = true;
+        showBlock(false);
+      }
+    } else {
+      if (no) no.checked = true;
+      showBlock(true);
+    }
+    updateICAriaPressed();
+  }
+
+  radios.forEach(r => r.addEventListener('change', onChange));
+  setInitialState();
+})();
+
 /* ===== Modal: controle ===== */
 (function(){
   const form        = getForm();
-  const btnOpen     = document.getElementById('btn-open-confirm');
-  const overlay     = document.getElementById('confirm-overlay');
-  const modal       = document.getElementById('confirm-modal');
-  const ack         = document.getElementById('ack-check');
-  const btnCancel   = document.getElementById('btn-cancel-confirm');
-  const btnSubmit   = document.getElementById('btn-submit-confirm');
+  const btnOpen     = document.getElementById('btn-open-confirm');      // "Salvar"
+  const overlay     = document.getElementById('confirm-overlay');       // fundo
+  const modal       = document.getElementById('confirm-modal');         // caixa modal
+  const ack         = document.getElementById('ack-check');             // checkbox confirmação
+  const btnCancel   = document.getElementById('btn-cancel-confirm');    // "Cancelar"
+  const btnSubmit   = document.getElementById('btn-submit-confirm');    // "Confirmar e Enviar"
 
   if (!form || !btnOpen || !overlay || !modal || !ack || !btnCancel || !btnSubmit) return;
 
@@ -535,7 +601,7 @@ makeAutocomplete({
 
   function setVisible(show){
     overlay.style.display = show ? 'block' : 'none';
-    modal.style.display   = show ? 'flex' : 'none';
+    modal.style.display   = show ? 'flex'  : 'none';
     modal.setAttribute('aria-hidden', show ? 'false' : 'true');
   }
 
@@ -554,9 +620,9 @@ makeAutocomplete({
     if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
   }
 
-  btnOpen.addEventListener('click', openModal);
+  btnOpen.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
   btnCancel.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  overlay.addEventListener('click',  closeModal);
 
   ack.addEventListener('change', () => {
     const ok = ack.checked === true;
