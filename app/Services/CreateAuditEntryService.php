@@ -122,7 +122,7 @@ $data = [
         if ((int)$data['is_compliant'] === 0) {
             // Não conforme -> exige ao menos 1 justificativa
             if (empty($reasonIds)) {
-                throw new \InvalidArgumentException('Selecione ao menos uma justificativa.');
+                throw new \InvalidArgumentException('Selecione ao menos uma justificativa de Não Conformidade.');
             }
             $data['noncompliance_reason_ids'] = implode(';', $reasonIds);
 

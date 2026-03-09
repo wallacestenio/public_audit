@@ -245,7 +245,7 @@ window.exportByMonth = function exportByMonth(){
       // Se "Não conforme" exige ao menos 1 justificativa
       if (isNC && window.NC.getCount() === 0) {
         e.preventDefault();
-        alert('Selecione ao menos uma justificativa.');
+        alert('Selecione ao menos uma justificativa de Não Conformidade.');
         input.focus();
         return;
       }

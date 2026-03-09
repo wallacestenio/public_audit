@@ -133,7 +133,7 @@ public function validateTicket(): void
 
     $isNc = (string)($post['is_compliant'] ?? '1') === '0';
     if ($isNc && empty($ids)) {
-        $_SESSION['flash_error'] = 'Selecione ao menos uma justificativa.';
+        $_SESSION['flash_error'] = 'Selecione ao menos uma justificativa de Não Conformidade.';
         $_SESSION['flash_old']   = $post;
 
         $base = $this->base();
