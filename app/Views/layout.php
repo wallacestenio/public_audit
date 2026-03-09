@@ -29,15 +29,53 @@ $hideUserGreeting = ($reqPath === $base . '/audit-entries');
     .topbar small{color:#64748b}
     .topbar form{margin:0}
   </style>
+  <style>
+  /* Estado padrão dos segmented (ajuste se já tiver estilos globais) */
+  .segmented-btn {
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+
+  /* ----- SLA Atingido? (Não) = vermelho com texto branco quando selecionado ----- */
+  input[name="sla_met"][value="0"]:checked + label.segmented-btn {
+    background-color: #dc2626;   /* vermelho 600 */
+    border-color: #dc2626;
+    color: #fff;
+  }
+
+  /* ----- Chamado Conforme? (Não) = vermelho com texto branco quando selecionado ----- */
+  input[name="is_compliant"][value="0"]:checked + label.segmented-btn {
+    background-color: #dc2626;   /* vermelho 600 */
+    border-color: #dc2626;
+    color: #fff;
+  }
+
+  /* (opcional) manter o “Sim” com aparência normal quando selecionado */
+  input[name="sla_met"][value="1"]:checked + label.segmented-btn,
+  input[name="is_compliant"][value="1"]:checked + label.segmented-btn {
+    /* Exemplo de estilo de selecionado padrão (ajuste às suas cores) */
+    background-color: var(--btn, #2563eb);   /* azul padrão do seu tema, se existir */
+    border-color: var(--btn, #2563eb);
+    color: #fff;
+  }
+
+  /* Acessibilidade: foco visível nos radios desses dois grupos */
+  input[name="sla_met"]:focus + label.segmented-btn,
+  input[name="is_compliant"]:focus + label.segmented-btn {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+</style>
 </head>
 <body>
+  
 
   <div class="topbar">
     <div><a href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/"></a></div>
     <?php if (!$hideUserGreeting): ?>
       <div>
         <?php if ($user): ?>
-          <small>Olá, <strong><?= htmlspecialchars((string)$user['name'], ENT_QUOTES, 'UTF-8') ?></strong></small>
+          
+          <small>Olá, <strong><?= htmlspecialchars((string)$user['name'], ENT_QUOTES, 'UTF-8') ?>! Bem vindo a auditoria de chamados</strong></small>
           <?php if ((int)($user['user_type'] ?? 1) === 0): ?>
             &nbsp;|&nbsp;<a href="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/admin">Admin</a>
           <?php endif; ?>

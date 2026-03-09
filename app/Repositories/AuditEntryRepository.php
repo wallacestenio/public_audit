@@ -40,22 +40,25 @@ final class AuditEntryRepository
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        ':ticket_number'       => (string)$data['ticket_number'],
-        ':ticket_type'         => (string)$data['ticket_type'],
-        ':kyndryl_auditor'     => (string)$data['kyndryl_auditor'],
-        ':petrobras_inspector' => (string)$data['petrobras_inspector'],
-        ':audited_supplier'    => (string)$data['audited_supplier'],
-        ':location'            => (string)$data['location'],
-        ':audit_month'         => (string)$data['audit_month'],
-        ':priority'            => (int)$data['priority'],
-        ':requester_name'      => (string)$data['requester_name'],
-        ':category'            => (string)$data['category'],
-        ':resolver_group'      => (string)$data['resolver_group'],
-        ':sla_met'             => (int)$data['sla_met'],
-        ':is_compliant'        => (int)$data['is_compliant'],
-        ':nc_ids'              => $data['noncompliance_reason_ids'] ?? null,
-        ':nc_labels'           => $data['noncompliance_reasons'] ?? null,
-        ':user_id'             => isset($data['user_id']) ? (int)$data['user_id'] : null, // << AQUI
+    ':ticket_number'       => (string)$data['ticket_number'],
+    ':ticket_type'         => (string)$data['ticket_type'],
+    ':kyndryl_auditor'     => (string)$data['kyndryl_auditor'],
+    ':petrobras_inspector' => (string)$data['petrobras_inspector'],
+    ':audited_supplier'    => (string)$data['audited_supplier'],
+    ':location'            => (string)$data['location'],
+    ':audit_month'         => (string)$data['audit_month'],
+    ':priority'            => (int)$data['priority'],
+
+    // << agora vem sempre vazio (ou ajuste para null se a coluna permitir):
+    ':requester_name'      => (string)($data['requester_name'] ?? ''),
+
+    ':category'            => (string)$data['category'],
+    ':resolver_group'      => (string)$data['resolver_group'],
+    ':sla_met'             => (int)$data['sla_met'],
+    ':is_compliant'        => (int)$data['is_compliant'],
+    ':nc_ids'              => $data['noncompliance_reason_ids'] ?? null,
+    ':nc_labels'           => $data['noncompliance_reasons'] ?? null,
+    ':user_id'             => isset($data['user_id']) ? (int)$data['user_id'] : null,
     ]);
 
     $id = (int)$pdo->lastInsertId();
@@ -70,44 +73,36 @@ final class AuditEntryRepository
     /**
      * Exporta dados para CSV (ordem de colunas e filtro por mês).
      */
-    public function exportRows(array $filters = []): array
+   
+public function exportRows(array $filters = []): array
 {
-    // Colunas exportadas (mantidas)
-    $cols = [
-        'ticket_number',
-        'ticket_type',
-        'kyndryl_auditor',
-        'petrobras_inspector',
-        'audited_supplier',
-        'location',
-        'audit_month',
-        'priority',
-        'requester_name',
-        'category',
-        'resolver_group',
-        'sla_met',
-        'is_compliant',
-        'noncompliance_reasons',
-    ];
-
-    // Constroi SELECT
-    $sql = 'SELECT ' . implode(',', $cols) . ' FROM audit_entries';
+    $sql = 'SELECT
+              ticket_number,
+              ticket_type,
+              kyndryl_auditor,
+              petrobras_inspector,
+              audited_supplier,
+              location,
+              audit_month,
+              priority,
+              category,
+              resolver_group,
+              sla_met,
+              is_compliant,
+              noncompliance_reasons
+            FROM audit_entries';
 
     $where  = [];
     $params = [];
 
-    // 🔐 Filtro OBRIGATÓRIO por user_id (apenas registros do usuário logado)
     $userId = isset($filters['user_id']) ? (int)$filters['user_id'] : 0;
     if ($userId > 0) {
         $where[] = 'user_id = :user_id';
         $params[':user_id'] = $userId;
     } else {
-        // Se por algum motivo vier sem user_id, não retornamos nada
-        // (proteção extra; na prática, o controller sempre envia)
         return [];
     }
 
-    // 🔎 Filtro opcional por mês (mantido)
     if (!empty($filters['audit_month'])) {
         $where[] = 'audit_month = :audit_month';
         $params[':audit_month'] = (string)$filters['audit_month'];
@@ -124,15 +119,38 @@ final class AuditEntryRepository
 
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-    // Normaliza null->'' e mantém ordem das colunas
     $out = [];
     foreach ($rows as $r) {
-        $line = [];
-        foreach ($cols as $c) {
-            $line[$c] = (string)($r[$c] ?? '');
-        }
+        // Conversões solicitadas:
+        $sla    = ((string)($r['sla_met'] ?? '')) === '1' ? 'Sim' : 'Não';
+        $pri    = 'Prioridade ' . (string)(int)($r['priority'] ?? 0);
+        $isComp = ((string)($r['is_compliant'] ?? '')) === '1' ? 'Sim' : 'Não';
+
+        // ORDEM EXATA do CSV:
+        // Número Ticket, Tipo do Ticket, Auditor Kyndryl, Inspetor Petrobras,
+        // Fornecedor Auditado, Localidade, Mês da Auditoria, SLA Atingido?,
+        // Prioridade, Categoria, Mesa Solucionadora, Chamado Conforme?,
+        // Justificativas de não conformidade
+        $line = [
+            'ticket_number'         => (string)($r['ticket_number'] ?? ''),
+            'ticket_type'           => (string)($r['ticket_type'] ?? ''),
+            'kyndryl_auditor'       => (string)($r['kyndryl_auditor'] ?? ''),
+            'petrobras_inspector'   => (string)($r['petrobras_inspector'] ?? ''),
+            'audited_supplier'      => (string)($r['audited_supplier'] ?? ''),
+            'location'              => (string)($r['location'] ?? ''),
+            'audit_month'           => (string)($r['audit_month'] ?? ''),
+            'sla_met_label'         => $sla,
+            'priority_label'        => $pri,
+            'category'              => (string)($r['category'] ?? ''),
+            'resolver_group'        => (string)($r['resolver_group'] ?? ''),
+            'is_compliant_label'    => $isComp, // << AQUI vai Sim/Não
+            'noncompliance_reasons' => (string)($r['noncompliance_reasons'] ?? ''),
+        ];
         $out[] = $line;
     }
+
     return $out;
-    }
+}
+
+
 }

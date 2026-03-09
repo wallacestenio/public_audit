@@ -14,11 +14,42 @@ $created = $_GET['created'] ?? null;
 <div class="card">
 
   <?php if ($created !== null && $created !== ''): ?>
-    <div class="alert alert-success">
-      Chamado <!-- <strong># //htmlspecialchars((string)$created, ENT_QUOTES, 'UTF-8') ?></strong>--> Auditado.
-      <br>Se precisar pode iniciar um novo registro.
-      <!--<br> Você será redirecionado para o formulário em <span id="countdown">5</span> segundos… -->
-    </div>
+  <?php // alguma lógica PHP…
+    $mensagem = "Auditoria de Chamados atualizada com sucesso!";
+  ?>
+
+    <script>
+    // Função utilitária para exibir alerta
+    function showAlert(msg) {
+      alert(msg);
+    }
+    // Chama com o texto vindo do PHP, escapado para JS:
+    showAlert(<?php echo json_encode($mensagem, JSON_UNESCAPED_UNICODE); ?>);
+  </script>
+
+  <style>
+  /* Apenas os labels dos radios dos grupos SLA e Chamado Conforme */
+  #sla_met_1 + label,
+  #sla_met_2 + label,
+  #is_comp_1 + label,
+  #is_comp_2 + label {
+    min-width: 130px;     /* ajuste a gosto: 120–150px costuma ficar bom */
+    text-align: center;   /* centraliza o texto dentro do botão */
+    display: inline-block;
+  }
+
+  /* (opcional) padroniza altura/padding para ficarem exatamente iguais */
+  #sla_met_1 + label,
+  #sla_met_2 + label,
+  #is_comp_1 + label,
+  #is_comp_2 + label {
+    padding: 6px 10px;    /* ajuste fino de altura/largura visual */
+    line-height: 1.2;
+  }
+</style>
+
+      
+
   <?php endif; ?>
 
   <?php if (!empty($error)): ?>
@@ -27,7 +58,8 @@ $created = $_GET['created'] ?? null;
     </div>
   <?php endif; ?>
 
-  <h1 style="margin-top:0"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
+  
+
 
   <!-- FORM -->
   <form method="post"
@@ -179,12 +211,15 @@ $created = $_GET['created'] ?? null;
         </div>
       </div>
 
-      <!-- Solicitante -->
+      <!-- Solicitante 
       <div class="col">
         <label for="requester_name">Solicitante *</label>
         <input id="requester_name" name="requester_name" required
                value="" placeholder="Campos Solicitante no ServiceNow">
       </div>
+      -->
+
+      <!-- Categoria -->
 
       <!-- Categoria -->
       <div class="col" style="position:relative">
@@ -213,7 +248,7 @@ $created = $_GET['created'] ?? null;
       </div>
 
       <!-- SLA -->
-      <div class="col">
+      <div class="col" style="display:inline-block;min-width:240px;text-align:left">
         <div class="field">
           <label>SLA Atingido? *</label>
           <div class="segmented" role="radiogroup" aria-label="SLA Atingido">
@@ -230,8 +265,8 @@ $created = $_GET['created'] ?? null;
       </div>
 
       <!-- Chamado Conforme -->
-      <div class="col-full center">
-        <div class="field" style="display:inline-block;min-width:240px;text-align:left">
+      <div class="col" style="display:inline-block;min-width:240px;text-align:left">
+        <div class="field">
           <label style="display:block;margin:6px 0">Chamado Conforme? *</label>
           <div class="segmented" role="radiogroup" aria-label="Chamado Conforme">
             <?php

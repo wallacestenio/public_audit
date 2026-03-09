@@ -76,27 +76,28 @@ final class CreateAuditEntryService
         // user_id vindo do Controller (sessão)
         $userId = isset($post['user_id']) ? (int)$post['user_id'] : null;
 
-        $data = [
-            'ticket_number'       => trim((string)($post['ticket_number'] ?? '')),
-            'ticket_type'         => trim((string)($post['ticket_type'] ?? '')),
-            'kyndryl_auditor'     => trim((string)($post['kyndryl_auditor'] ?? '')),
-            'petrobras_inspector' => trim((string)($post['petrobras_inspector'] ?? '')),
-            'audited_supplier'    => trim((string)($post['audited_supplier'] ?? '')),
-            'location'            => trim((string)($post['location'] ?? '')),
-            'audit_month'         => $this->normalizeAuditMonth((string)($post['audit_month'] ?? '')),
-            'priority'            => (int)($post['priority'] ?? 0),
-            'requester_name'      => trim((string)($post['requester_name'] ?? '')),
-            'category'            => trim((string)($post['category'] ?? '')),
-            'resolver_group'      => trim((string)($post['resolver_group'] ?? '')),
-            'sla_met'             => (int)($post['sla_met'] ?? 1),
-            'is_compliant'        => (int)($post['is_compliant'] ?? 1),
+        
+$data = [
+    'ticket_number'       => trim((string)($post['ticket_number'] ?? '')),
+    'ticket_type'         => trim((string)($post['ticket_type'] ?? '')),
+    'kyndryl_auditor'     => trim((string)($post['kyndryl_auditor'] ?? '')),
+    'petrobras_inspector' => trim((string)($post['petrobras_inspector'] ?? '')),
+    'audited_supplier'    => trim((string)($post['audited_supplier'] ?? '')),
+    'location'            => trim((string)($post['location'] ?? '')),
+    'audit_month'         => $this->normalizeAuditMonth((string)($post['audit_month'] ?? '')),
+    'priority'            => (int)($post['priority'] ?? 0),
+    'requester_name'      => '', // << NÃO USAR MAIS (mantido vazio)
+    'category'            => trim((string)($post['category'] ?? '')),
+    'resolver_group'      => trim((string)($post['resolver_group'] ?? '')),
+    'sla_met'             => (int)($post['sla_met'] ?? 1),
+    'is_compliant'        => (int)($post['is_compliant'] ?? 1),
 
-            'noncompliance_reason_ids' => null,
-            'noncompliance_reasons'    => null,
+    'noncompliance_reason_ids' => null,
+    'noncompliance_reasons'    => null,
 
-            // Vinculação
-            'user_id'             => $userId,
-        ];
+    'user_id'             => $userId,
+];
+
 
         // Validações principais
         if ($data['ticket_number'] === '' || !preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $data['ticket_number'])) {
