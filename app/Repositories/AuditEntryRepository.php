@@ -131,6 +131,28 @@ public function exportRows(array $filters = []): array
         // Fornecedor Auditado, Localidade, Mês da Auditoria, SLA Atingido?,
         // Prioridade, Categoria, Mesa Solucionadora, Chamado Conforme?,
         // Justificativas de não conformidade
+
+        // Converter audit_month (YYYY-MM → Nome do mês PT-BR)
+$mesIso = (string)($r['audit_month'] ?? '');
+$mesNome = '';
+
+if (preg_match('/^\d{4}-(\d{2})$/', $mesIso, $m)) {
+    $mapMes = [
+        '01' => 'Janeiro',
+        '02' => 'Fevereiro',
+        '03' => 'Março',
+        '04' => 'Abril',
+        '05' => 'Maio',
+        '06' => 'Junho',
+        '07' => 'Julho',
+        '08' => 'Agosto',
+        '09' => 'Setembro',
+        '10' => 'Outubro',
+        '11' => 'Novembro',
+        '12' => 'Dezembro',
+    ];
+    $mesNome = $mapMes[$m[1]] ?? '';
+}
         $line = [
             'ticket_number'         => (string)($r['ticket_number'] ?? ''),
             'ticket_type'           => (string)($r['ticket_type'] ?? ''),
@@ -138,7 +160,7 @@ public function exportRows(array $filters = []): array
             'petrobras_inspector'   => (string)($r['petrobras_inspector'] ?? ''),
             'audited_supplier'      => (string)($r['audited_supplier'] ?? ''),
             'location'              => (string)($r['location'] ?? ''),
-            'audit_month'           => (string)($r['audit_month'] ?? ''),
+            'audit_month' => $mesNome,
             'sla_met_label'         => $sla,
             'priority_label'        => $pri,
             'category'              => (string)($r['category'] ?? ''),
