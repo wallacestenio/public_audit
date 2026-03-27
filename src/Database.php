@@ -9,22 +9,26 @@ final class Database
 {
     private PDO $pdo;
 
-    public function __construct(string $sqlitePath, string $schemaSqlPath)
+    public function __construct()
     {
-        $needInit = !is_file($sqlitePath);
-        $this->pdo = new PDO('sqlite:' . $sqlitePath, null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]);
+        $host = "sql10.freesqldatabase.com";
+        $dbname = "sql10821277";
+        $user = "sql10821277";
+        $pass = "XXQ7FtufPL"; // troque aqui
 
-        // Sempre ligar FK
-        $this->pdo->exec('PRAGMA foreign_keys = ON;');
-
-        if ($needInit && is_file($schemaSqlPath)) {
-            $sql = file_get_contents($schemaSqlPath) ?: '';
-            if ($sql !== '') $this->pdo->exec($sql);
-        }
+        $this->pdo = new PDO(
+            "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+            $user,
+            $pass,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]
+        );
     }
 
-    public function pdo(): PDO { return $this->pdo; }
+    public function pdo(): PDO
+    {
+        return $this->pdo;
+    }
 }

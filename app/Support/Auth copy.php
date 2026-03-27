@@ -24,39 +24,27 @@ final class Auth
         return $this->check() && (int)($_SESSION['user']['user_type'] ?? 1) === 0;
     }
 
-    /** LOGIN AGORA USA EMAIL */
     public function login(string $username, string $password): bool
     {
         $u = trim($username);
         if ($u === '' || $password === '') return false;
 
-        // ✅ ALTERADO: agora busca pelo campo email
-        $sql = "SELECT id, kyndryl_auditor, email, password_hash, user_type
+        $sql = "SELECT id, kyndryl_auditor, password_hash, user_type
                 FROM kyndryl_auditors
-                WHERE email = :u
+                WHERE kyndryl_auditor = :u
                 LIMIT 1";
-
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':u' => $u]);
-
         $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 
-        // Valida senha
-        if (!$row || ($row['password_hash'] ?? '') === '') {
-            return false;
-        }
+        if (!$row || ($row['password_hash'] ?? '') === '') return false;
+        if (!password_verify($password, (string)$row['password_hash'])) return false;
 
-        if (!password_verify($password, (string)$row['password_hash'])) {
-            return false;
-        }
-
-        // ✅ Mantém tudo igual ao original
         session_regenerate_id(true);
         $_SESSION['user'] = [
-            'id'        => (int)$row['id'],
-            'name'      => (string)$row['kyndryl_auditor'], // nome original
-            'email'     => (string)$row['email'],
-            'user_type' => (int)$row['user_type'],
+            'id'        => (int)$row['id'],                 // << id do kyndryl_auditors
+            'name'      => (string)$row['kyndryl_auditor'],
+            'user_type' => (int)$row['user_type'],          // 0 admin / 1 user
             'logged_at' => date('c'),
         ];
         return true;

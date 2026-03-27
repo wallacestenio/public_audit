@@ -166,4 +166,53 @@ $router->get('/api/validate/ticket', function () use ($mustAuthApi, $auth, $vali
     $auditCtrl->validateTicket();
 });
 
+
+$router->get('/api/check-ticket', function () use ($sendJson) {
+
+    $ticket = $_GET['number'] ?? '';
+    if (!preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $ticket)) {
+        $sendJson(400, ['exists' => false, 'error' => 'Formato inválido']);
+    }
+
+    $url =
+    "https://petrobras.service-now.com/now/nav/ui/search/"
+    ."0f8b85d0c7922010099a308dc7c2606a/params/search-term/$ticket/"
+    ."global-search-data-config-id/c861cea2c7022010099a308dc7c26041/"
+    ."back-button-label/incidente%20-$ticket/search-context/now%2Fnav%2Fui";
+
+    // iniciou curl
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    unset($ch); // evita deprecated em PHP 8.5+
+
+    if ($code == 200 || $code == 302) {
+        $sendJson(200, [
+            'exists' => true,
+            'ticket' => $ticket,
+            'url' => $url
+        ]);
+    }
+
+    if ($code == 404) {
+        $sendJson(200, [
+            'exists' => false,
+            'ticket' => $ticket
+        ]);
+    }
+
+    // casos 401/403
+    $sendJson(200, [
+        'exists' => true,
+        'warning' => 'ServiceNow exigiu login interno (401/403).',
+        'ticket' => $ticket,
+        'redirect' => $url
+    ]);
+});
+
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

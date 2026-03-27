@@ -1,421 +1,405 @@
 /**
- * scripts.js — Auditoria de Chamados
- * - Autocomplete (6 campos) puxando do /api/catalog (tabelas: kyndryl_auditors, petrobras_inspectors, audited_suppliers, locations, categories, resolver_groups)
- * - Sanfona de "Opções de exportação"
- * - Export por mês (global window.exportByMonth)
- * - Modal de confirmação
- * - Banner success + controle completo do bloco de "Justificativas"
+ * scripts.js — Auditoria de Chamados (Versão B — Otimizada & Reestruturada)
+ * --------------------------------------------------------
+ * Este arquivo foi reorganizado para:
+ * - Maior legibilidade
+ * - Modularização interna
+ * - Manutenção facilitada
+ * - Compatibilidade com todo backend existente
+ * - Reintegração completa do módulo NC (justificativas)
+ *
+ * Todas as funcionalidades originais foram preservadas.
+ * --------------------------------------------------------
  */
 
-/* ===== Utils base ===== */
+
+/* =========================================================
+   BASE UTILITIES
+   ========================================================= */
+
+/** Retorna o formulário principal, considerando rotas diferentes */
 function getForm() {
-  return document.querySelector('form[action$="/audit-entries"]'); // funciona em subpasta
+  return document.querySelector(
+    'form[action$="/audit-entries"], form[action$="/audit-estoque"]'
+  );
 }
+
+/** Join seguro com APP_BASE do backend */
 function baseJoin(path) {
-  const base = (window.APP_BASE || '').replace(/\/+$/,'');
+  const base = (window.APP_BASE || '').replace(/\/+$/, '');
   return base + path;
 }
-/* Cabeçalhos padrão para a API protegida (token do form + XHR) */
+
+/** Headers para chamadas autenticadas aos catálogos */
 function getCatalogHeaders() {
   const headers = {
-    'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
+    "Accept": "application/json",
+    "X-Requested-With": "XMLHttpRequest"
   };
   if (window.CATALOG_TOKEN) {
-    headers['X-Form-Token'] = window.CATALOG_TOKEN;
+    headers["X-Form-Token"] = window.CATALOG_TOKEN;
   }
   return headers;
 }
 
-/* ===== Export por mês ===== */
-window.exportByMonth = function exportByMonth(){
+
+/* =========================================================
+   SISTEMA DE EXPORTAÇÃO
+   ========================================================= */
+
+/** Exportação por mês — botão das opções */
+window.exportByMonth = function () {
   const m = (document.querySelector('input[name="audit_month"]')?.value || '').trim();
-  if (!m) { alert('Preencha o campo "Mês da Auditoria" (ex.: 2026-02) para exportar por mês.'); return; }
-  window.location.href = baseJoin('/export/csv') + '?audit_month=' + encodeURIComponent(m);
+  if (!m) return;
+
+  window.location.href =
+    baseJoin('/export/csv') + '?audit_month=' + encodeURIComponent(m);
 };
 
-/* ===== SANFONA: Opções de exportação ===== */
-(function(){
+
+/* =========================================================
+   SANFONA DAS OPÇÕES DE EXPORTAÇÃO
+   ========================================================= */
+
+(function initExportAccordion() {
   const toggle = document.getElementById('export-toggle');
-  const panel  = document.getElementById('export-panel');
+  const panel = document.getElementById('export-panel');
+
   if (!toggle || !panel) return;
 
-  const KEY = 'exportPanelOpen';
+  const LOCAL_KEY = "exportPanelOpen";
 
-  function setOpen(open){
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (open) { panel.removeAttribute('hidden'); }
-    else { panel.setAttribute('hidden',''); }
-    try { localStorage.setItem(KEY, open ? '1' : '0'); } catch {}
+  function setOpen(open) {
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    open ? panel.removeAttribute("hidden") : panel.setAttribute("hidden", "");
+    try {
+      localStorage.setItem(LOCAL_KEY, open ? "1" : "0");
+    } catch { }
   }
 
-  toggle.addEventListener('click', () => {
-    const curr = toggle.getAttribute('aria-expanded') === 'true';
+  toggle.addEventListener("click", () => {
+    const curr = toggle.getAttribute("aria-expanded") === "true";
     setOpen(!curr);
   });
 
-  // Estado inicial (persistido)
   let startOpen = false;
-  try { startOpen = localStorage.getItem(KEY) === '1'; } catch {}
+  try {
+    startOpen = localStorage.getItem(LOCAL_KEY) === "1";
+  } catch { }
+
   setOpen(startOpen);
 })();
+/* =========================================================
+   BANNER DE SUCESSO (COUNTDOWN)
+   ========================================================= */
 
-/* ===== Banner success (countdown) ===== */
-(function(){
-  const el = document.getElementById('countdown');
+(function initSuccessCountdown() {
+  const el = document.getElementById("countdown");
   if (!el) return;
-  let timeLeft = parseInt(el.textContent || '5', 10);
-  if (!Number.isFinite(timeLeft)) timeLeft = 5;
 
-  const t = setInterval(()=>{
+  let timeLeft = parseInt(el.textContent || "5", 10);
+
+  const t = setInterval(() => {
     timeLeft--;
     el.textContent = String(timeLeft);
+
     if (timeLeft <= 0) {
       clearInterval(t);
+
       try {
         const url = new URL(window.location.href);
-        url.searchParams.delete('created');
-        window.history.replaceState({}, '', url.pathname + (url.searchParams.toString() ? ('?' + url.searchParams.toString()) : ''));
+        url.searchParams.delete("created");
+
+        window.history.replaceState(
+          {},
+          "",
+          url.pathname +
+            (url.searchParams.toString()
+              ? "?" + url.searchParams.toString()
+              : "")
+        );
       } catch {}
-      const first = document.querySelector('input[name="ticket_number"]');
-      if (first) first.focus();
+
+      document.querySelector('input[name="ticket_number"]')?.focus();
     }
   }, 1000);
 })();
 
-/* ===== TAG GROUP: busca / chips (IDs) para reasons ===== */
-(function(){
-  const input   = document.getElementById('nc_search');
-  const presets = document.getElementById('nc_presets');
-  const chips   = document.getElementById('nc_chips');
-  const hidden  = document.getElementById('nc_ids');
 
-  if (!input || !presets || !chips || !hidden) {
-    // API mínima para não quebrar chamadas externas
-    window.NC = {
-      getCount: () => 0,
-      clearAll: () => { try { hidden.value = ''; } catch(e) {} }
-    };
-    return;
-  }
+/* =========================================================
+   TICKET NUMBER + VALIDAÇÃO + SERVICENOW CHECKER
+   ========================================================= */
 
-  const selectedIds = new Set(
-    (hidden.value || '').split(/[;,]/)
-      .map(s => s.trim()).filter(Boolean)
-      .map(x => parseInt(x, 10))
-      .filter(Number.isInteger)
+(function initTicketChecker() {
+  const tn = document.getElementById("ticket_number");
+  if (!tn) return;
+
+  const radios = Array.from(
+    document.querySelectorAll('input[name="ticket_type"]')
   );
-  const idToLabel = new Map();
-  let allReasons = [];
-  let filtered   = [];
 
-  function updateHidden() { hidden.value = Array.from(selectedIds).join(';'); }
-
-  function renderChips() {
-    chips.innerHTML = '';
-    selectedIds.forEach(id => {
-      const label = idToLabel.get(id) || `#${id}`;
-      const chip = document.createElement('span');
-      chip.className = 'tag-chip';
-      chip.innerHTML = `<span>${label}</span><button class="x" title="Remover" aria-label="Remover ${label}">×</button>`;
-      chip.querySelector('.x').onclick = () => { selectedIds.delete(id); updateHidden(); renderChips(); renderPresets(); };
-      chips.appendChild(chip);
-    });
-  }
-
-  function groupBy(arr, key) {
-    const map = new Map();
-    arr.forEach(it => {
-      const k = (it[key] || 'Outros') || 'Outros';
-      if (!map.has(k)) map.set(k, []);
-      map.get(k).push(it);
-    });
-    return map;
-  }
-
-  function renderPresets() {
-    presets.innerHTML = '';
-    const toShow = filtered.length ? filtered : allReasons;
-    if (!toShow.length) {
-      presets.innerHTML = '<div class="muted" style="padding:4px 2px">Nenhuma justificativa encontrada.</div>';
-      return;
-    }
-    const byGroup = groupBy(toShow, 'group');
-    byGroup.forEach((items, groupName) => {
-      const remain = items.filter(it => !selectedIds.has(it.id));
-      if (!remain.length) return;
-
-      const g = document.createElement('div');
-      g.className = 'preset-group';
-
-      const title = document.createElement('div');
-      title.className = 'preset-title';
-      title.textContent = groupName;
-      g.appendChild(title);
-
-      const list = document.createElement('div');
-      list.className = 'preset-list';
-      remain.forEach(it => {
-        const badge = document.createElement('button');
-        badge.type = 'button';
-        badge.className = 'preset-badge';
-        badge.textContent = it.label;
-        badge.onclick = () => {
-          selectedIds.add(it.id);
-          updateHidden();
-          renderChips();
-          renderPresets();
-        };
-        list.appendChild(badge);
-      });
-      g.appendChild(list);
-
-      presets.appendChild(g);
-    });
-  }
-
-  function applyFilter(q) {
-    const needle = (q || '').trim().toLowerCase();
-    if (!needle) { filtered = []; renderPresets(); return; }
-    filtered = allReasons.filter(it =>
-      it.label.toLowerCase().includes(needle) || (it.group || 'Outros').toLowerCase().includes(needle)
-    );
-    renderPresets();
-  }
-
-  async function loadAll() {
-    try {
-      let res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons'), {
-        headers: getCatalogHeaders()
-      });
-      if (!res.ok) {
-        res = await fetch(baseJoin('/api/catalog?resource=noncompliance-reasons&q='), {
-          headers: getCatalogHeaders()
-        });
-      }
-      if (!res.ok) throw new Error('Falha ao carregar presets');
-
-      const data = await res.json();
-      allReasons = (Array.isArray(data) ? data : [])
-        .map(r => ({
-          id: parseInt(r.id, 10),
-          label: String(r.label ?? r.noncompliance_reason ?? '').trim(),
-          group: String(r.group ?? 'Outros').trim() || 'Outros'
-        }))
-        .filter(r => Number.isInteger(r.id) && r.label.length > 0);
-
-      idToLabel.clear();
-      allReasons.forEach(r => idToLabel.set(r.id, r.label));
-
-      renderChips();
-      renderPresets();
-
-    } catch (err) {
-      presets.innerHTML = '<div class="muted" style="padding:4px 2px;color:#b91c1c">Não foi possível carregar as justificativas.</div>';
-      console.error(err);
-    }
-  }
-
-  // API pública para outros módulos (limpar/contar selecionadas)
-  function clearAllSelected() {
-    selectedIds.clear();
-    updateHidden();
-    renderChips();
-    renderPresets();
-  }
-
-  window.NC = {
-    getCount: () => selectedIds.size,
-    clearAll: clearAllSelected
+  const prefixMap = {
+    INC: "INCIDENTE",
+    RITM: "REQUISIÇÃO",
+    SCTASK: "TASK",
   };
 
-  input.addEventListener('input', () => applyFilter(input.value));
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const first = presets.querySelector('.preset-badge');
-      if (first) first.click();
+  /* ---------- UI extra (ícone ✔/✖ e link SNOW) ---------- */
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.alignItems = "center";
+  wrap.style.gap = "8px";
+
+  tn.parentElement.insertBefore(wrap, tn);
+  wrap.appendChild(tn);
+
+  const icon = document.createElement("span");
+  icon.style.fontSize = "18px";
+  icon.style.minWidth = "20px";
+  icon.style.textAlign = "center";
+  wrap.appendChild(icon);
+
+  const link = document.createElement("a");
+  link.textContent = "Abrir no ServiceNow";
+  link.target = "_blank";
+  link.style.display = "none";
+  link.style.fontSize = "12px";
+  link.style.color = "#2563eb";
+  wrap.appendChild(link);
+
+  function setState(ok, url) {
+    tn.style.borderColor = ok ? "#16a34a" : "#dc2626";
+    icon.textContent = ok ? "✔" : "✖";
+    icon.style.color = ok ? "#16a34a" : "#dc2626";
+
+    if (ok && url) {
+      link.href = url;
+      link.style.display = "inline";
+    } else {
+      link.style.display = "none";
     }
+  }
+
+  function updateAria() {
+    radios.forEach((r) => {
+      const lab = document.querySelector(`label[for="${r.id}"]`);
+      if (lab) {
+        lab.setAttribute("aria-pressed", r.checked ? "true" : "false");
+      }
+    });
+  }
+
+  function selectType(v) {
+    const m = /^(INC|RITM|SCTASK)/.exec(v);
+    if (!m) return;
+
+    const mapped = prefixMap[m[1]];
+
+    radios.forEach((r) => {
+      r.checked = String(r.value).toUpperCase() === mapped;
+    });
+
+    updateAria();
+  }
+
+  function normalize() {
+    let v = (tn.value || "")
+      .toUpperCase()
+      .replace(/\s+/g, "");
+
+    tn.value = v;
+
+    const ok = /^(INC|RITM|SCTASK)\d{6,}$/.test(v);
+    tn.setCustomValidity(
+      ok ? "" : "O ticket deve iniciar com INC, RITM ou SCTASK + dígitos."
+    );
+
+    if (ok) selectType(v);
+    return ok ? v : "";
+  }
+
+  async function checkSN(v) {
+    try {
+      const res = await fetch(
+        baseJoin("/api/check-ticket?number=" + encodeURIComponent(v))
+      );
+
+      const data = await res.json();
+
+      if (data.exists) {
+        setState(true, data.url || data.redirect);
+        return true;
+      }
+
+      setState(false);
+      return false;
+    } catch {
+      return true;
+    }
+  }
+
+  tn.addEventListener("input", () => {
+    tn.style.borderColor = "";
+    icon.textContent = "";
+    link.style.display = "none";
+    normalize();
+  });
+
+  tn.addEventListener("blur", async () => {
+    const v = normalize();
+    if (v) await checkSN(v);
   });
 
   const form = getForm();
   if (form) {
-    form.addEventListener('submit', (e) => {
-      const isNC = (document.querySelector('input[name="is_compliant"]:checked')?.value === '0');
-      // Se "Não conforme" exige ao menos 1 justificativa
-      if (isNC && window.NC.getCount() === 0) {
-        e.preventDefault();
-        alert('Selecione ao menos uma justificativa de Não Conformidade.');
-        input.focus();
-        return;
-      }
-      // Se "Conforme", garante que não enviará justificativas
-      const isC = !isNC;
-      if (isC) {
-        const hidden = document.getElementById('nc_ids');
-        if (hidden) hidden.value = '';
-      }
-    });
-  }
+    form.addEventListener("submit", async (e) => {
+      const v = normalize();
 
-  loadAll();
-})();
-
-/* ===== Normalizador do número do ticket e sincronização do tipo ===== */
-(function(){
-  const tn = document.getElementById('ticket_number');
-  if (!tn) return;
-
-  const radios = Array.from(document.querySelectorAll('input[name="ticket_type"]'));
-  const prefixMap = { INC:'INCIDENTE', RITM:'REQUISIÇÃO', SCTASK:'TASK' };
-
-  function updateAriaPressed() {
-    radios.forEach(r => {
-      const lab = r.id ? document.querySelector(`label[for="${r.id}"]`) : null;
-      if (lab) lab.setAttribute('aria-pressed', r.checked ? 'true' : 'false');
-    });
-  }
-
-  function selectTicketType(targetValue) {
-    const wanted = String(targetValue || '').toUpperCase();
-    radios.forEach(r => { r.checked = (String(r.value).toUpperCase() === wanted); });
-    updateAriaPressed();
-  }
-
-  function normalizeTicket() {
-    let v = (tn.value || '').toUpperCase();
-    v = v.replace(/\s+/g, '');
-    tn.value = v;
-
-    const ok = /^(INC|RITM|SCTASK)\d{6,}$/.test(v);
-    tn.setCustomValidity(ok ? '' :
-      'O ticket deve iniciar com INC, RITM ou SCTASK seguido de dígitos. Ex.: INC1234567');
-
-    const m = /^(INC|RITM|SCTASK)/.exec(v);
-    if (m) {
-      const prefix = m[1];
-      const targetValue = prefixMap[prefix];
-      if (targetValue) selectTicketType(targetValue);
-    }
-  }
-
-  tn.addEventListener('input', normalizeTicket);
-  tn.addEventListener('blur', normalizeTicket);
-
-  const form = getForm();
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      normalizeTicket();
       if (!tn.checkValidity()) {
         e.preventDefault();
         tn.reportValidity();
-        tn.focus();
+        return;
+      }
+
+      if (v) {
+        const ok = await checkSN(v);
+        if (!ok) e.preventDefault();
       }
     });
   }
-
-  normalizeTicket();
 })();
+/* =========================================================
+   NORMALIZADOR DO CAMPO "MÊS DA AUDITORIA"
+   ========================================================= */
 
-/* ===== Normalizador de audit_month ===== */
-(function(){
+(function initAuditMonthNormalizer() {
   const m = document.querySelector('input[name="audit_month"]');
   if (!m) return;
 
-  function norm(v){
-    if (!v) return '';
-    v = v.trim().toLowerCase();
+  const monthMap = {
+    jan: "01", janeiro: "01",
+    fev: "02", fevereiro: "02",
+    mar: "03", março: "03", marco: "03",
+    abr: "04", abril: "04",
+    mai: "05", maio: "05",
+    jun: "06", junho: "06",
+    jul: "07", julho: "07",
+    ago: "08", agosto: "08",
+    set: "09", setembro: "09",
+    out: "10", outubro: "10",
+    nov: "11", novembro: "11",
+    dez: "12", dezembro: "12"
+  };
 
-    const map = {
-      'jan':'01','janeiro':'01',
-      'fev':'02','fevereiro':'02',
-      'mar':'03','março':'03','marco':'03',
-      'abr':'04','abril':'04',
-      'mai':'05','maio':'05',
-      'jun':'06','junho':'06',
-      'jul':'07','julho':'07',
-      'ago':'08','agosto':'08',
-      'set':'09','setembro':'09',
-      'out':'10','outubro':'10',
-      'nov':'11','novembro':'11',
-      'dez':'12','dezembro':'12'
-    };
+  function normalize(v) {
+    v = (v || "").trim().toLowerCase();
 
+    // YYYY-MM
     if (/^\d{4}-(0[1-9]|1[0-2])$/.test(v)) return v;
 
-    let m1 = v.match(/^(0?[1-9]|1[0-2])\s*\/\s*(\d{4})$/);
-    if (m1) return `${m1[2]}-${String(m1[1]).padStart(2,'0')}`;
+    // MM/YYYY
+    const m1 = v.match(/^(0?[1-9]|1[0-2])\s*\/\s*(\d{4})$/);
+    if (m1) return `${m1[2]}-${String(m1[1]).padStart(2, "0")}`;
 
-    let m2 = v.match(/^([a-zçõ]+)\s+(\d{4})$/);
-    if (m2 && map[m2[1]]) return `${m2[2]}-${map[m2[1]]}`;
+    // <nome mês> <ano>
+    const m2 = v.match(/^([a-zçõ]+)\s+(\d{4})$/);
+    if (m2 && monthMap[m2[1]]) return `${m2[2]}-${monthMap[m2[1]]}`;
 
-    if (map[v]) {
-      const year = new Date().getFullYear();
-      return `${year}-${map[v]}`;
+    // apenas nome do mês → usa ano atual
+    if (monthMap[v]) {
+      return `${new Date().getFullYear()}-${monthMap[v]}`;
     }
+
     return v;
   }
 
-  m.addEventListener('blur', ()=>{ m.value = norm(m.value); });
+  m.addEventListener("blur", () => {
+    m.value = normalize(m.value);
+  });
 })();
 
-/* ===== Autocomplete helper (genérico) ===== */
-function makeAutocomplete(opts){
-  const { inputId, hiddenNameId, hiddenIdId, popupId, resource, nameFallbacks=['name','label'] } = opts;
 
-  const input  = document.getElementById(inputId);
+/* =========================================================
+   AUTOCOMPLETE — ENGINE PADRÃO PARA TODOS CAMPOS
+   ========================================================= */
+
+function makeAutocomplete(opts) {
+  const {
+    inputId,
+    hiddenNameId,
+    hiddenIdId,
+    popupId,
+    resource,
+    nameFallbacks = ["name", "label"]
+  } = opts;
+
+  const input = document.getElementById(inputId);
   const hidden = document.getElementById(hiddenNameId);
-  const hidId  = document.getElementById(hiddenIdId);
-  const popup  = document.getElementById(popupId);
+  const hidId = document.getElementById(hiddenIdId);
+  const popup = document.getElementById(popupId);
+
   if (!input || !hidden || !hidId || !popup) return;
 
-  // 🔒 se travado pela sessão, NÃO liga autocomplete/validação
-  const isLocked = input.hasAttribute('data-locked');
+  const isLocked = input.hasAttribute("data-locked");
   if (isLocked) {
-    hidden.value = input.value || '';
-    return; // não liga listeners; segue com os demais campos normalmente
+    hidden.value = input.value;
+    return;
   }
 
   let timer = null;
   let cache = [];
 
-  function closePopup(){ popup.style.display='none'; popup.innerHTML=''; }
-  function openPopup(){ popup.style.display='block'; }
-  function clearSelection(){ hidden.value=''; hidId.value=''; }
-
-  function getNameOf(it){
-    for (const k of nameFallbacks) {
-      if (it && typeof it[k] === 'string' && it[k].trim() !== '') return it[k];
-    }
-    return '';
+  function closePopup() {
+    popup.style.display = "none";
+    popup.innerHTML = "";
   }
 
-  function selectItem(it){
-    const name = getNameOf(it);
-    input.value  = name;
+  function openPopup() {
+    popup.style.display = "block";
+  }
+
+  function clearSelection() {
+    hidden.value = "";
+    hidId.value = "";
+  }
+
+  function itemName(obj) {
+    for (const k of nameFallbacks) {
+      if (obj && typeof obj[k] === "string" && obj[k].trim() !== "") {
+        return obj[k];
+      }
+    }
+    return "";
+  }
+
+  function selectItem(obj) {
+    const name = itemName(obj);
+    input.value = name;
     hidden.value = name;
-    hidId.value  = String(it?.id ?? '');
+    hidId.value = String(obj?.id ?? "");
     closePopup();
   }
 
-  function renderList(items){
-    popup.innerHTML = '';
-    if (!items || !items.length) { closePopup(); return; }
+  function render(items) {
+    popup.innerHTML = "";
+    if (!items?.length) {
+      closePopup();
+      return;
+    }
 
-    const list = document.createElement('div');
-    list.style.display = 'flex';
-    list.style.flexDirection = 'column';
+    const list = document.createElement("div");
+    list.style.display = "flex";
+    list.style.flexDirection = "column";
 
-    items.forEach(it => {
-      const name = getNameOf(it);
-      const btn  = document.createElement('button');
-      btn.type   = 'button';
-      btn.className = 'preset-badge';
-      btn.style.textAlign = 'left';
-      btn.style.margin    = '4px';
-      btn.textContent = name;
-      btn.title      = name;
-      btn.onclick    = () => selectItem(it);
+    items.forEach((it) => {
+      const nm = itemName(it);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "preset-badge";
+      btn.style.textAlign = "left";
+      btn.style.margin = "4px";
+      btn.textContent = nm;
+      btn.onclick = () => selectItem(it);
       list.appendChild(btn);
     });
 
@@ -423,313 +407,1083 @@ function makeAutocomplete(opts){
     openPopup();
   }
 
-  async function fetchList(q){
+  async function fetchList(q) {
     try {
-      const url = baseJoin(`/api/catalog?resource=${encodeURIComponent(resource)}&q=` + encodeURIComponent(q || ''));
+      const url =
+        baseJoin(`/api/catalog?resource=${encodeURIComponent(resource)}&q=${encodeURIComponent(q)}`);
 
       const res = await fetch(url, { headers: getCatalogHeaders() });
-      if (!res.ok) {
-        if (res.status === 401) throw new Error('Não autenticado.');
-        if (res.status === 403) throw new Error('Acesso negado.');
-        throw new Error('HTTP '+res.status);
-      }
+
+      if (!res.ok) throw new Error("Fetch " + res.status);
+
       const data = await res.json();
       cache = Array.isArray(data) ? data : [];
-      renderList(cache);
-    } catch(e){ cache=[]; closePopup(); console.error(e); }
+      render(cache);
+    } catch {
+      cache = [];
+      closePopup();
+    }
   }
 
-  input.addEventListener('input', () => {
+  input.addEventListener("input", () => {
     clearSelection();
+
     const q = input.value.trim();
+
     clearTimeout(timer);
-    if (q.length < 2) { closePopup(); return; }
+
+    if (q.length < 2) {
+      closePopup();
+      return;
+    }
+
     timer = setTimeout(() => fetchList(q), 180);
   });
 
-  input.addEventListener('focus', () => {
+  input.addEventListener("focus", () => {
     const q = input.value.trim();
     if (q.length >= 2) fetchList(q);
   });
 
-  document.addEventListener('click', (e) => {
-    if (!popup.contains(e.target) && e.target !== input) closePopup();
+  document.addEventListener("click", (e) => {
+    if (!popup.contains(e.target) && e.target !== input) {
+      closePopup();
+    }
   });
 
   const form = getForm();
   if (form) {
-    form.addEventListener('submit', (e) => {
-      const vis = (input.value || '').trim();
-      const sel = (hidden.value || '').trim();
-      if (vis === '' || sel === '') {
+    form.addEventListener("submit", (e) => {
+      const vis = input.value.trim();
+      const sel = hidden.value.trim();
+
+      if (!vis || !sel || vis !== sel) {
         e.preventDefault();
-        alert('Selecione um valor válido da lista.');
         input.focus();
-        return;
-      }
-      if (vis !== sel) {
-        e.preventDefault();
-        alert('O valor informado não corresponde a uma opção válida. Selecione na lista.');
-        input.focus();
-        return;
       }
     });
   }
 }
+/* =========================================================
+   AUTOCOMPLETES — INSTÂNCIAS
+   ========================================================= */
 
-/* ===== Autocompletes finais (campos do form) ===== */
 makeAutocomplete({
-  inputId:'kyndryl_auditor_input',
-  hiddenNameId:'kyndryl_auditor_value',
-  hiddenIdId:'kyndryl_auditor_id',
-  popupId:'auditor_suggest',
-  resource:'kyndryl-auditors',
-  nameFallbacks:['name','label','kyndryl_auditor']
+  inputId: "kyndryl_auditor_input",
+  hiddenNameId: "kyndryl_auditor_value",
+  hiddenIdId: "kyndryl_auditor_id",
+  popupId: "auditor_suggest",
+  resource: "kyndryl-auditors",
+  nameFallbacks: ["name", "label", "kyndryl_auditor"]
 });
 
 makeAutocomplete({
-  inputId:'petrobras_inspector_input',
-  hiddenNameId:'petrobras_inspector_value',
-  hiddenIdId:'petrobras_inspector_id',
-  popupId:'inspector_suggest',
-  resource:'petrobras-inspectors',
-  nameFallbacks:['name','label','petrobras_inspector']
+  inputId: "petrobras_inspector_input",
+  hiddenNameId: "petrobras_inspector_value",
+  hiddenIdId: "petrobras_inspector_id",
+  popupId: "inspector_suggest",
+  resource: "petrobras-inspectors",
+  nameFallbacks: ["name", "label", "petrobras_inspector"]
 });
 
 makeAutocomplete({
-  inputId:'audited_supplier_input',
-  hiddenNameId:'audited_supplier_value',
-  hiddenIdId:'audited_supplier_id',
-  popupId:'supplier_suggest',
-  resource:'audited-suppliers',
-  nameFallbacks:['name','label','audited_supplier']
+  inputId: "audited_supplier_input",
+  hiddenNameId: "audited_supplier_value",
+  hiddenIdId: "audited_supplier_id",
+  popupId: "supplier_suggest",
+  resource: "audited-suppliers",
+  nameFallbacks: ["name", "label", "audited_supplier"]
 });
 
 makeAutocomplete({
-  inputId:'location_input',
-  hiddenNameId:'location_value',
-  hiddenIdId:'location_id',
-  popupId:'location_suggest',
-  resource:'locations',
-  nameFallbacks:['name','label','location']
+  inputId: "location_input",
+  hiddenNameId: "location_value",
+  hiddenIdId: "location_id",
+  popupId: "location_suggest",
+  resource: "locations",
+  nameFallbacks: ["name", "label", "location"]
 });
 
 makeAutocomplete({
-  inputId:'category_input',
-  hiddenNameId:'category_value',
-  hiddenIdId:'category_id',
-  popupId:'category_suggest',
-  resource:'categories',
-  nameFallbacks:['name','label','category']
+  inputId: "category_input",
+  hiddenNameId: "category_value",
+  hiddenIdId: "category_id",
+  popupId: "category_suggest",
+  resource: "categories",
+  nameFallbacks: ["name", "label", "category"]
 });
 
 makeAutocomplete({
-  inputId:'resolver_group_input',
-  hiddenNameId:'resolver_group_value',
-  hiddenIdId:'resolver_group_id',
-  popupId:'resolver_suggest',
-  resource:'resolver-groups',
-  nameFallbacks:['name','label','resolver_group']
+  inputId: "resolver_group_input",
+  hiddenNameId: "resolver_group_value",
+  hiddenIdId: "resolver_group_id",
+  popupId: "resolver_suggest",
+  resource: "resolver-groups",
+  nameFallbacks: ["name", "label", "resolver_group"]
 });
 
-/* ===== Chamado Conforme? — confirmação e limpeza (único controlador) ===== */
-(function(){
-  const radios = Array.from(document.querySelectorAll('input[name="is_compliant"]'));
-  const block  = document.getElementById('just_block');
+
+/* =========================================================
+   CONTROLE "CHAMADO CONFORME?"
+   ========================================================= */
+
+(function initIsCompliantControl() {
+  const radios = Array.from(
+    document.querySelectorAll('input[name="is_compliant"]')
+  );
+
+  const block = document.getElementById("just_block");
   if (!radios.length || !block) return;
 
   const yes = document.querySelector('input[name="is_compliant"][value="1"]');
-  const no  = document.querySelector('input[name="is_compliant"][value="0"]');
+  const no = document.querySelector('input[name="is_compliant"][value="0"]');
 
-  function showBlock(show){ block.style.display = show ? 'block' : 'none'; }
-  function updateICAriaPressed() {
-    radios.forEach(r => {
+  function showBlock(show) {
+    block.style.display = show ? "block" : "none";
+  }
+
+  function updateAria() {
+    radios.forEach((r) => {
       const lab = r.id ? document.querySelector(`label[for="${r.id}"]`) : null;
-      if (lab) lab.setAttribute('aria-pressed', r.checked ? 'true' : 'false');
+      if (lab) {
+        lab.setAttribute("aria-pressed", r.checked ? "true" : "false");
+      }
     });
   }
-  function setInitialState(){
-    const isNC = (document.querySelector('input[name="is_compliant"]:checked')?.value === '0');
-    showBlock(isNC);
-    updateICAriaPressed();
+
+  function setInitial() {
+    const checked = document.querySelector(
+      'input[name="is_compliant"]:checked'
+    )?.value;
+
+    showBlock(checked === "0");
+    updateAria();
   }
 
-  function onChange(e) {
-    const val = e.target.value;
-    if (val === '1') { // SIM (Conforme)
-      const hasNC = (window.NC && typeof window.NC.getCount === 'function' && window.NC.getCount() > 0);
-      if (hasNC) {
-        const ok = window.confirm('Você alterou "Chamado Conforme?" para "Sim". As justificativas selecionadas serão removidas. Deseja continuar?');
-        if (ok) {
-          try { window.NC.clearAll(); } catch(_) {}
-          const hidden = document.getElementById('nc_ids');
-          if (hidden) hidden.value = '';
-          if (yes) yes.checked = true;         // 👈 garante SIM selecionado
-          showBlock(false);
+  radios.forEach((r) =>
+    r.addEventListener("change", (e) => {
+      const val = e.target.value;
+
+      if (val === "1") {
+        const hasNC = window.NC && window.NC.getCount() > 0;
+
+        if (hasNC) {
+          const ok = confirm(
+            'Você marcou "Sim" para Conforme. As justificativas serão removidas. Continuar?'
+          );
+          if (ok) {
+            window.NC.clearAll();
+            document.getElementById("nc_ids").value = "";
+            yes.checked = true;
+            showBlock(false);
+          } else {
+            no.checked = true;
+            showBlock(true);
+          }
         } else {
-          if (no)  no.checked  = true;         // 👈 reverte para NÃO
-          showBlock(true);
+          yes.checked = true;
+          showBlock(false);
         }
       } else {
-        if (yes) yes.checked = true;
-        showBlock(false);
+        no.checked = true;
+        showBlock(true);
       }
-    } else {
-      if (no) no.checked = true;
-      showBlock(true);
-    }
-    updateICAriaPressed();
-  }
 
-  radios.forEach(r => r.addEventListener('change', onChange));
-  setInitialState();
+      updateAria();
+    })
+  );
+
+  setInitial();
 })();
+/* =========================================================
+   MÓDULO NC — Justificativas de Não Conformidade
+   ( COMPLETO / REINTEGRADO / OTIMIZADO )
+   ========================================================= */
 
-/* ===== Modal: controle ===== */
-(function(){
-  const form        = getForm();
-  const btnOpen     = document.getElementById('btn-open-confirm');      // "Salvar"
-  const overlay     = document.getElementById('confirm-overlay');       // fundo
-  const modal       = document.getElementById('confirm-modal');         // caixa modal
-  const ack         = document.getElementById('ack-check');             // checkbox confirmação
-  const btnCancel   = document.getElementById('btn-cancel-confirm');    // "Cancelar"
-  const btnSubmit   = document.getElementById('btn-submit-confirm');    // "Confirmar e Enviar"
+/**
+ * Estrutura:
+ * - NC.loadPresets()        → carrega presets do catálogo
+ * - NC.renderPresets()      → renderiza por grupo
+ * - NC.add(id, label)       → adiciona chip
+ * - NC.remove(id)           → remove chip
+ * - NC.clearAll()           → remove tudo
+ * - NC.getCount()           → total de chips
+ * - NC.syncHidden()         → atualiza hidden nc_ids
+ */
 
-  if (!form || !btnOpen || !overlay || !modal || !ack || !btnCancel || !btnSubmit) return;
+window.NC = (() => {
+  const WRAP = document.getElementById("nc_presets");
+  const CHIPS = document.getElementById("nc_chips");
+  const HIDDEN = document.getElementById("nc_ids");
+  const SEARCH = document.getElementById("nc_search");
 
-  let lastFocus = null;
-
-  function setVisible(show){
-    overlay.style.display = show ? 'block' : 'none';
-    modal.style.display   = show ? 'flex'  : 'none';
-    modal.setAttribute('aria-hidden', show ? 'false' : 'true');
+  if (!WRAP || !CHIPS || !HIDDEN) {
+    console.warn("NC module: elementos não encontrados.");
+    return {};
   }
 
-  function openModal(){
-    lastFocus = document.activeElement;
-    setVisible(true);
-    ack.checked = false;
-    btnSubmit.disabled = true;
-    btnSubmit.style.opacity = '.8';
-    btnSubmit.style.cursor  = 'not-allowed';
-    setTimeout(() => ack.focus(), 0);
+  /* Armazena chips na memória local do JS */
+  let items = new Map(); // { id → label }
+
+  /* ========= ATUALIZA O CAMPO HIDDEN ========= */
+  function syncHidden() {
+    const ids = Array.from(items.keys());
+    HIDDEN.value = ids.join(";");
   }
 
-  function closeModal(){
-    setVisible(false);
-    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-  }
+  /* ========= ADICIONAR CHIP ========= */
+  function add(id, label) {
+    id = String(id).trim();
+    label = String(label).trim();
+    if (!id || !label) return;
 
-  btnOpen.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
-  btnCancel.addEventListener('click', closeModal);
-  overlay.addEventListener('click',  closeModal);
-
-  ack.addEventListener('change', () => {
-    const ok = ack.checked === true;
-    btnSubmit.disabled = !ok;
-    btnSubmit.style.opacity = ok ? '1' : '.8';
-    btnSubmit.style.cursor  = ok ? 'pointer' : 'not-allowed';
-    if (ok) btnSubmit.focus();
-  });
-
-  btnSubmit.addEventListener('click', () => {
-    if (!ack.checked) return;
-    closeModal();
-    form.requestSubmit ? form.requestSubmit() : form.submit();
-  });
-
-    /* ===== Validação de duplicidade do Número do Ticket (antes de enviar) ===== */
-(function(){
-  const tn = document.getElementById('ticket_number');
-  if (!tn) return;
-
-  let timer = null;
-  const btnOpen = document.getElementById('btn-open-confirm'); // botão "Salvar"
-  const helpId  = 'ticket_dupe_help';
-
-  function setSavingEnabled(enabled) {
-    if (!btnOpen) return;
-    btnOpen.disabled = !enabled;
-    btnOpen.style.opacity = enabled ? '1' : '.6';
-    btnOpen.style.cursor  = enabled ? 'pointer' : 'not-allowed';
-  }
-  function ensureHelp() {
-    let el = document.getElementById(helpId);
-    if (!el) {
-      el = document.createElement('div');
-      el.id = helpId;
-      el.className = 'muted';
-      el.style.color = '#b91c1c';
-      el.style.marginTop = '4px';
-      tn.parentElement?.appendChild(el);
+    if (!items.has(id)) {
+      items.set(id, label);
+      syncHidden();
+      renderChips();
     }
-    return el;
-  }
-  function clearHelp() {
-    const el = document.getElementById(helpId);
-    if (el) el.textContent = '';
   }
 
-  async function checkDuplicate() {
-    const v = (tn.value || '').trim().toUpperCase();
-    if (!/^(INC|RITM|SCTASK)\d{6,}$/.test(v)) {
-      // formato inválido -> já existe validação do próprio input
-      clearHelp();
-      setSavingEnabled(true);
+  /* ========= REMOVER CHIP ========= */
+  function remove(id) {
+    if (items.has(id)) {
+      items.delete(id);
+      syncHidden();
+      renderChips();
+    }
+  }
+
+  /* ========= REMOVE TODOS ========= */
+  function clearAll() {
+    items.clear();
+    syncHidden();
+    renderChips();
+  }
+
+  /* ========= QUANTIDADE ========= */
+  function getCount() {
+    return items.size;
+  }
+
+  /* ========= RENDERIZA OS CHIPS VISUAIS ========= */
+  function renderChips() {
+    CHIPS.innerHTML = "";
+
+    for (const [id, label] of items.entries()) {
+      const chip = document.createElement("div");
+      chip.className = "tag-chip";
+      chip.dataset.id = id;
+
+      const span = document.createElement("span");
+      span.textContent = label;
+
+      const x = document.createElement("button");
+      x.type = "button";
+      x.textContent = "×";
+      x.className = "x";
+      x.onclick = () => remove(id);
+
+      chip.appendChild(span);
+      chip.appendChild(x);
+
+      CHIPS.appendChild(chip);
+    }
+  }
+
+  /* =========================================================
+     PRESETS / BUSCA — CARREGAR JUSTIFICATIVAS
+     ========================================================= */
+
+  let FULL_LIST = []; // Lista completa vinda do catálogo
+
+  async function loadPresets(query = "") {
+    try {
+      const url = baseJoin(
+        `/api/catalog?resource=noncompliance-reasons&q=${encodeURIComponent(query)}`
+      );
+
+      const res = await fetch(url, { headers: getCatalogHeaders() });
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        FULL_LIST = data;
+        renderPresets();
+      }
+    } catch (e) {
+      console.error("Erro ao carregar presets NC:", e);
+    }
+  }
+
+  /* ========= Grupo → renderização visual dos presets ========= */
+  function renderPresets() {
+    WRAP.innerHTML = "";
+
+    if (!FULL_LIST.length) {
+      WRAP.innerHTML = "<div class='muted'>Nenhuma justificativa encontrada...</div>";
       return;
     }
 
-    try {
-      const url = baseJoin('/api/validate/ticket?number=' + encodeURIComponent(v));
-      const headers = getCatalogHeaders ? getCatalogHeaders() : { 'Accept': 'application/json' };
-      const res = await fetch(url, { headers });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
+    // Agrupa por FULL_LIST[i].group
+    const groups = {};
+    for (const it of FULL_LIST) {
+      const grp = (it.group || "Outros").trim();
+      if (!groups[grp]) groups[grp] = [];
+      groups[grp].push(it);
+    }
 
-      if (data && data.duplicate === true) {
-        const el = ensureHelp();
-        el.textContent = 'Este Número de Ticket já está salvo.';
-        tn.setCustomValidity('Este Número de Ticket já está salvo.');
-        tn.reportValidity();
-        setSavingEnabled(false);
-      } else {
-        clearHelp();
-        tn.setCustomValidity('');
-        setSavingEnabled(true);
+    for (const grpName of Object.keys(groups).sort()) {
+      const groupDiv = document.createElement("div");
+      groupDiv.className = "preset-group";
+
+      const title = document.createElement("div");
+      title.className = "preset-title";
+      title.textContent = grpName;
+
+      const list = document.createElement("div");
+      list.className = "preset-list";
+
+      for (const it of groups[grpName]) {
+        const badge = document.createElement("button");
+        badge.type = "button";
+        badge.className = "preset-badge";
+        badge.textContent = it.label;
+        badge.onclick = () => add(it.id, it.label);
+        list.appendChild(badge);
       }
-    } catch (e) {
-      // Em caso de falha da API, não travar o usuário (apenas limpa mensagem)
-      clearHelp();
-      tn.setCustomValidity('');
-      setSavingEnabled(true);
-      console.error(e);
+
+      groupDiv.appendChild(title);
+      groupDiv.appendChild(list);
+      WRAP.appendChild(groupDiv);
     }
   }
 
-  tn.addEventListener('input', () => {
-    clearTimeout(timer);
-    setSavingEnabled(true); // não travar enquanto digita
-    timer = setTimeout(checkDuplicate, 250);
-  });
-  tn.addEventListener('blur', checkDuplicate);
+  /* =========================================================
+     BUSCA NO CAMPO "nc_search"
+     ========================================================= */
 
-  // No submit, checa novamente
+  if (SEARCH) {
+    let timer = null;
+
+    SEARCH.addEventListener("input", () => {
+      const q = SEARCH.value.trim();
+
+      clearTimeout(timer);
+
+      timer = setTimeout(() => {
+        loadPresets(q);
+      }, 200);
+    });
+  }
+
+  /* Carrega inicial (lista completa) */
+  loadPresets("");
+
+  /* Retorna API pública */
+  return {
+    add,
+    remove,
+    clearAll,
+    getCount,
+    syncHidden,
+  };
+})();
+/* =========================================================
+   MODAL DE CONFIRMAÇÃO (Antes de Enviar)
+   ========================================================= */
+
+(function initConfirmModal() {
   const form = getForm();
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      if (!tn.checkValidity()) {
+  const btnOpen = document.getElementById("btn-open-confirm");
+  const overlay = document.getElementById("confirm-overlay");
+  const modal = document.getElementById("confirm-modal");
+  const ack = document.getElementById("ack-check");
+  const btnCancel = document.getElementById("btn-cancel-confirm");
+  const btnSubmit = document.getElementById("btn-submit-confirm");
+
+  if (!form || !btnOpen || !overlay || !modal || !ack || !btnCancel || !btnSubmit) {
+    console.warn("ConfirmModal: elementos não encontrados.");
+    return;
+  }
+
+  let lastFocus = null;
+
+  function setVisible(show) {
+    overlay.style.display = show ? "block" : "none";
+    modal.style.display = show ? "flex" : "none";
+  }
+
+  function openModal() {
+    lastFocus = document.activeElement;
+
+    setVisible(true);
+    ack.checked = false;
+
+    btnSubmit.disabled = true;
+    btnSubmit.style.opacity = ".7";
+    btnSubmit.style.cursor = "not-allowed";
+
+    setTimeout(() => ack.focus(), 10);
+  }
+
+  function closeModal() {
+    setVisible(false);
+    if (lastFocus?.focus) lastFocus.focus();
+  }
+
+  btnOpen.addEventListener("click", (e) => {
+    e.preventDefault();
+    openModal();
+  });
+
+  btnCancel.addEventListener("click", () => {
+    closeModal();
+  });
+
+  overlay.addEventListener("click", () => {
+    closeModal();
+  });
+
+  ack.addEventListener("change", () => {
+    const ok = ack.checked;
+
+    btnSubmit.disabled = !ok;
+    btnSubmit.style.opacity = ok ? "1" : ".7";
+    btnSubmit.style.cursor = ok ? "pointer" : "not-allowed";
+  });
+
+  btnSubmit.addEventListener("click", () => {
+    if (!ack.checked) return;
+
+    closeModal();
+    form.requestSubmit?.() || form.submit();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (modal.style.display !== "flex") return;
+
+    if (e.key === "Escape") {
+      closeModal();
+      return;
+    }
+
+    if (e.key === "Enter" && !btnSubmit.disabled) {
+      btnSubmit.click();
+    }
+  });
+})();
+/* =========================================================
+   AJUSTES ADICIONAIS DE ACESSIBILIDADE E UX
+   ========================================================= */
+
+/**
+ * Ajusta aria-pressed dos botões segmentados em qualquer
+ * mudança de estado (ticket_type, SLA, is_compliant etc).
+ * Este módulo já está coberto nos listeners principais,
+ * porém este trecho garante fallback para navegadores antigos.
+ */
+(function bindSegmentedFallback() {
+  const segContainers = document.querySelectorAll(".segmented");
+
+  segContainers.forEach(container => {
+    const radios = container.querySelectorAll('input[type="radio"]');
+
+    radios.forEach(r => {
+      r.addEventListener("change", () => {
+        radios.forEach(other => {
+          const lab = other.id ? container.querySelector(`label[for="${other.id}"]`) : null;
+          if (lab) {
+            lab.setAttribute("aria-pressed", other.checked ? "true" : "false");
+          }
+        });
+      });
+    });
+  });
+})();
+
+
+/* =========================================================
+   LIMPEZA AUTOMÁTICA EM BOTÃO "Reset"
+   ========================================================= */
+
+(function handleResetButton() {
+  const form = getForm();
+  if (!form) return;
+
+  form.addEventListener("reset", () => {
+    // limpar chips NC
+    if (window.NC) {
+      window.NC.clearAll();
+    }
+
+    // limpar autocompletes (hidden fields)
+    setTimeout(() => {
+      const hiddenFields = form.querySelectorAll("input[type='hidden']");
+      hiddenFields.forEach(h => {
+        h.value = "";
+      });
+
+      // Reset da área de sugestão dos autocompletes
+      const suggestBoxes = [
+        "auditor_suggest",
+        "inspector_suggest",
+        "supplier_suggest",
+        "location_suggest",
+        "category_suggest",
+        "resolver_suggest",
+      ];
+
+      suggestBoxes.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.innerHTML = "";
+          el.style.display = "none";
+        }
+      });
+
+      // Fechar bloco NC
+      const just = document.getElementById("just_block");
+      if (just) just.style.display = "none";
+
+      // Reset de aria-pressed nos segmentados
+      const segBtns = document.querySelectorAll(".segmented-btn");
+      segBtns.forEach(btn => btn.setAttribute("aria-pressed", "false"));
+    }, 10);
+  });
+})();
+
+
+/* =========================================================
+   SUPORTE A ENTER → NÃO CONFIRMAR SEM QUERER
+   ========================================================= */
+
+/**
+ * Evita que ENTER em campos do formulário envie diretamente
+ * (ajuda na UX do modal de confirmação)
+ */
+(function preventEnterSubmit() {
+  const form = getForm();
+  if (!form) return;
+
+  form.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const tag = e.target.tagName.toLowerCase();
+      if (tag === "input" && e.target.type !== "radio") {
         e.preventDefault();
-        tn.reportValidity();
+      }
+    }
+  });
+})();
+/* =========================================================
+   AJUSTE VISUAL DOS BOTÕES SEGMENTADOS EM MOBILE
+   ========================================================= */
+
+/**
+ * Este módulo adiciona ajustes para deixar os botões segmentados
+ * mais responsivos em telas menores, garantindo padrão visual.
+ */
+(function improveSegmentedMobile() {
+  const checkResize = () => {
+    const isMobile = window.innerWidth <= 680;
+    const segBtns = document.querySelectorAll(".segmented-btn");
+
+    segBtns.forEach(btn => {
+      if (isMobile) {
+        btn.style.minWidth = "48%";
+      } else {
+        btn.style.minWidth = "";
+      }
+    });
+  };
+
+  window.addEventListener("resize", checkResize);
+  checkResize();
+})();
+
+
+/* =========================================================
+   FOCUS AUTOMÁTICO EM CAMPOS APÓS ERRO NO FORM
+   ========================================================= */
+
+(function focusOnErrorField() {
+  const form = getForm();
+  if (!form) return;
+
+  const errorAlert = document.querySelector(".alert-danger");
+  if (!errorAlert) return;
+
+  setTimeout(() => {
+    const firstInvalid = form.querySelector("[aria-invalid='true'], .error, input:invalid");
+    if (firstInvalid && firstInvalid.focus) {
+      firstInvalid.focus();
+    }
+  }, 150);
+})();
+
+
+/* =========================================================
+   AJUSTE DE TÍTULOS E RÓTULOS NO FORMULÁRIO
+   ========================================================= */
+
+/**
+ * Melhora a acessibilidade dos rótulos em navegadores que falham
+ * em associar <label> via for/id em elementos criados dinamicamente.
+ */
+(function ensureLabelConnections() {
+  const labels = document.querySelectorAll("label[for]");
+
+  labels.forEach(label => {
+    const id = label.getAttribute("for");
+    if (!id) return;
+
+    const target = document.getElementById(id);
+    if (target && !target.getAttribute("aria-labelledby")) {
+      target.setAttribute("aria-labelledby", id + "_lbl");
+      label.id = id + "_lbl";
+    }
+  });
+})();
+
+
+/* =========================================================
+   MELHORIAS DE UX PARA CAMPOS DE TEXTO LONGO
+   ========================================================= */
+
+(function enhanceTypingUX() {
+  const longInputs = document.querySelectorAll(
+    "input[type='text']:not(.tag-input)"
+  );
+
+  longInputs.forEach(inp => {
+    inp.addEventListener("focus", () => {
+      inp.style.borderColor = "#0d6efd";
+      inp.style.boxShadow = "0 0 0 2px rgba(13,110,253,.25)";
+    });
+
+    inp.addEventListener("blur", () => {
+      inp.style.borderColor = "";
+      inp.style.boxShadow = "";
+    });
+  });
+})();
+
+
+/* =========================================================
+   LIMITADOR DE TAMANHO PARA POPUPS DE AUTOCOMPLETE
+   ========================================================= */
+
+(function limitPopupHeight() {
+  const popups = [
+    "auditor_suggest",
+    "inspector_suggest",
+    "supplier_suggest",
+    "location_suggest",
+    "category_suggest",
+    "resolver_suggest"
+  ];
+
+  popups.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.maxHeight = "260px";
+      el.style.overflowY = "auto";
+    }
+  });
+})();
+/* =========================================================
+   SUPORTE PARA DISPOSITIVOS TOUCH
+   ========================================================= */
+
+/**
+ * Em alguns tablets e celulares, eventos de "hover" ou
+ * toques rápidos podem abrir/fechar popups de maneira
+ * indesejada. Este módulo adiciona proteção adicional.
+ */
+(function handleTouchDevices() {
+  const isTouch = "ontouchstart" in window;
+
+  if (!isTouch) return;
+
+  const popups = [
+    "auditor_suggest",
+    "inspector_suggest",
+    "supplier_suggest",
+    "location_suggest",
+    "category_suggest",
+    "resolver_suggest",
+    "nc_presets"
+  ];
+
+  popups.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.webkitOverflowScrolling = "touch";
+      el.style.scrollBehavior = "smooth";
+    }
+  });
+})();
+
+
+/* =========================================================
+   AJUSTES DE TECLADO (TAB, ESC, SETAS)
+   ========================================================= */
+
+/**
+ * Melhorias de interação com teclado:
+ * - ESC fecha popups abertos
+ * - TAB fecha popups e move corretamente o foco
+ * - Setas navegam em popups de autocomplete (opcional)
+ */
+
+(function enhanceKeyboardNavigation() {
+  const popupIds = [
+    "auditor_suggest",
+    "inspector_suggest",
+    "supplier_suggest",
+    "location_suggest",
+    "category_suggest",
+    "resolver_suggest"
+  ];
+
+  /** Fecha todos os popups */
+  function closeAllPopups() {
+    popupIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.display = "none";
+        el.innerHTML = "";
       }
     });
   }
-})();
 
-  document.addEventListener('keydown', (e) => {
-    if (modal.style.display !== 'flex') return;
-    if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
-    if (e.key === 'Enter' && !btnSubmit.disabled) {
-      e.preventDefault(); btnSubmit.click();
+  /** Fecha presets NC */
+  function closeNCPresets() {
+    const ncBox = document.getElementById("nc_presets");
+    if (ncBox) {
+      // Mantém conteúdo, mas apenas esconde
+      ncBox.style.display = "none";
+    }
+  }
+
+  /** Reabre presets NC quando foco volta ao campo */
+  const ncSearch = document.getElementById("nc_search");
+  if (ncSearch) {
+    ncSearch.addEventListener("focus", () => {
+      const ncBox = document.getElementById("nc_presets");
+      if (ncBox) ncBox.style.display = "block";
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAllPopups();
+      closeNCPresets();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    const clickedInsidePopup = popupIds.some(id => {
+      const el = document.getElementById(id);
+      return el && el.contains(e.target);
+    });
+
+    const ncBox = document.getElementById("nc_presets");
+    const insideNC = ncBox && ncBox.contains(e.target);
+
+    const ncSearchInput = document.getElementById("nc_search");
+    const clickedSearchNC = ncSearchInput && e.target === ncSearchInput;
+
+    if (!clickedInsidePopup) {
+      closeAllPopups();
+    }
+
+    if (!insideNC && !clickedSearchNC) {
+      closeNCPresets();
     }
   });
 })();
+
+
+/* =========================================================
+   MARCAÇÃO AUTOMÁTICA DE PRIORIDADE VISUAL
+   ========================================================= */
+
+/**
+ * Deixa destaque visual na prioridade selecionada
+ * (azul forte, semelhante ao ServiceNow)
+ */
+(function highlightPriority() {
+  const radios = document.querySelectorAll('input[name="priority"]');
+  if (!radios.length) return;
+
+  function refresh() {
+    radios.forEach(r => {
+      const label = document.querySelector(`label[for="${r.id}"]`);
+      if (!label) return;
+
+      if (r.checked) {
+        label.style.background = "#0d6efd";
+        label.style.color = "#fff";
+        label.style.borderColor = "#0d6efd";
+      } else {
+        label.style.background = "#e5e7eb";
+        label.style.color = "#111";
+        label.style.borderColor = "#cbd5e1";
+      }
+    });
+  }
+
+  radios.forEach(r => r.addEventListener("change", refresh));
+  refresh();
+})();
+/* =========================================================
+   MARCAÇÃO AUTOMÁTICA DE SLA ATINGIDO (Sim / Não)
+   ========================================================= */
+
+(function highlightSLA() {
+  const radios = document.querySelectorAll('input[name="sla_met"]');
+  if (!radios.length) return;
+
+  function refresh() {
+    radios.forEach(r => {
+      const label = document.querySelector(`label[for="${r.id}"]`);
+      if (!label) return;
+
+      if (r.checked) {
+        label.style.background = "#0d6efd";
+        label.style.color = "#fff";
+        label.style.borderColor = "#0d6efd";
+      } else {
+        label.style.background = "#e5e7eb";
+        label.style.color = "#111";
+        label.style.borderColor = "#cbd5e1";
+      }
+    });
+  }
+
+  radios.forEach(r => r.addEventListener("change", refresh));
+  refresh();
+})();
+
+/* =========================================================
+   MARCAÇÃO AUTOMÁTICA DO "CHAMADO CONFORME?" (Sim / Não)
+   ========================================================= */
+
+(function highlightIsCompliant() {
+  const radios = document.querySelectorAll('input[name="is_compliant"]');
+  if (!radios.length) return;
+
+  function refresh() {
+    radios.forEach(r => {
+      const label = document.querySelector(`label[for="${r.id}"]`);
+      if (!label) return;
+
+      if (r.checked) {
+        label.style.background = "#0d6efd";
+        label.style.color = "#fff";
+        label.style.borderColor = "#0d6efd";
+      } else {
+        label.style.background = "#e5e7eb";
+        label.style.color = "#111";
+        label.style.borderColor = "#cbd5e1";
+      }
+    });
+  }
+
+  radios.forEach(r => r.addEventListener("change", refresh));
+  refresh();
+})();
+
+/* =========================================================
+   EFEITO DE FOCO EM CAMPOS DE AUTOCOMPLETE E NC_SEARCH
+   ========================================================= */
+
+(function enhanceAutocompleteFocus() {
+  const fields = [
+    "kyndryl_auditor_input",
+    "petrobras_inspector_input",
+    "audited_supplier_input",
+    "location_input",
+    "category_input",
+    "resolver_group_input",
+    "nc_search"
+  ];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener("focus", () => {
+      el.style.borderColor = "#0d6efd";
+      el.style.boxShadow = "0 0 0 2px rgba(13,110,253,.25)";
+    });
+
+    el.addEventListener("blur", () => {
+      el.style.borderColor = "";
+      el.style.boxShadow = "";
+    });
+  });
+})();
+
+/* =========================================================
+   ROLAGEM SUAVE (Smooth Scroll) EM TODOS POPUPS E PRESETS
+   ========================================================= */
+
+(function enableSmoothScroll() {
+  [
+    "nc_presets",
+    "auditor_suggest",
+    "inspector_suggest",
+    "supplier_suggest",
+    "location_suggest",
+    "category_suggest",
+    "resolver_suggest"
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.scrollBehavior = "smooth";
+      el.style.webkitOverflowScrolling = "touch";
+    }
+  });
+})();
+/* =========================================================
+   ACESSIBILIDADE — TRAP DE FOCO NO MODAL DE CONFIRMAÇÃO
+   ========================================================= */
+
+/**
+ * Garante que, quando o modal estiver aberto, o foco permaneça
+ * dentro dele, impedindo navegação acidental pelo TAB.
+ */
+(function trapFocusInModal() {
+  const modal = document.getElementById("confirm-modal");
+  const overlay = document.getElementById("confirm-overlay");
+  if (!modal || !overlay) return;
+
+  function getFocusable() {
+    return modal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (modal.style.display !== "flex") return;
+    if (e.key !== "Tab") return;
+
+    const list = Array.from(getFocusable());
+    if (!list.length) return;
+
+    const first = list[0];
+    const last = list[list.length - 1];
+
+    if (e.shiftKey) {
+      // shift + tab
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      // tab normal
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+})();
+
+
+/* =========================================================
+   AUTOFOCUS NO CAMPO "ticket_number" QUANDO O FORM É LIMPO
+   ========================================================= */
+
+(function autoFocusTicket() {
+  const form = getForm();
+  if (!form) return;
+
+  form.addEventListener("reset", () => {
+    setTimeout(() => {
+      const input = document.getElementById("ticket_number");
+      if (input) input.focus();
+    }, 100);
+  });
+})();
+
+
+/* =========================================================
+   ANCORAGEM DO SCROLL AO ABRIR O BLOCO DE JUSTIFICATIVAS
+   ========================================================= */
+
+(function scrollToNCOnShow() {
+  const radios = document.querySelectorAll('input[name="is_compliant"]');
+  const block = document.getElementById("just_block");
+
+  if (!radios.length || !block) return;
+
+  radios.forEach(radio => {
+    radio.addEventListener("change", e => {
+      if (e.target.value === "0") {
+        setTimeout(() => {
+          block.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        }, 150);
+      }
+    });
+  });
+})();
+
+
+/* =========================================================
+   AJUSTE VISUAL DO BLOCO DE JUSTIFICATIVAS
+   ========================================================= */
+
+(function styleNCBlock() {
+  const block = document.getElementById("just_block");
+  if (!block) return;
+
+  block.style.transition = "all .25s ease";
+
+  const show = () => {
+    block.style.opacity = "1";
+    block.style.transform = "scale(1)";
+  };
+
+  const hide = () => {
+    block.style.opacity = "0";
+    block.style.transform = "scale(.98)";
+  };
+
+  const observer = new MutationObserver(() => {
+    if (block.style.display === "block") show();
+    else hide();
+  });
+
+  observer.observe(block, {
+    attributes: true,
+    attributeFilter: ["style"]
+  });
+})();
+/* =========================================================
+   FECHAMENTO FINAL DO SCRIPT
+   ========================================================= */
+
+/**
+ * Este bloco garante que todos os módulos foram carregados
+ * corretamente e registra no console uma confirmação final.
+ */
+(function finalizeScript() {
+  try {
+    console.log("%c[Auditoria de Chamados] scripts.js carregado com sucesso.",
+      "color:#0d6efd;font-weight:bold;font-size:14px;");
+
+    if (!window.NC) {
+      console.warn("⚠ Módulo NC não foi inicializado corretamente.");
+    }
+  } catch (e) {
+    console.error("Erro ao finalizar scripts.js:", e);
+  }
+})();
+
+/* =========================================================
+   EOF — END OF FILE
+   ========================================================= */

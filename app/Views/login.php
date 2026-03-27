@@ -1,6 +1,9 @@
 <?php
+
+//echo password_hash('adm123', PASSWORD_DEFAULT);
 $title = $title ?? 'Entrar';
 $error = $error ?? null;
+
 ?>
 <div class="card" style="max-width:420px">
   <h1 style="margin-top:0, text-center">Auditorias</h1>

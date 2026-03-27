@@ -70,17 +70,19 @@ $created = $_GET['created'] ?? null;
       <!-- Número do Ticket -->
       <div class="col">
         <div class="field">
-          <label for="ticket_number">Número Ticket *</label>
-          <input id="ticket_number" name="ticket_number" required
-                 placeholder="INC1234567, RITM1234567, SCTASK1234567"
-                 value="<?= htmlspecialchars((string)($old['ticket_number'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
-                 pattern="^(INC|RITM|SCTASK)\d{6,}$"
-                 title="O ticket deve iniciar com INC, RITM ou SCTASK seguido de dígitos. Ex.: INC1234567"
-                 autocomplete="off" inputmode="text">
-          <div class="muted">
-            Deve iniciar com <b>INC</b>, <b>RITM</b> ou <b>SCTASK</b> + dígitos. Ex.: <code>INC9889075</code>
-          </div>
-        </div>
+  <label for="ticket_number">Número Ticket *</label>
+  <input id="ticket_number"
+         name="ticket_number"
+         required
+         placeholder="INC1234567, RITM1234567, SCTASK1234567"
+         value="<?= htmlspecialchars((string)($old['ticket_number'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+         pattern="^(INC|RITM|SCTASK)\d{6,}$"
+         title="O ticket deve iniciar com INC, RITM ou SCTASK seguido de dígitos. Ex.: INC1234567"
+         autocomplete="off" inputmode="text">
+  <div class="muted">
+      Deve iniciar com <b>INC</b>, <b>RITM</b> ou <b>SCTASK</b> + dígitos.
+  </div>
+</div>
       </div>
 
       <!-- Tipo do Ticket -->
