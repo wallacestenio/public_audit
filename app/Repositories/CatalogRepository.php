@@ -70,39 +70,24 @@ final class CatalogRepository
 
     /* ================= Noncompliance Reasons ================= */
     public function listNoncomplianceReasons(string $q = ''): array
-    {
-        $table = 'noncompliance_reasons';
-        $cols  = $this->columnsOf($table);
+{
+    $params = [];
+    $where  = $this->buildAndLikes('noncompliance_reason', $q, $params);
 
-        $textExpr = null;
-        if (isset($cols['label']) && isset($cols['noncompliance_reason'])) {
-            $textExpr = 'COALESCE(label, noncompliance_reason)';
-        } elseif (isset($cols['label'])) {
-            $textExpr = 'label';
-        } elseif (isset($cols['noncompliance_reason'])) {
-            $textExpr = 'noncompliance_reason';
-        } else {
-            return [];
-        }
+    $sql = "
+        SELECT
+            id,
+            noncompliance_reason AS label,
+            `group`
+        FROM noncompliance_reasons
+        WHERE {$where}
+        ORDER BY noncompliance_reason ASC
+        LIMIT 20
+    ";
 
-        $groupExpr = isset($cols['group']) ? '"group"' : "'Outros'";
+    return $this->run($sql, $params);
+}
 
-        $params = [];
-        $where  = $this->buildAndLikes($textExpr, $q, $params);
-
-        $sql = "
-            SELECT
-                id,
-                {$textExpr} AS label,
-                {$groupExpr} AS \"group\"
-            FROM {$table}
-            WHERE {$where}
-            ORDER BY label ASC
-            LIMIT 20
-        ";
-
-        return $this->run($sql, $params);
-    }
 
     /* ================= Kyndryl Auditors ================= */
     public function listKyndrylAuditors(string $q = ''): array

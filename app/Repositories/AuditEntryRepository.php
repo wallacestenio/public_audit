@@ -63,7 +63,7 @@ final class AuditEntryRepository
 
     $id = (int)$pdo->lastInsertId();
     if ($id === 0) {
-        $ridStmt = $pdo->prepare('SELECT rowid FROM audit_entries WHERE ticket_number = :tk');
+        $ridStmt = $pdo->prepare('SELECT id FROM audit_entries WHERE ticket_number = :tk');
         $ridStmt->execute([':tk' => (string)$data['ticket_number']]);
         $id = (int)($ridStmt->fetchColumn() ?: 0);
     }
@@ -111,9 +111,10 @@ public function exportRows(array $filters = []): array
     if ($where) {
         $sql .= ' WHERE ' . implode(' AND ', $where);
     }
-    $sql .= ' ORDER BY rowid ASC';
 
-    $pdo = $this->rawPdo();
+    $sql .= ' ORDER BY id ASC';
+
+    $pdo  = $this->rawPdo();
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
 
@@ -121,58 +122,42 @@ public function exportRows(array $filters = []): array
 
     $out = [];
     foreach ($rows as $r) {
-        // Conversões solicitadas:
+
         $sla    = ((string)($r['sla_met'] ?? '')) === '1' ? 'Sim' : 'Não';
         $pri    = 'Prioridade ' . (string)(int)($r['priority'] ?? 0);
         $isComp = ((string)($r['is_compliant'] ?? '')) === '1' ? 'Sim' : 'Não';
 
-        // ORDEM EXATA do CSV:
-        // Número Ticket, Tipo do Ticket, Auditor Kyndryl, Inspetor Petrobras,
-        // Fornecedor Auditado, Localidade, Mês da Auditoria, SLA Atingido?,
-        // Prioridade, Categoria, Mesa Solucionadora, Chamado Conforme?,
-        // Justificativas de não conformidade
+        // Converter YYYY-MM para nome do mês
+        $mesIso  = (string)($r['audit_month'] ?? '');
+        $mesNome = '';
 
-        // Converter audit_month (YYYY-MM → Nome do mês PT-BR)
-$mesIso = (string)($r['audit_month'] ?? '');
-$mesNome = '';
+        if (preg_match('/^\d{4}-(\d{2})$/', $mesIso, $m)) {
+            $mapMes = [
+                '01'=>'Janeiro','02'=>'Fevereiro','03'=>'Março','04'=>'Abril',
+                '05'=>'Maio','06'=>'Junho','07'=>'Julho','08'=>'Agosto',
+                '09'=>'Setembro','10'=>'Outubro','11'=>'Novembro','12'=>'Dezembro',
+            ];
+            $mesNome = $mapMes[$m[1]] ?? '';
+        }
 
-if (preg_match('/^\d{4}-(\d{2})$/', $mesIso, $m)) {
-    $mapMes = [
-        '01' => 'Janeiro',
-        '02' => 'Fevereiro',
-        '03' => 'Março',
-        '04' => 'Abril',
-        '05' => 'Maio',
-        '06' => 'Junho',
-        '07' => 'Julho',
-        '08' => 'Agosto',
-        '09' => 'Setembro',
-        '10' => 'Outubro',
-        '11' => 'Novembro',
-        '12' => 'Dezembro',
-    ];
-    $mesNome = $mapMes[$m[1]] ?? '';
-}
-        $line = [
+        $out[] = [
             'ticket_number'         => (string)($r['ticket_number'] ?? ''),
             'ticket_type'           => (string)($r['ticket_type'] ?? ''),
             'kyndryl_auditor'       => (string)($r['kyndryl_auditor'] ?? ''),
             'petrobras_inspector'   => (string)($r['petrobras_inspector'] ?? ''),
             'audited_supplier'      => (string)($r['audited_supplier'] ?? ''),
             'location'              => (string)($r['location'] ?? ''),
-            'audit_month' => $mesNome,
+            'audit_month'           => $mesNome,
             'sla_met_label'         => $sla,
             'priority_label'        => $pri,
             'category'              => (string)($r['category'] ?? ''),
             'resolver_group'        => (string)($r['resolver_group'] ?? ''),
-            'is_compliant_label'    => $isComp, // << AQUI vai Sim/Não
+            'is_compliant_label'    => $isComp,
             'noncompliance_reasons' => (string)($r['noncompliance_reasons'] ?? ''),
         ];
-        $out[] = $line;
     }
 
     return $out;
 }
-
 
 }

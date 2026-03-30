@@ -183,7 +183,7 @@ public function validateTicket(): void
 }
 
     /** Export CSV (inalterado) */
-    public function exportCsv(): void
+public function exportCsv(): void
 {
     $prev = error_reporting();
     $old  = ini_get('display_errors');
@@ -193,28 +193,61 @@ public function validateTicket(): void
     while (ob_get_level() > 0) @ob_end_clean();
 
     try {
-        // 🔐 Obtém o user_id da sessão (obrigatório)
+        // 🔐 Usuário logado (obrigatório)
         $userId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0;
         if ($userId <= 0) {
-            // Em tese não ocorrerá pois a rota já está protegida por $mustAuth, mas fica a blindagem
             http_response_code(401);
             header('Content-Type: text/plain; charset=utf-8');
             echo "Não autenticado.\n";
             return;
         }
 
-        // Filtro opcional por mês (mantido como antes)
-        $month = isset($_GET['audit_month']) ? trim((string)$_GET['audit_month']) : null;
+        // 🔎 Recebe o mês bruto do GET
+        $monthRaw = isset($_GET['audit_month'])
+            ? trim((string)$_GET['audit_month'])
+            : null;
 
-        // 🔎 Agora passamos também o user_id
+        // ✅ NORMALIZA O MÊS EXACTAMENTE COMO NO SERVICE
+        $month = null;
+        if ($monthRaw !== null && $monthRaw !== '') {
+            $s = trim(mb_strtolower($monthRaw, 'UTF-8'));
+
+            $map = [
+                'jan' => '01','janeiro' => '01',
+                'fev' => '02','fevereiro' => '02',
+                'mar' => '03','março' => '03','marco' => '03',
+                'abr' => '04','abril' => '04',
+                'mai' => '05','maio' => '05',
+                'jun' => '06','junho' => '06',
+                'jul' => '07','julho' => '07',
+                'ago' => '08','agosto' => '08',
+                'set' => '09','setembro' => '09',
+                'out' => '10','outubro' => '10',
+                'nov' => '11','novembro' => '11',
+                'dez' => '12','dezembro' => '12',
+            ];
+
+            if (preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $s)) {
+                $month = $s;
+            } elseif (preg_match('/^(0?[1-9]|1[0-2])\s*\/\s*(\d{4})$/', $s, $m)) {
+                $mm = str_pad($m[1], 2, '0', STR_PAD_LEFT);
+                $month = "{$m[2]}-{$mm}";
+            } elseif (preg_match('/^([a-zçõ]+)\s+(\d{4})$/u', $s, $m)) {
+                $mon = $map[$m[1]] ?? null;
+                if ($mon) {
+                    $month = "{$m[2]}-{$mon}";
+                }
+            }
+        }
+
+        // 🔎 Consulta FINAL (agora com mês OK)
         $rows = $this->repo->exportRows([
             'audit_month' => $month ?: null,
             'user_id'     => $userId,
         ]);
 
-        // Nome do arquivo mantido; você pode acrescentar o userId se quiser
         $filename = 'auditoria_chamados_' .
-            ($month && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $month) ? $month : 'base') . '.csv';
+            ($month ? $month : 'base') . '.csv';
 
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="'.$filename.'"');
@@ -223,11 +256,10 @@ public function validateTicket(): void
 
         $out = fopen('php://output', 'w');
 
-        // BOM UTF-8
+        // ✅ BOM UTF-8 (Excel)
         fwrite($out, "\xEF\xBB\xBF");
 
         foreach ($rows as $r) {
-            // Mantém o separador ';' como no seu padrão atual
             fputcsv($out, array_values($r), ';', '"', '\\', "\r\n");
         }
 

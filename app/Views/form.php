@@ -28,6 +28,8 @@ $created = $_GET['created'] ?? null;
   </script>
 
   <style>
+
+
   /* Apenas os labels dos radios dos grupos SLA e Chamado Conforme */
   #sla_met_1 + label,
   #sla_met_2 + label,
@@ -46,6 +48,22 @@ $created = $_GET['created'] ?? null;
     padding: 6px 10px;    /* ajuste fino de altura/largura visual */
     line-height: 1.2;
   }
+
+  
+ /* SLA - botão NÃO selecionado */
+  #sla_met_2:checked + label {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: #ffffff;
+  }
+
+  /* Chamado Conforme - botão NÃO selecionado */
+  #is_comp_2:checked + label {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: #ffffff;
+  }
+
 </style>
 
       
@@ -250,21 +268,28 @@ $created = $_GET['created'] ?? null;
       </div>
 
       <!-- SLA -->
-      <div class="col" style="display:inline-block;min-width:240px;text-align:left">
-        <div class="field">
-          <label>SLA Atingido? *</label>
-          <div class="segmented" role="radiogroup" aria-label="SLA Atingido">
-            <?php
-              $slaOld = (string)($old['sla_met'] ?? '1'); $opts=['1'=>'Sim','0'=>'Não']; $i=0;
-              foreach($opts as $val=>$label){
-                $id='sla_met_'.(++$i); $checked=($slaOld===$val)?'checked':''; $req=($i===1)?'required':'';
-                echo "<input type='radio' id='{$id}' name='sla_met' value='{$val}' {$checked} {$req}>
-                      <label for='{$id}' class='segmented-btn' aria-pressed='".($checked?'true':'false')."'>{$label}</label>";
-              }
-            ?>
-          </div>
-        </div>
-      </div>
+      <!-- SLA -->
+<div class="col" style="display:inline-block;min-width:240px;text-align:left">
+  <div class="field">
+    <label>SLA Atingido? *</label>
+    <div class="segmented" role="radiogroup" aria-label="SLA Atingido">
+      <?php
+        $slaOld = (string)($old['sla_met'] ?? '1');
+        $opts = ['1' => 'Sim', '0' => 'Não'];
+        $i = 0;
+        foreach ($opts as $val => $label) {
+          $id = 'sla_met_' . (++$i);
+          $checked = ($slaOld === $val) ? 'checked' : '';
+          $req = ($i === 1) ? 'required' : '';
+          $dangerClass = ($val === '0') ? ' danger-option' : '';
+
+          echo "<input type='radio' id='{$id}' name='sla_met' value='{$val}' {$checked} {$req}>
+                <label for='{$id}' class='segmented-btn{$dangerClass}' aria-pressed='".($checked ? 'true' : 'false')."'>{$label}</label>";
+        }
+      ?>
+    </div>
+  </div>
+</div>
 
       <!-- Chamado Conforme -->
       <div class="col" style="display:inline-block;min-width:240px;text-align:left">
