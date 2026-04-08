@@ -1,8 +1,22 @@
+
 <?php
-//echo password_hash('admin123', PASSWORD_DEFAULT);
+
+
+
+//echo password_hash('adm123', PASSWORD_DEFAULT);
+
+
+
+/*echo '<pre>';
+var_dump($ref);
+echo '</pre>';
+exit;
+*/
+
+
 /**
  * View: Auditoria de Chamados
- * Variáveis: $title (string), $error (?string), $old (array), $base (string)
+ * Variáveis: $title (string), $error (?string), $old (array), $base (string), $form_token_catalog (string)
  */
 $title = $title ?? 'Auditoria de Chamados';
 $old   = is_array($old ?? null) ? $old : [];
@@ -11,97 +25,189 @@ $error = $error ?? null;
 // Banner ?created=ID
 $created = $_GET['created'] ?? null;
 ?>
+
 <div class="card">
 
-  <?php if ($created !== null && $created !== ''): ?>
-  <?php // alguma lógica PHP…
-    $mensagem = "Auditoria de Chamados atualizada com sucesso!";
-  ?>
+<?php if ($created !== null && $created !== ''): ?>
+<script>
+  alert('Auditoria de Chamados atualizada com sucesso!');
+</script>
+<?php endif; ?>
 
-    <script>
-    // Função utilitária para exibir alerta
-    function showAlert(msg) {
-      alert(msg);
+<!-- ========================================================= -->
+<!-- ✅ JUSTIFICATIVAS (MOVE ENTRE DISPONÍVEIS / SELECIONADAS) -->
+<!-- ========================================================= -->
+<script>
+document.addEventListener('click', function (e) {
+  const presetsEl = document.getElementById('nc_presets');
+  const chipsEl   = document.getElementById('nc_chips');
+  const idsInput  = document.getElementById('nc_ids');
+
+  if (!presetsEl || !chipsEl || !idsInput) return;
+
+  const available = e.target.closest('#nc_presets [data-id]');
+  if (available) {
+    available.textContent = available.textContent.replace(' ✕','') + ' ✕';
+    chipsEl.appendChild(available);
+    sync();
+    return;
+  }
+
+  const selected = e.target.closest('#nc_chips [data-id]');
+  if (selected) {
+    selected.textContent = selected.textContent.replace(' ✕','');
+    presetsEl.appendChild(selected);
+    sync();
+    return;
+  }
+
+  function sync() {
+    idsInput.value = Array.from(
+      chipsEl.querySelectorAll('[data-id]')
+    ).map(el => el.dataset.id).join(';');
+  }
+});
+</script>
+
+<!-- ========================================================= -->
+<!-- ✅ VALIDAÇÃO ASSÍNCRONA DE TICKET (ANTES DO SUBMIT) -->
+<!-- ========================================================= -->
+<script>
+(() => {
+  const input    = document.getElementById('ticket_number');
+  const feedback = document.getElementById('ticket-feedback');
+  const openBtn  = document.getElementById('btn-open-confirm');
+  const submitBtn = document.getElementById('btn-submit-confirm');
+
+  if (!input || !feedback || !openBtn) return;
+
+  let timer   = null;
+  let blocked = false;
+
+  function lock(msg) {
+    blocked = true;
+    feedback.textContent = msg;
+    feedback.style.display = 'block';
+    feedback.style.color = '#dc2626';
+
+    openBtn.disabled = true;
+    submitBtn && (submitBtn.disabled = true);
+
+    openBtn.style.opacity = '0.6';
+  }
+
+  function unlock() {
+    blocked = false;
+    feedback.style.display = 'none';
+
+    openBtn.disabled = false;
+    submitBtn && (submitBtn.disabled = false);
+
+    openBtn.style.opacity = '';
+  }
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    unlock();
+
+    const v = input.value.trim();
+    if (v.length < 8) return;
+
+    timer = setTimeout(() => validate(v), 400);
+  });
+
+  openBtn.addEventListener('click', (e) => {
+    if (blocked) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-    // Chama com o texto vindo do PHP, escapado para JS:
-    showAlert(<?php echo json_encode($mensagem, JSON_UNESCAPED_UNICODE); ?>);
-  </script>
+  });
 
-  <style>
+  async function validate(ticket) {
+    try {
+      const base  = '<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>';
+      const token = '<?= htmlspecialchars($form_token_catalog ?? '', ENT_QUOTES, 'UTF-8') ?>';
 
+      const res = await fetch(
+        `${base}/api/validate/ticket?number=${encodeURIComponent(ticket)}`,
+        {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Form-Token': token,
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin'
+        }
+      );
 
-  /* Apenas os labels dos radios dos grupos SLA e Chamado Conforme */
-  #sla_met_1 + label,
-  #sla_met_2 + label,
-  #is_comp_1 + label,
-  #is_comp_2 + label {
-    min-width: 130px;     /* ajuste a gosto: 120–150px costuma ficar bom */
-    text-align: center;   /* centraliza o texto dentro do botão */
-    display: inline-block;
+      if (!res.ok) return;
+
+      const data = await res.json();
+      if (data.duplicate) {
+        lock('⚠️ Este chamado já está cadastrado.');
+      }
+
+    } catch (err) {
+      console.error('Erro na validação do ticket:', err);
+    }
   }
+})();
+</script>
 
-  /* (opcional) padroniza altura/padding para ficarem exatamente iguais */
-  #sla_met_1 + label,
-  #sla_met_2 + label,
-  #is_comp_1 + label,
-  #is_comp_2 + label {
-    padding: 6px 10px;    /* ajuste fino de altura/largura visual */
-    line-height: 1.2;
-  }
+<!-- ========================================================= -->
+<!-- ✅ CSS LOCAL DO FORM -->
+<!-- ========================================================= -->
+<style>
+#nc_presets [data-id]{
+  background:#f3f4f6;
+  border:1px solid #d1d5db;
+  margin:4px;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
 
-  
- /* SLA - botão NÃO selecionado */
-  #sla_met_2:checked + label {
-    background-color: #dc2626;
-    border-color: #dc2626;
-    color: #ffffff;
-  }
-
-  /* Chamado Conforme - botão NÃO selecionado */
-  #is_comp_2:checked + label {
-    background-color: #dc2626;
-    border-color: #dc2626;
-    color: #ffffff;
-  }
-
+#nc_chips [data-id]{
+  background:#dc2626;
+  color:#fff;
+  margin:4px;
+  padding:6px 10px;
+  border-radius:16px;
+  cursor:pointer;
+}
 </style>
 
-      
-
-  <?php endif; ?>
-
-  <?php if (!empty($error)): ?>
-    <div class="alert alert-danger">
-      <?= htmlspecialchars((string)$error, ENT_QUOTES, 'UTF-8') ?>
-    </div>
-  <?php endif; ?>
-
-  
-
-
-  <!-- FORM -->
-  <form method="post"
-        action="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/audit-entries"
-        novalidate>
-    <div class="row">
-
-      <!-- Número do Ticket -->
-      <div class="col">
-        <div class="field">
-  <label for="ticket_number">Número Ticket *</label>
-  <input id="ticket_number"
-         name="ticket_number"
-         required
-         placeholder="INC1234567, RITM1234567, SCTASK1234567"
-         value="<?= htmlspecialchars((string)($old['ticket_number'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"
-         pattern="^(INC|RITM|SCTASK)\d{6,}$"
-         title="O ticket deve iniciar com INC, RITM ou SCTASK seguido de dígitos. Ex.: INC1234567"
-         autocomplete="off" inputmode="text">
-  <div class="muted">
-      Deve iniciar com <b>INC</b>, <b>RITM</b> ou <b>SCTASK</b> + dígitos.
-  </div>
+<?php if (!empty($error)): ?>
+<div class="alert alert-danger">
+  <?= htmlspecialchars((string)$error, ENT_QUOTES, 'UTF-8') ?>
 </div>
-      </div>
+<?php endif; ?>
+
+<!-- ========================================================= -->
+<!-- ✅ FORM -->
+<!-- ========================================================= -->
+
+<form method="post"
+      action="<?= htmlspecialchars($base, ENT_QUOTES, 'UTF-8') ?>/audit-entries"
+      novalidate>
+
+<div class="row">
+
+  <!-- Número do Ticket -->
+  <div class="col">
+    <label for="ticket_number">Número Ticket *</label>
+    <input id="ticket_number"
+           name="ticket_number"
+           required
+           autofocus
+           autocomplete="off"
+           placeholder="INC1234567, RITM1234567, SCTASK1234567"
+           pattern="^(INC|RITM|SCTASK)\d{6,}$"
+           value="<?= htmlspecialchars($old['ticket_number'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+    <div id="ticket-feedback" class="muted" style="display:none;margin-top:4px"></div>
+  </div>
+
 
       <!-- Tipo do Ticket -->
       <div class="col">
@@ -156,18 +262,35 @@ $created = $_GET['created'] ?? null;
       </div>
 
       <!-- Inspetor Petrobras -->
-      <div class="col" style="position:relative">
-        <label for="petrobras_inspector_input">Inspetor Petrobras *</label>
-        <input id="petrobras_inspector_input" type="text" autocomplete="off"
-               placeholder="Comece a digitar para buscar..."
-               value="<?= htmlspecialchars((string)($old['petrobras_inspector'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required>
-        <input type="hidden" name="petrobras_inspector" id="petrobras_inspector_value"
-               value="<?= htmlspecialchars((string)($old['petrobras_inspector'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        <input type="hidden" name="petrobras_inspector_id" id="petrobras_inspector_id"
-               value="<?= htmlspecialchars((string)($old['petrobras_inspector_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        <div id="inspector_suggest"></div>
-        <div class="muted">Selecione um nome da lista.</div>
-      </div>
+<div class="col" style="position:relative">
+  <label for="petrobras_inspector_input">Inspetor Petrobras *</label>
+
+  <!-- Campo visível -->
+  <input id="petrobras_inspector_input"
+         type="text"
+         autocomplete="off"
+         value="<?= htmlspecialchars($old['petrobras_inspector'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+         <?= !empty($old['_lock_inspector_field'])
+              ? 'readonly tabindex="-1" aria-readonly="true"'
+              : 'required' ?>>
+
+  <!-- Nome (POST) -->
+  <input type="hidden"
+         name="petrobras_inspector"
+         value="<?= htmlspecialchars($old['petrobras_inspector'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+  <!-- ID correto (FK) -->
+  <input type="hidden"
+         name="petrobras_inspector_id"
+         value="<?= htmlspecialchars((string)($old['petrobras_inspector_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <div class="muted">
+    <?= !empty($old['_lock_inspector_field'])
+        ? 'Inspetor definido automaticamente com base no seu perfil.'
+        : 'Selecione um inspetor da lista.' ?>
+  </div>
+</div>
+``
 
       <!-- Fornecedor Auditado -->
       <div class="col" style="position:relative">
@@ -183,19 +306,35 @@ $created = $_GET['created'] ?? null;
         <div class="muted">Selecione um nome da lista.</div>
       </div>
 
-      <!-- Localidade -->
-      <div class="col" style="position:relative">
-        <label for="location_input">Localidade *</label>
-        <input id="location_input" type="text" autocomplete="off"
-               placeholder="Comece a digitar para buscar..."
-               value="<?= htmlspecialchars((string)($old['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required>
-        <input type="hidden" name="location" id="location_value"
-               value="<?= htmlspecialchars((string)($old['location'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        <input type="hidden" name="location_id" id="location_id"
-               value="<?= htmlspecialchars((string)($old['location_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        <div id="location_suggest"></div>
-        <div class="muted">Selecione uma localidade da lista.</div>
-      </div>
+    <!-- Localidade -->
+<div class="col" style="position:relative">
+  <label for="location_input">Localidade *</label>
+
+  <!-- Campo visível -->
+  <input id="location_input"
+         type="text"
+         autocomplete="off"
+         value="<?= htmlspecialchars($old['location'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+         <?= !empty($old['_lock_location_field'])
+              ? 'readonly tabindex="-1" aria-readonly="true"'
+              : 'required' ?>>
+
+  <!-- Nome (POST) -->
+  <input type="hidden"
+         name="location"
+         value="<?= htmlspecialchars($old['location'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+  <!-- ID correto (FK) -->
+  <input type="hidden"
+         name="location_id"
+         value="<?= htmlspecialchars((string)($old['location_id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+
+  <div class="muted">
+    <?= !empty($old['_lock_location_field'])
+        ? 'Localidade definida automaticamente com base no seu perfil.'
+        : 'Selecione uma localidade da lista.' ?>
+  </div>
+</div>
 
       <!-- Mês da Auditoria -->
       <div class="col">
@@ -271,7 +410,7 @@ $created = $_GET['created'] ?? null;
       <!-- SLA -->
 <div class="col" style="display:inline-block;min-width:240px;text-align:left">
   <div class="field">
-    <label>SLA Atingido? *</label>
+    <label>ANS de tarefas atingido? *</label>
     <div class="segmented" role="radiogroup" aria-label="SLA Atingido">
       <?php
         $slaOld = (string)($old['sla_met'] ?? '1');
@@ -332,6 +471,54 @@ $created = $_GET['created'] ?? null;
 
     </div>
   </form>
+
+  <script>
+(() => {
+  const ticketInput = document.getElementById('ticket_number');
+  if (!ticketInput) return;
+
+  const map = {
+    'INC': 'INCIDENTE',
+    'RITM': 'REQUISIÇÃO',
+    'SCTASK': 'TASK'
+  };
+
+  function selectTicketType(typeValue) {
+    const radios = document.querySelectorAll('input[name="ticket_type"]');
+    radios.forEach(radio => {
+      const label = document.querySelector(`label[for="${radio.id}"]`);
+      if (!label) return;
+
+      if (radio.value === typeValue) {
+        radio.checked = true;
+        label.setAttribute('aria-pressed', 'true');
+      } else {
+        label.setAttribute('aria-pressed', 'false');
+      }
+    });
+  }
+
+  function detectType(value) {
+    const v = value.toUpperCase().trim();
+
+    for (const prefix in map) {
+      if (v.startsWith(prefix)) {
+        selectTicketType(map[prefix]);
+        return;
+      }
+    }
+  }
+
+  ticketInput.addEventListener('input', () => {
+    detectType(ticketInput.value);
+  });
+
+  // ✅ Detecta também se o campo já vier preenchido (refresh, voltar, erro)
+  if (ticketInput.value) {
+    detectType(ticketInput.value);
+  }
+})();
+</script>
 
   <!-- SANFONA: Opções de exportação -->
   <section class="export-accordion" aria-label="Opções de exportação">

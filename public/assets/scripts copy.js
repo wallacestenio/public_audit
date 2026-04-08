@@ -187,6 +187,77 @@ window.exportByMonth = function () {
     }
   }
 
+  
+(async () => {
+  const input    = document.getElementById('ticket_number');
+  const feedback = document.getElementById('ticket-feedback');
+  const saveBtn  = document.getElementById('btn-open-confirm');
+
+  if (!input || !feedback || !saveBtn) return;
+
+  let timer = null;
+  let lastValue = '';
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+
+    const value = input.value.trim();
+    feedback.style.display = 'none';
+    feedback.textContent = '';
+
+    saveBtn.disabled = false;
+    saveBtn.style.opacity = '';
+    saveBtn.style.pointerEvents = '';
+
+    if (value.length < 8 || value === lastValue) return;
+
+    timer = setTimeout(() => validateTicket(value), 400);
+  });
+
+  async function validateTicket(number) {
+    lastValue = number;
+
+    try {
+      const base  = '<?= htmlspecialchars($base, ENT_QUOTES, "UTF-8") ?>';
+      const token = '<?= htmlspecialchars($form_token_catalog ?? "", ENT_QUOTES, "UTF-8") ?>';
+
+      const res = await fetch(
+        `${base}/api/validate/ticket?number=${encodeURIComponent(number)}`,
+        {
+          method: 'GET',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Form-Token': token,
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin'
+        }
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      if (data.invalid) return;
+
+      if (data.duplicate) {
+        feedback.textContent = '⚠️ Este chamado já está cadastrado.';
+        feedback.style.display = 'block';
+        feedback.style.color = '#dc2626';
+
+        saveBtn.disabled = true;
+        saveBtn.style.opacity = '0.6';
+        saveBtn.style.pointerEvents = 'none';
+      }
+
+    } catch (err) {
+      console.error('Falha ao validar ticket:', err);
+    }
+  }
+})();
+
+
+
   /* ------ Eventos ------ */
   tn.addEventListener('input', () => {
     tn.style.borderColor = '';

@@ -1,5 +1,8 @@
 <?php
 
+
+echo password_hash('admin123', PASSWORD_DEFAULT);
+
 //echo password_hash('adm123', PASSWORD_DEFAULT);
 $title = $title ?? 'Entrar';
 $error = $error ?? null;

@@ -5,16 +5,26 @@ namespace App\Controllers;
 
 use App\Services\CreateAuditEntryService;
 use App\Repositories\AuditEntryRepository;
+use App\Repositories\KyndrylAuditorRepository;
+use App\Support\Logger;
 
 final class AuditEntriesController
 {
+    /* ==========================================================
+     * CONSTRUCTOR / DEPENDENCIES
+     * ========================================================== */
     public function __construct(
-        private CreateAuditEntryService $service,
-        private AuditEntryRepository $repo,
-        private ?\App\Support\Logger $logger = null
+        private CreateAuditEntryService  $service,
+        private AuditEntryRepository     $repo,
+        private KyndrylAuditorRepository $kyndrylRepo,
+        private ?Logger                 $logger = null
     ) {
-        $this->logger ??= class_exists(\App\Support\Logger::class) ? new \App\Support\Logger() : null;
+        $this->logger ??= new Logger();
     }
+
+    /* ==========================================================
+     * HELPERS
+     * ========================================================== */
 
     private function base(): string
     {
@@ -28,257 +38,219 @@ final class AuditEntriesController
         $baseDir = dirname(__DIR__) . '/Views';
         $layout  = $baseDir . '/layout.php';
         $base    = $this->base();
-        if (!empty($data)) extract($data, EXTR_OVERWRITE);
+
+        if (!empty($data)) {
+            extract($data, EXTR_OVERWRITE);
+        }
+
         require $layout;
     }
 
-    /** Gera/renova token para as chamadas de catálogo do formulário (sessão) */
+    /** Token para chamadas AJAX do formulário */
     private function ensureCatalogFormToken(): string
     {
         $now = time();
         $reg = $_SESSION['form_token_catalog'] ?? null;
-        if (is_array($reg) && !empty($reg['v']) && (int)($reg['exp'] ?? 0) > $now) {
+
+        if (
+            is_array($reg) &&
+            !empty($reg['v']) &&
+            (int)($reg['exp'] ?? 0) > $now
+        ) {
             return (string)$reg['v'];
         }
-        $token = bin2hex(random_bytes(32)); // 64 chars
+
+        $token = bin2hex(random_bytes(32));
         $_SESSION['form_token_catalog'] = [
             'v'   => $token,
-            'exp' => $now + 2 * 60 * 60, // 2 horas
+            'exp' => $now + 2 * 60 * 60,
         ];
+
         return $token;
     }
 
-    /** Página do formulário */
+    /* ==========================================================
+     * FORM (GET /)
+     * ========================================================== */
+
     public function form(): void
-{
-    // FLASH (erro e old) vindos de redirecionamento
-    $flashError = $_SESSION['flash_error'] ?? null;
-    $flashOld   = $_SESSION['flash_old']   ?? null;
-    unset($_SESSION['flash_error'], $_SESSION['flash_old']);
+    {
+        /* ---------- Flash ---------- */
+        $flashError = $_SESSION['flash_error'] ?? null;
+        $flashOld   = $_SESSION['flash_old'] ?? null;
+        unset($_SESSION['flash_error'], $_SESSION['flash_old']);
 
-    $old = is_array($flashOld) ? $flashOld : [];
+        $old = is_array($flashOld) ? $flashOld : [];
 
-    // Prefill: solicitante = nome do usuário
-    if (!empty($_SESSION['user']['name']) && empty($old['requester_name'])) {
-        $old['requester_name'] = (string)$_SESSION['user']['name'];
-    }
-    // Travar "Auditor Kyndryl" com sessão
-    if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
-        $old['kyndryl_auditor']     = $old['kyndryl_auditor']    ?? (string)$_SESSION['user']['name'];
-        $old['kyndryl_auditor_id']  = $old['kyndryl_auditor_id'] ?? (int)$_SESSION['user']['id'];
-        $old['_lock_kyndryl_field'] = 1;
-    }
-
-    // 🔐 Token para a API de catálogos (somente via form)
-    $form_token_catalog = $this->ensureCatalogFormToken();
-
-    $this->render('form', [
-        'title'              => 'Auditoria de Chamados',
-        'error'              => $flashError,
-        'old'                => $old,
-        'form_token_catalog' => $form_token_catalog,
-    ]);
-}
-
-/** GET /api/validate/ticket?number=INC123... -> JSON { ok: true, duplicate: bool } */
-public function validateTicket(): void
-{
-    header('Content-Type: application/json; charset=utf-8');
-
-    $number = isset($_GET['number']) ? trim((string)$_GET['number']) : '';
-    if ($number === '' || !preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $number)) {
-        echo json_encode(['ok' => true, 'duplicate' => false, 'invalid' => true], JSON_UNESCAPED_UNICODE);
-        return;
-    }
-
-    $dup = $this->repo->existsTicket($number);
-    echo json_encode(['ok' => true, 'duplicate' => $dup], JSON_UNESCAPED_UNICODE);
-}
-
-    /** Recebe o POST e salva (sem alterações além do já combinado) */
-    public function store(): void
-{
-    $post   = $_POST ?? [];
-    $logger = $this->logger;
-
-    // 🔐 Força user_id/kyndryl_auditor pela sessão
-    if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
-        $post['user_id']            = (int)$_SESSION['user']['id'];
-        $post['kyndryl_auditor_id'] = (int)$_SESSION['user']['id'];
-        $post['kyndryl_auditor']    = (string)$_SESSION['user']['name'];
-    } else {
-        unset($post['user_id'], $post['kyndryl_auditor_id']);
-    }
-
-    // 🔎 VERIFICA DUPLICIDADE ANTES DE QUALQUER OUTRA COISA
-    $ticket = trim((string)($post['ticket_number'] ?? ''));
-    if ($ticket !== '' && $this->repo->existsTicket($ticket)) {
-        // Salva flash e redireciona PRG para "/"
-        $_SESSION['flash_error'] = $ticket . ' já está salvo.';
-        $_SESSION['flash_old']   = $post;
-
-        $base = $this->base();
-        header('Location: ' . $base . '/?dupe=1', true, 303);
-        exit;
-    }
-
-    // Normalização das justificativas
-    $raw = (string)($post['noncompliance_reason_ids'] ?? '');
-    $ids = preg_split('/[;,|\s]+/', $raw, -1, PREG_SPLIT_NO_EMPTY) ?: [];
-    $ids = array_values(array_unique(array_filter(
-        array_map(static fn($x) => (int)preg_replace('/\D+/', '', $x), $ids),
-        static fn($n) => $n > 0
-    )));
-    $post['noncompliance_reason_ids'] = implode(';', $ids);
-
-    $isNc = (string)($post['is_compliant'] ?? '1') === '0';
-    if ($isNc && empty($ids)) {
-        $_SESSION['flash_error'] = 'Selecione ao menos uma justificativa de Não Conformidade.';
-        $_SESSION['flash_old']   = $post;
-
-        $base = $this->base();
-        header('Location: ' . $base . '/?invalid=1', true, 303);
-        exit;
-    }
-
-    try {
-        $id = $this->service->handle($post);
-        $logger?->write('debug.log', date('c') . " OK id={$id}" . PHP_EOL);
-
-        // PRG pós-sucesso também é melhor UX (evita repost)
-        $base = $this->base();
-        header('Location: ' . $base . '/?created=' . urlencode((string)$id), true, 303);
-        exit;
-
-    } catch (\InvalidArgumentException $e) {
-        $_SESSION['flash_error'] = $e->getMessage();
-        $_SESSION['flash_old']   = $post;
-
-        $base = $this->base();
-        header('Location: ' . $base . '/?invalid=1', true, 303);
-        exit;
-
-    } catch (\PDOException $e) {
-        $detail = $e->errorInfo[2] ?? $e->getMessage();
-        if ($this->isTicketNumberDuplicate($e)) {
-            $ticket = (string)($post['ticket_number'] ?? '');
-            $msg = $ticket !== '' ? "{$ticket} já está salvo." : "Este Número de Ticket já está salvo.";
-        } elseif (stripos($detail, 'FOREIGN KEY constraint failed') !== false) {
-            $msg = 'Falha de integridade: alguma justificativa/entrada não existe. (' . $detail . ')';
-        } elseif (stripos($detail, 'CHECK constraint failed') !== false) {
-            $msg = 'Regra de validação do banco violada. (' . $detail . ')';
-        } elseif (str_contains($detail, 'NOT NULL constraint failed')) {
-            $msg = 'Campo obrigatório ausente. (' . $detail . ')';
-        } else {
-            $msg = 'Não foi possível salvar: ' . $detail;
+        /* ---------- Auditor Kyndryl (sessão) ---------- */
+        if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
+            $old['kyndryl_auditor']     = (string)$_SESSION['user']['name'];
+            $old['kyndryl_auditor_id']  = (int)$_SESSION['user']['id'];
+            $old['_lock_kyndryl_field'] = 1;
         }
 
-        $_SESSION['flash_error'] = $msg;
-        $_SESSION['flash_old']   = $post;
+        /* ======================================================
+         * AUTOPREENCHIMENTO (BASEADO EM kyndryl_auditors)
+         * ====================================================== */
+        if (!empty($_SESSION['user']['id'])) {
+            $auditorName = (string) $_SESSION['user']['name'];
 
-        $base = $this->base();
-        header('Location: ' . $base . '/?invalid=1', true, 303);
-        exit;
-    }
-}
+$ref = $this->kyndrylRepo
+    ->getInspectorAndLocationByAuditorName($auditorName);
 
-    /** Export CSV (inalterado) */
-public function exportCsv(): void
-{
-    $prev = error_reporting();
-    $old  = ini_get('display_errors');
-    error_reporting($prev & ~E_DEPRECATED);
-    ini_set('display_errors', '0');
 
-    while (ob_get_level() > 0) @ob_end_clean();
+            if (is_array($ref)) {
 
-    try {
-        // 🔐 Usuário logado (obrigatório)
-        $userId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0;
-        if ($userId <= 0) {
-            http_response_code(401);
-            header('Content-Type: text/plain; charset=utf-8');
-            echo "Não autenticado.\n";
-            return;
-        }
+                // Inspetor Petrobras
+                if (!empty($ref['inspector_id']) && !empty($ref['petrobras_inspector'])) {
+                    $old['petrobras_inspector']    = (string)$ref['petrobras_inspector'];
+                    $old['petrobras_inspector_id'] = (int)$ref['inspector_id'];
+                    $old['_lock_inspector_field']  = 1;
+                }
 
-        // 🔎 Recebe o mês bruto do GET
-        $monthRaw = isset($_GET['audit_month'])
-            ? trim((string)$_GET['audit_month'])
-            : null;
-
-        // ✅ NORMALIZA O MÊS EXACTAMENTE COMO NO SERVICE
-        $month = null;
-        if ($monthRaw !== null && $monthRaw !== '') {
-            $s = trim(mb_strtolower($monthRaw, 'UTF-8'));
-
-            $map = [
-                'jan' => '01','janeiro' => '01',
-                'fev' => '02','fevereiro' => '02',
-                'mar' => '03','março' => '03','marco' => '03',
-                'abr' => '04','abril' => '04',
-                'mai' => '05','maio' => '05',
-                'jun' => '06','junho' => '06',
-                'jul' => '07','julho' => '07',
-                'ago' => '08','agosto' => '08',
-                'set' => '09','setembro' => '09',
-                'out' => '10','outubro' => '10',
-                'nov' => '11','novembro' => '11',
-                'dez' => '12','dezembro' => '12',
-            ];
-
-            if (preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $s)) {
-                $month = $s;
-            } elseif (preg_match('/^(0?[1-9]|1[0-2])\s*\/\s*(\d{4})$/', $s, $m)) {
-                $mm = str_pad($m[1], 2, '0', STR_PAD_LEFT);
-                $month = "{$m[2]}-{$mm}";
-            } elseif (preg_match('/^([a-zçõ]+)\s+(\d{4})$/u', $s, $m)) {
-                $mon = $map[$m[1]] ?? null;
-                if ($mon) {
-                    $month = "{$m[2]}-{$mon}";
+                // Localidade
+                if (!empty($ref['location_id']) && !empty($ref['location'])) {
+                    $old['location']              = (string)$ref['location'];
+                    $old['location_id']           = (int)$ref['location_id'];
+                    $old['_lock_location_field']  = 1;
                 }
             }
         }
 
-        // 🔎 Consulta FINAL (agora com mês OK)
-        $rows = $this->repo->exportRows([
-            'audit_month' => $month ?: null,
-            'user_id'     => $userId,
-        ]);
+        /* ---------- Token ---------- */
+        $form_token_catalog = $this->ensureCatalogFormToken();
 
-        $filename = 'auditoria_chamados_' .
-            ($month ? $month : 'base') . '.csv';
+        /* ---------- Render ---------- */
+        $this->render('form', [
+            'title'              => 'Auditoria de Chamados',
+            'error'              => $flashError,
+            'old'                => $old,
+            'form_token_catalog' => $form_token_catalog,
+        ]);
+    }
+
+    /* ==========================================================
+     * API – VALIDATE TICKET
+     * ========================================================== */
+
+    public function validateTicket(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $number = trim((string)($_GET['number'] ?? ''));
+
+        if ($number === '' || !preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $number)) {
+            echo json_encode(['ok' => true, 'duplicate' => false, 'invalid' => true]);
+            return;
+        }
+
+        $dup = $this->repo->existsTicket($number);
+        echo json_encode(['ok' => true, 'duplicate' => $dup]);
+    }
+
+    /* ==========================================================
+     * STORE (POST /audit-entries)
+     * ========================================================== */
+
+    public function store(): void
+    {
+        $post   = $_POST ?? [];
+        $logger = $this->logger;
+
+        /* ---------- Sobrescreve via kyndryl ---------- */
+        if (!empty($_SESSION['user']['id'])) {
+           
+$auditorName = (string) $_SESSION['user']['name'];
+
+$ref = $this->kyndrylRepo
+    ->getInspectorAndLocationByAuditorName($auditorName);
+
+if ($ref) {
+    $post['petrobras_inspector'] = $ref['petrobras_inspector'];
+    $post['location']            = $ref['location'];
+}
+
+        }
+
+        /* ---------- Auditor ---------- */
+        if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
+            $post['user_id']         = (int)$_SESSION['user']['id'];
+            $post['kyndryl_auditor'] = (string)$_SESSION['user']['name'];
+        }
+
+        try {
+            $id = $this->service->handle($post);
+
+            $logger?->write('debug.log', date('c') . " OK id={$id}\n");
+
+            header('Location: ' . $this->base() . '/?created=' . urlencode((string)$id), true, 303);
+            exit;
+
+        } catch (\PDOException $e) {
+
+    // 🔎 SQLite: erro 19 = UNIQUE constraint violation
+    $errorCode = $e->getCode();              // geralmente "23000"
+    $errorInfo = $e->errorInfo[1] ?? null;   // SQLite = 19
+
+    if ($errorInfo === 19 && str_contains($e->getMessage(), 'ticket_number')) {
+        $ticket = (string)($post['ticket_number'] ?? '');
+
+        $_SESSION['flash_error'] =
+            $ticket !== ''
+                ? "O ticket {$ticket} já está cadastrado."
+                : "Este ticket já está cadastrado.";
+
+        $_SESSION['flash_old'] = $post;
+
+        header('Location: ' . $this->base() . '/?dupe=1', true, 303);
+        exit;
+    }
+
+    // fallback genérico
+    $_SESSION['flash_error'] = 'Erro ao salvar o chamado. Tente novamente.';
+    $_SESSION['flash_old']   = $post;
+
+    header('Location: ' . $this->base() . '/?invalid=1', true, 303);
+    exit;
+}
+
+catch (\Throwable $e) {
+
+    $_SESSION['flash_error'] = $e->getMessage();
+    $_SESSION['flash_old']   = $post;
+
+    header('Location: ' . $this->base() . '/?invalid=1', true, 303);
+    exit;
+}
+    }
+
+    /* ==========================================================
+     * EXPORT CSV
+     * ========================================================== */
+
+    public function exportCsv(): void
+    {
+        $userId = (int)($_SESSION['user']['id'] ?? 0);
+        if ($userId <= 0) {
+            http_response_code(401);
+            echo "Não autenticado.";
+            return;
+        }
+
+        $rows = $this->repo->exportRows(['user_id' => $userId]);
 
         header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="'.$filename.'"');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Pragma: no-cache');
+        header('Content-Disposition: attachment; filename="auditoria_chamados.csv"');
 
         $out = fopen('php://output', 'w');
-
-        // ✅ BOM UTF-8 (Excel)
         fwrite($out, "\xEF\xBB\xBF");
 
         foreach ($rows as $r) {
-            fputcsv($out, array_values($r), ';', '"', '\\', "\r\n");
+           fputcsv($out, array_values($r), ';', '"', '\\');
+
         }
 
         fclose($out);
         exit;
-
-    } finally {
-        ini_set('display_errors', $old);
-        error_reporting($prev);
-    }
-}
-
-    private function isTicketNumberDuplicate(\PDOException $e): bool
-    {
-        $msg  = strtolower($e->getMessage() ?? '');
-        $info = $e->errorInfo ?? null;
-        if (str_contains($msg, 'unique constraint failed') && str_contains($msg, 'ticket_number')) return true;
-        if (is_array($info) && (int)($info[1] ?? 0) === 1062) return true; // MySQL
-        if (($info[0] ?? null) === '23505') return true;                   // PostgreSQL
-        return false;
     }
 }

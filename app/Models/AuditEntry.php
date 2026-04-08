@@ -108,4 +108,26 @@ final class AuditEntry
         throw $e;
     }
 }
+
+public function getInspectorAndLocationByAuditor(int $auditorId): ?array
+{
+    $sql = "
+        SELECT
+            ki.inspector_id,
+            pi.petrobras_inspector,
+            ki.location_id,
+            l.location
+        FROM kyndryl_auditors ki
+        LEFT JOIN petrobras_inspectors pi ON pi.id = ki.inspector_id
+        LEFT JOIN locations l ON l.id = ki.location_id
+        WHERE ki.id = :id
+        LIMIT 1
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':id' => $auditorId]);
+
+    return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+}
+
 }
