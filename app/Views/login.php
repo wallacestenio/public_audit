@@ -1,8 +1,12 @@
+
+<?php if (!empty($_SESSION['register_success'])): ?>
+  <div class="alert alert-success">
+    <?= htmlspecialchars($_SESSION['register_success'], ENT_QUOTES, 'UTF-8') ?>
+  </div>
+  <?php unset($_SESSION['register_success']); ?>
+<?php endif; ?>
+
 <?php
-
-
-
-
 //echo password_hash('adm123', PASSWORD_DEFAULT);
 $title = $title ?? 'Entrar';
 $error = $error ?? null;

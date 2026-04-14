@@ -335,3 +335,13 @@ button:hover,.btn:hover{ background:var(--btnh) }
   color: #ffffff; /* ajuste conforme o fundo */
 }
 
+.alert-success{
+  background:#ecfdf5;
+  color:#065f46;
+  border:1px solid #34d399;
+  padding:12px 14px;
+  border-radius:6px;
+  margin-bottom:16px;
+  font-weight:600;
+}
+

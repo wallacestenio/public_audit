@@ -119,6 +119,11 @@ private function backWithError(string $message): void
         ':location'  => $locationId
     ]);
 
+    
+$_SESSION['register_success'] =
+    '✅ Auditor cadastrado com sucesso! Agora você já pode realizar o login.';
+
+
     header('Location: ' . $this->base() . '/login?registered=1');
     exit;
 }
