@@ -1,7 +1,7 @@
 <?php
 
 
-echo password_hash('admin123', PASSWORD_DEFAULT);
+
 
 //echo password_hash('adm123', PASSWORD_DEFAULT);
 $title = $title ?? 'Entrar';
@@ -33,6 +33,10 @@ $error = $error ?? null;
       </div>
     </div>
   </form>
+
+<div style="margin-top:12px">
+  <a href="<?= htmlspecialchars($base) ?>/register">Cadastre-se</a>
+</div>
 
   <div class="muted" style="margin-top:8px">
     Dica: o usuário é seu <code>Nome no Formato Recebido</code>.

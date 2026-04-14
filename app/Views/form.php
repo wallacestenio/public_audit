@@ -153,7 +153,51 @@ document.addEventListener('click', function (e) {
   }
 })();
 </script>
+<script>
+function exportByMonth() {
+  const monthInput = document.getElementById('audit_month');
+  if (!monthInput) return;
 
+  const value = monthInput.value.trim();
+
+  // ❌ Campo vazio → bloqueia exportação
+  if (!value) {
+    showMonthTooltip(monthInput, 'Selecione o mês da auditoria para exportar.');
+    monthInput.focus();
+    return;
+  }
+
+  // ✅ Campo preenchido → exporta
+  const base = '<?= htmlspecialchars($base ?? "", ENT_QUOTES, "UTF-8") ?>';
+  window.location.href =
+    base + '/export/csv?audit_month=' + encodeURIComponent(value);
+}
+
+/* Tooltip flutuante simples */
+function showMonthTooltip(input, message) {
+  removeMonthTooltip();
+
+  const tip = document.createElement('div');
+  tip.id = 'month-tooltip';
+  tip.textContent = message;
+
+  document.body.appendChild(tip);
+
+  const rect = input.getBoundingClientRect();
+
+  tip.style.left = rect.left + window.scrollX + 'px';
+  tip.style.top  = rect.bottom + window.scrollY + 6 + 'px';
+
+  setTimeout(removeMonthTooltip, 3000);
+
+  input.addEventListener('input', removeMonthTooltip, { once: true });
+}
+
+function removeMonthTooltip() {
+  const tip = document.getElementById('month-tooltip');
+  if (tip) tip.remove();
+}
+</script>
 <!-- ========================================================= -->
 <!-- ✅ CSS LOCAL DO FORM -->
 <!-- ========================================================= -->
@@ -176,7 +220,24 @@ document.addEventListener('click', function (e) {
   cursor:pointer;
 }
 </style>
+<style>
+  #month-tooltip{
+  position:absolute;
+  background:#111827;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:6px;
+  font-size:13px;
+  z-index:10001;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+  animation: fadeIn .2s ease-out;
+}
 
+@keyframes fadeIn{
+  from{ opacity:0; transform:translateY(-4px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+  </style>
 <?php if (!empty($error)): ?>
 <div class="alert alert-danger">
   <?= htmlspecialchars((string)$error, ENT_QUOTES, 'UTF-8') ?>
@@ -290,7 +351,7 @@ document.addEventListener('click', function (e) {
         : 'Selecione um inspetor da lista.' ?>
   </div>
 </div>
-``
+
 
       <!-- Fornecedor Auditado -->
       <div class="col" style="position:relative">

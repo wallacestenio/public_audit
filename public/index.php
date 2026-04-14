@@ -84,8 +84,24 @@ use App\Support\{
     Logger
 };
 
+
+use App\Controllers\RegisterController;
+use App\Repositories\LocationRepository;
+use App\Repositories\PetrobrasInspectorRepository;
+use App\Repositories\AllowedEmailRepository;
+
+
+
+
+// repositories
+$locationRepo      = new LocationRepository($pdo);
+$inspectorRepo     = new PetrobrasInspectorRepository($pdo);
+$allowedEmailRepo  = new AllowedEmailRepository($pdo);
+
+
 /* ===================== ROUTER ===================== */
 $router = new Router();
+
 
 /* ===================== SCHEMA / MAPPER ===================== */
 $schema = new SchemaInspector($pdo);
@@ -104,6 +120,12 @@ $auditModel = new AuditEntry($pdo);
 $auditRepo  = new AuditEntryRepository($auditModel);
 $createSvc  = new CreateAuditEntryService($auditRepo);
 
+
+$locationRepo      = new LocationRepository($pdo);
+$inspectorRepo     = new PetrobrasInspectorRepository($pdo);
+$allowedEmailRepo  = new AllowedEmailRepository($pdo);
+
+
 /* ✅ REPOSITÓRIO KYNDRYL AUDITOR */
 $kyndrylAuditorRepo = new KyndrylAuditorRepository($pdo);
 
@@ -114,6 +136,21 @@ $auditCtrl = new AuditEntriesController(
     $kyndrylAuditorRepo,
     $logger
 );
+
+
+$locationRepo      = new LocationRepository($pdo);
+$inspectorRepo     = new PetrobrasInspectorRepository($pdo);
+$allowedEmailRepo  = new AllowedEmailRepository($pdo);
+
+$registerCtrl = new RegisterController(
+    $locationRepo,
+    $inspectorRepo,
+    $allowedEmailRepo,
+    $pdo
+);
+
+
+
 
 /* ===================== AUTH / LOGIN ===================== */
 $auth      = new Auth($pdo);
@@ -126,6 +163,20 @@ $mustAuth = function () use ($auth) {
         exit;
     }
 };
+
+/* ===================== registro / GET ===================== */
+$router->get('/register', function () use ($registerCtrl) {
+    $registerCtrl->show();
+});
+
+
+/* ===================== registro / POST===================== */
+
+$router->post('/register', function () use ($registerCtrl) {
+    $registerCtrl->store();
+});
+
+
 
 $mustAdmin = function () use ($auth) {
     if (!$auth->isAdmin()) {
@@ -200,6 +251,14 @@ $router->get('/api/validate/ticket', function () use ($mustAuthApi, $validateFor
     $validateFormOriginForApi();
     $auditCtrl->validateTicket();
 });
+
+/* grafico de mão conformidades */
+
+$router->get('/stats/noncompliance', function () use ($mustAuth, $auditCtrl) {
+    $mustAuth();
+    $auditCtrl->noncomplianceStats();
+});
+
 
 /* Export CSV */
 $router->get('/export/csv', function () use ($mustAuth, $auditCtrl) {

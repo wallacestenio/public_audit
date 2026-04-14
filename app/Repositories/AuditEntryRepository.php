@@ -95,18 +95,15 @@ public function exportRows(array $filters = []): array
     $where  = [];
     $params = [];
 
-    $userId = isset($filters['user_id']) ? (int)$filters['user_id'] : 0;
-    if ($userId > 0) {
-        $where[] = 'user_id = :user_id';
-        $params[':user_id'] = $userId;
-    } else {
-        return [];
-    }
+    if (!empty($filters['audit_month'])) {
+    $where[] = 'substr(audit_month, 1, 7) = :audit_month';
+    $params[':audit_month'] = $filters['audit_month'];
+}
 
     if (!empty($filters['audit_month'])) {
-        $where[] = 'audit_month = :audit_month';
-        $params[':audit_month'] = (string)$filters['audit_month'];
-    }
+    $where[] = 'substr(audit_month, 1, 7) = :audit_month';
+    $params[':audit_month'] = $filters['audit_month'];
+}
 
     if ($where) {
         $sql .= ' WHERE ' . implode(' AND ', $where);
@@ -187,5 +184,46 @@ foreach ($rows as $r) {
 
 return $out;
 }
+
+
+public function fetchNoncomplianceStats(?string $month = null): array
+{
+    $pdo = $this->rawPdo();
+
+    $sql = "
+        SELECT noncompliance_reasons
+        FROM audit_entries
+        WHERE is_compliant = 0
+          AND noncompliance_reasons IS NOT NULL
+          AND TRIM(noncompliance_reasons) <> ''
+    ";
+
+    $params = [];
+
+    if ($month) {
+        $sql .= " AND audit_month = :month";
+        $params[':month'] = $month;
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+}
+public function listAuditMonths(): array
+{
+    $pdo = $this->rawPdo();
+
+    $sql = "
+        SELECT DISTINCT audit_month
+        FROM audit_entries
+        ORDER BY audit_month DESC
+    ";
+
+    $rows = $pdo->query($sql)->fetchAll(\PDO::FETCH_COLUMN);
+
+    return $rows ?: [];
+}
+
 
 }

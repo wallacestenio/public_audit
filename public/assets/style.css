@@ -304,3 +304,34 @@ button:hover,.btn:hover{ background:var(--btnh) }
   box-shadow:none;
 }
 
+/* BARRA DO MENU */
+.menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background-color: transparent; /* ✅ fundo transparente */
+}
+
+/* LOGO */
+.menu-logo img {
+  height: 256px;   /* ✅ ideal para menu */
+  width: auto;
+  display: block;
+}
+
+/* LINKS */
+.menu-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-links a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #ffffff; /* ajuste conforme o fundo */
+}
+

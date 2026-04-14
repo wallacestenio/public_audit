@@ -48,13 +48,13 @@ function getCatalogHeaders() {
    ========================================================= */
 
 /** Exportação por mês — botão das opções */
-window.exportByMonth = function () {
+/*window.exportByMonth = function () {
   const m = (document.querySelector('input[name="audit_month"]')?.value || '').trim();
   if (!m) return;
 
   window.location.href =
     baseJoin('/export/csv') + '?audit_month=' + encodeURIComponent(m);
-};
+};*/
 
 
 /* =========================================================
@@ -1463,6 +1463,10 @@ window.NC = (() => {
     attributeFilter: ["style"]
   });
 })();
+
+
+
+
 /* =========================================================
    FECHAMENTO FINAL DO SCRIPT
    ========================================================= */
@@ -1483,6 +1487,8 @@ window.NC = (() => {
     console.error("Erro ao finalizar scripts.js:", e);
   }
 })();
+
+
 
 /* =========================================================
    EOF — END OF FILE

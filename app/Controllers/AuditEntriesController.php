@@ -129,6 +129,34 @@ $ref = $this->kyndrylRepo
         ]);
     }
 
+    public function noncomplianceStats(): void
+{
+    $month = isset($_GET['month']) && $_GET['month'] !== ''
+        ? trim((string)$_GET['month'])
+        : null;
+
+    $raw = $this->repo->fetchNoncomplianceStats($month);
+    $months = $this->repo->listAuditMonths();
+
+    $counter = [];
+
+    foreach ($raw as $line) {
+        $items = array_filter(array_map('trim', explode(';', $line)));
+        foreach ($items as $label) {
+            $counter[$label] = ($counter[$label] ?? 0) + 1;
+        }
+    }
+
+    arsort($counter);
+
+    $this->render('noncompliance_stats', [
+        'title'        => 'Estatísticas de Não Conformidades',
+        'stats'        => $counter,
+        'months'       => $months,
+        'selectedMonth'=> $month,
+    ]);
+}
+
     /* ==========================================================
      * API – VALIDATE TICKET
      * ========================================================== */
@@ -229,28 +257,36 @@ catch (\Throwable $e) {
      * ========================================================== */
 
     public function exportCsv(): void
-    {
-        $userId = (int)($_SESSION['user']['id'] ?? 0);
-        if ($userId <= 0) {
-            http_response_code(401);
-            echo "Não autenticado.";
-            return;
-        }
+{
+    $userId = (int)($_SESSION['user']['id'] ?? 0);
+    if ($userId <= 0) {
+        http_response_code(401);
+        echo "Não autenticado.";
+        return;
+    }
 
-        $rows = $this->repo->exportRows(['user_id' => $userId]);
+    // ✅ RECEBE O MÊS DA URL
+    $month = isset($_GET['audit_month']) && $_GET['audit_month'] !== ''
+        ? trim((string)$_GET['audit_month'])
+        : null;
 
-        header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="auditoria_chamados.csv"');
+    // ✅ ENVIA O MÊS PARA O REPOSITORY
+    $rows = $this->repo->exportRows([
+        'user_id'     => $userId,
+        'audit_month' => $month,
+    ]);
 
-        $out = fopen('php://output', 'w');
-        fwrite($out, "\xEF\xBB\xBF");
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="auditoria_chamados.csv"');
 
-        foreach ($rows as $r) {
-           fputcsv($out, array_values($r), ';', '"', '\\');
+    $out = fopen('php://output', 'w');
+    fwrite($out, "\xEF\xBB\xBF");
 
-        }
+    foreach ($rows as $r) {
+        fputcsv($out, array_values($r), ';', '"', '\\');
+    }
 
-        fclose($out);
-        exit;
+    fclose($out);
+    exit;
     }
 }
