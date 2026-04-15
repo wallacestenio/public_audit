@@ -41,4 +41,23 @@ final class KyndrylAuditorRepository
 
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
+
+    public function getInspectorAndLocationByUserId(int $userId): ?array
+{
+    $stmt = $this->pdo->prepare(
+        "SELECT
+            pi.petrobras_inspector,
+            l.location
+         FROM kyndryl_auditors ka
+         LEFT JOIN petrobras_inspectors pi ON pi.id = ka.inspector_id
+         LEFT JOIN locations l             ON l.id  = ka.location_id
+         WHERE ka.id = :id
+         LIMIT 1"
+    );
+
+    $stmt->execute([':id' => $userId]);
+
+    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+    return $row ?: null;
+}
 }

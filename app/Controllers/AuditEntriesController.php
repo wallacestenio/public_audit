@@ -129,31 +129,51 @@ $ref = $this->kyndrylRepo
         ]);
     }
 
-    public function noncomplianceStats(): void
+ public function noncomplianceStats(): void
 {
+    // ✅ Usuário logado
+    $userId = (int)($_SESSION['user']['id'] ?? 0);
+    if ($userId <= 0) {
+        header('Location: ' . $this->base() . '/login');
+        exit;
+    }
+
+    // ✅ Filtro por mês (opcional)
     $month = isset($_GET['month']) && $_GET['month'] !== ''
         ? trim((string)$_GET['month'])
         : null;
 
-    $raw = $this->repo->fetchNoncomplianceStats($month);
-    $months = $this->repo->listAuditMonths();
+    // ✅ BUSCA OS DADOS SOMENTE DO USUÁRIO LOGADO
+    $raw = $this->repo->fetchNoncomplianceStatsByUser(
+        $userId,
+        $month
+    );
+
+    $months = $this->repo->listAuditMonthsByUser($userId);
 
     $counter = [];
 
     foreach ($raw as $line) {
-        $items = array_filter(array_map('trim', explode(';', $line)));
-        foreach ($items as $label) {
-            $counter[$label] = ($counter[$label] ?? 0) + 1;
-        }
+
+    // ✅ ignora valores nulos ou vazios
+    if (!is_string($line) || trim($line) === '') {
+        continue;
     }
+
+    $items = array_filter(array_map('trim', explode(';', $line)));
+
+    foreach ($items as $label) {
+        $counter[$label] = ($counter[$label] ?? 0) + 1;
+    }
+}
 
     arsort($counter);
 
     $this->render('noncompliance_stats', [
-        'title'        => 'Estatísticas de Não Conformidades',
-        'stats'        => $counter,
-        'months'       => $months,
-        'selectedMonth'=> $month,
+        'title'         => 'Estatísticas de Não Conformidades',
+        'stats'         => $counter,
+        'months'        => $months,
+        'selectedMonth' => $month,
     ]);
 }
 
@@ -188,15 +208,23 @@ $ref = $this->kyndrylRepo
         /* ---------- Sobrescreve via kyndryl ---------- */
         if (!empty($_SESSION['user']['id'])) {
            
-$auditorName = (string) $_SESSION['user']['name'];
+$userId = (int)$_SESSION['user']['id'];
 
 $ref = $this->kyndrylRepo
-    ->getInspectorAndLocationByAuditorName($auditorName);
+    ->getInspectorAndLocationByUserId($userId);
 
-if ($ref) {
-    $post['petrobras_inspector'] = $ref['petrobras_inspector'];
-    $post['location']            = $ref['location'];
+if (!$ref) {
+    $_SESSION['flash_error'] =
+        'Seu perfil não está completamente configurado (fiscal ou localidade). 
+         Entre em contato com o administrador.';
+    $_SESSION['flash_old'] = $post;
+
+    header('Location: ' . $this->base() . '/?invalid=profile', true, 303);
+    exit;
 }
+
+$post['inspector_id'] = $ref['inspector_id'];
+$post['location_id']            = $ref['location_id'];
 
         }
 
@@ -235,11 +263,13 @@ if ($ref) {
     }
 
     // fallback genérico
-    $_SESSION['flash_error'] = 'Erro ao salvar o chamado. Tente novamente.';
-    $_SESSION['flash_old']   = $post;
+   $_SESSION['flash_error'] =
+    'Erro ao salvar o chamado: ' . $e->getMessage();
 
-    header('Location: ' . $this->base() . '/?invalid=1', true, 303);
-    exit;
+$_SESSION['flash_old'] = $post;
+
+header('Location: ' . $this->base() . '/?invalid=debug', true, 303);
+exit;
 }
 
 catch (\Throwable $e) {

@@ -123,7 +123,7 @@ $values = array_values($stats);
     <thead>
       <tr>
         <th class="col-label">Não Conformidade</th>
-        <th class="col-count">Quantidade</th>
+        <th class="col-count">Qtd.</th>
       </tr>
     </thead>
     <tbody>

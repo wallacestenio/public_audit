@@ -95,15 +95,17 @@ public function exportRows(array $filters = []): array
     $where  = [];
     $params = [];
 
-    if (!empty($filters['audit_month'])) {
-    $where[] = 'substr(audit_month, 1, 7) = :audit_month';
-    $params[':audit_month'] = $filters['audit_month'];
-}
+    // ✅ filtro por usuário
+    if (!empty($filters['user_id'])) {
+        $where[] = 'user_id = :user_id';
+        $params[':user_id'] = (int)$filters['user_id'];
+    }
 
+    // ✅ filtro por mês
     if (!empty($filters['audit_month'])) {
-    $where[] = 'substr(audit_month, 1, 7) = :audit_month';
-    $params[':audit_month'] = $filters['audit_month'];
-}
+        $where[] = 'substr(audit_month, 1, 7) = :audit_month';
+        $params[':audit_month'] = $filters['audit_month'];
+    }
 
     if ($where) {
         $sql .= ' WHERE ' . implode(' AND ', $where);
@@ -115,74 +117,77 @@ public function exportRows(array $filters = []): array
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
 
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    // ✅ GUARDA PRIMEIRO
+    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
     $out = [];
 
-foreach ($rows as $r) {
+    foreach ($rows as $r) {
 
-    $sla    = ((string)($r['sla_met'] ?? '')) === '1' ? 'Sim' : 'Não';
-    $pri    = 'Prioridade ' . (string)(int)($r['priority'] ?? 0);
-    $isComp = ((string)($r['is_compliant'] ?? '')) === '1' ? 'Sim' : 'Não';
+        $sla    = ((string)$r['sla_met'] === '1') ? 'Sim' : 'Não';
+        $pri    = 'Prioridade ' . (int)$r['priority'];
+        $isComp = ((string)$r['is_compliant'] === '1') ? 'Sim' : 'Não';
 
-    // Converter audit_month (YYYY-MM → mês PT-BR)
-    $mesIso  = (string)($r['audit_month'] ?? '');
-    $mesNome = '';
+        // Converter mês
+        $mesIso  = (string)$r['audit_month'];
+        $mesNome = '';
 
-    if (preg_match('/^\d{4}-(\d{2})$/', $mesIso, $m)) {
-        $mapMes = [
-            '01'=>'Janeiro','02'=>'Fevereiro','03'=>'Março','04'=>'Abril',
-            '05'=>'Maio','06'=>'Junho','07'=>'Julho','08'=>'Agosto',
-            '09'=>'Setembro','10'=>'Outubro','11'=>'Novembro','12'=>'Dezembro',
-        ];
-        $mesNome = $mapMes[$m[1]] ?? '';
+        if (preg_match('/^\d{4}-(\d{2})$/', $mesIso, $m)) {
+            $mapMes = [
+                '01'=>'Janeiro','02'=>'Fevereiro','03'=>'Março','04'=>'Abril',
+                '05'=>'Maio','06'=>'Junho','07'=>'Julho','08'=>'Agosto',
+                '09'=>'Setembro','10'=>'Outubro','11'=>'Novembro','12'=>'Dezembro',
+            ];
+            $mesNome = $mapMes[$m[1]] ?? '';
+        }
+
+        // ✅ quebra das NC
+        $ncsRaw = trim((string)($r['noncompliance_reasons'] ?? ''));
+        $ncs = $ncsRaw !== ''
+            ? array_map('trim', explode(';', $ncsRaw))
+            : [];
+
+        // sem NC → 1 linha
+        if (!$ncs) {
+            $out[] = [
+                'ticket_number'         => $r['ticket_number'],
+                'ticket_type'           => $r['ticket_type'],
+                'kyndryl_auditor'       => $r['kyndryl_auditor'],
+                'petrobras_inspector'   => $r['petrobras_inspector'],
+                'audited_supplier'      => $r['audited_supplier'],
+                'location'              => $r['location'],
+                'audit_month'           => $mesNome,
+                'sla_met_label'         => $sla,
+                'priority_label'        => $pri,
+                'category'              => $r['category'],
+                'resolver_group'        => $r['resolver_group'],
+                'is_compliant_label'    => $isComp,
+                'noncompliance_reasons' => '',
+            ];
+            continue;
+        }
+
+        // ✅ 1 NC = 1 linha
+        foreach ($ncs as $nc) {
+            $out[] = [
+                'ticket_number'         => $r['ticket_number'],
+                'ticket_type'           => $r['ticket_type'],
+                'kyndryl_auditor'       => $r['kyndryl_auditor'],
+                'petrobras_inspector'   => $r['petrobras_inspector'],
+                'audited_supplier'      => $r['audited_supplier'],
+                'location'              => $r['location'],
+                'audit_month'           => $mesNome,
+                'sla_met_label'         => $sla,
+                'priority_label'        => $pri,
+                'category'              => $r['category'],
+                'resolver_group'        => $r['resolver_group'],
+                'is_compliant_label'    => $isComp,
+                'noncompliance_reasons' => $nc,
+            ];
+        }
     }
 
-    // ✅ Quebra das não conformidades
-    $ncsRaw = (string)($r['noncompliance_reasons'] ?? '');
-    $ncs = array_values(array_filter(array_map('trim', explode(';', $ncsRaw))));
-
-    // Caso não haja NC → gera 1 linha normal
-    if (empty($ncs)) {
-        $out[] = [
-            'ticket_number'         => (string)$r['ticket_number'],
-            'ticket_type'           => (string)$r['ticket_type'],
-            'kyndryl_auditor'       => (string)$r['kyndryl_auditor'],
-            'petrobras_inspector'   => (string)$r['petrobras_inspector'],
-            'audited_supplier'      => (string)$r['audited_supplier'],
-            'location'              => (string)$r['location'],
-            'audit_month'           => $mesNome,
-            'sla_met_label'         => $sla,
-            'priority_label'        => $pri,
-            'category'              => (string)$r['category'],
-            'resolver_group'        => (string)$r['resolver_group'],
-            'is_compliant_label'    => $isComp,
-            'noncompliance_reasons' => '',
-        ];
-        continue;
-    }
-
-    // ✅ Para cada NC → gera uma linha
-    foreach ($ncs as $nc) {
-        $out[] = [
-            'ticket_number'         => (string)$r['ticket_number'],
-            'ticket_type'           => (string)$r['ticket_type'],
-            'kyndryl_auditor'       => (string)$r['kyndryl_auditor'],
-            'petrobras_inspector'   => (string)$r['petrobras_inspector'],
-            'audited_supplier'      => (string)$r['audited_supplier'],
-            'location'              => (string)$r['location'],
-            'audit_month'           => $mesNome,
-            'sla_met_label'         => $sla,
-            'priority_label'        => $pri,
-            'category'              => (string)$r['category'],
-            'resolver_group'        => (string)$r['resolver_group'],
-            'is_compliant_label'    => $isComp,
-            'noncompliance_reasons' => $nc,
-        ];
-    }
-}
-
-return $out;
+    return $out;
 }
 
 
@@ -223,6 +228,42 @@ public function listAuditMonths(): array
     $rows = $pdo->query($sql)->fetchAll(\PDO::FETCH_COLUMN);
 
     return $rows ?: [];
+}
+public function fetchNoncomplianceStatsByUser(int $userId, ?string $month = null): array
+{
+    $sql = "
+        SELECT noncompliance_reasons
+        FROM audit_entries
+        WHERE user_id = :user_id
+    ";
+
+    $params = [':user_id' => $userId];
+
+    if ($month) {
+        $sql .= " AND audit_month = :month";
+        $params[':month'] = $month;
+    }
+
+    $pdo  = $this->rawPdo();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+}
+
+public function listAuditMonthsByUser(int $userId): array
+{
+    $pdo  = $this->rawPdo();
+    $stmt = $pdo->prepare(
+        "SELECT DISTINCT audit_month
+         FROM audit_entries
+         WHERE user_id = :user_id
+         ORDER BY audit_month DESC"
+    );
+
+    $stmt->execute([':user_id' => $userId]);
+
+    return $stmt->fetchAll(\PDO::FETCH_COLUMN);
 }
 
 
