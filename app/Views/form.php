@@ -1,6 +1,15 @@
 
 <?php
 
+/*
+var_dump(
+    $this->repo->rawPdo()
+        ->query('PRAGMA database_list')
+        ->fetchAll()
+);
+exit;
+*/
+
 
 
 //echo password_hash('adm123', PASSWORD_DEFAULT);
@@ -143,9 +152,15 @@ document.addEventListener('click', function (e) {
       if (!res.ok) return;
 
       const data = await res.json();
-      if (data.duplicate) {
-        lock('⚠️ Este chamado já está cadastrado.');
-      }
+      
+if (data.duplicate) {
+  setTicketDuplicado(true, '⚠️ Este chamado já está cadastrado.');
+  lock('⚠️ Este chamado já está cadastrado.');
+} else {
+  setTicketDuplicado(false);
+  unlock();
+}
+
 
     } catch (err) {
       console.error('Erro na validação do ticket:', err);
@@ -256,18 +271,24 @@ function removeMonthTooltip() {
 
   <!-- Número do Ticket -->
   <div class="col">
-    <label for="ticket_number">Número Ticket *</label>
-    <input id="ticket_number"
-           name="ticket_number"
-           required
-           autofocus
-           autocomplete="off"
-           placeholder="INC1234567, RITM1234567, SCTASK1234567"
-           pattern="^(INC|RITM|SCTASK)\d{6,}$"
-           value="<?= htmlspecialchars($old['ticket_number'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+  <label for="ticket_number">Número Ticket *</label>
 
-    <div id="ticket-feedback" class="muted" style="display:none;margin-top:4px"></div>
+  <input id="ticket_number"
+         name="ticket_number"
+         required
+         autofocus
+         autocomplete="off"
+         placeholder="INC1234567, RITM1234567, SCTASK1234567"
+         pattern="^(INC|RITM|SCTASK)\d{6,}$"
+         value="<?= htmlspecialchars($old['ticket_number'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+         oninvalid="this.setCustomValidity('Informe um ticket válido ou já existente')"
+         oninput="this.setCustomValidity('')">
+
+  <div id="ticket-feedback"
+       class="muted"
+       style="display:none;margin-top:4px">
   </div>
+</div>
 
 
       <!-- Tipo do Ticket -->
@@ -578,6 +599,47 @@ function removeMonthTooltip() {
   if (ticketInput.value) {
     detectType(ticketInput.value);
   }
+})();
+</script>
+<!--
+correção repetiççao de ticket_number 
+-->
+
+<script>
+(() => {
+  const form   = document.querySelector('form');
+  const input  = document.getElementById('ticket_number');
+  const feedback = document.getElementById('ticket-feedback');
+
+  if (!form || !input) return;
+
+  let ticketDuplicado = false;
+
+  window.__ticketDuplicado = false;
+
+  window.setTicketDuplicado = function (status, message = '') {
+    ticketDuplicado = status;
+    window.__ticketDuplicado = status;
+
+    if (status) {
+      feedback.textContent = message || 'Este chamado já está cadastrado.';
+      feedback.style.display = 'block';
+      feedback.style.color = '#dc2626';
+    } else {
+      feedback.style.display = 'none';
+      feedback.textContent = '';
+    }
+  };
+
+  // 🚫 BLOQUEIA SUBMIT DE QUALQUER JEITO
+  form.addEventListener('submit', function (e) {
+    if (ticketDuplicado) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      input.focus();
+      return false;
+    }
+  });
 })();
 </script>
 

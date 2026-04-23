@@ -93,10 +93,10 @@ final class AuditEntriesController
          * AUTOPREENCHIMENTO (BASEADO EM kyndryl_auditors)
          * ====================================================== */
         if (!empty($_SESSION['user']['id'])) {
-            $auditorName = (string) $_SESSION['user']['name'];
+           $userId = (int) $_SESSION['user']['id'];
 
 $ref = $this->kyndrylRepo
-    ->getInspectorAndLocationByAuditorName($auditorName);
+    ->getInspectorAndLocationByUserId($userId);
 
 
             if (is_array($ref)) {
@@ -201,86 +201,122 @@ $ref = $this->kyndrylRepo
      * ========================================================== */
 
     public function store(): void
-    {
-        $post   = $_POST ?? [];
-        $logger = $this->logger;
+{
 
-        /* ---------- Sobrescreve via kyndryl ---------- */
-        if (!empty($_SESSION['user']['id'])) {
-           
-$userId = (int)$_SESSION['user']['id'];
 
-$ref = $this->kyndrylRepo
-    ->getInspectorAndLocationByUserId($userId);
+    $post   = $_POST ?? [];
+    $logger = $this->logger;
 
-if (!$ref) {
-    $_SESSION['flash_error'] =
-        'Seu perfil não está completamente configurado (fiscal ou localidade). 
-         Entre em contato com o administrador.';
-    $_SESSION['flash_old'] = $post;
+    /* ---------- Sobrescreve via kyndryl ---------- */
+    if (!empty($_SESSION['user']['id'])) {
 
-    header('Location: ' . $this->base() . '/?invalid=profile', true, 303);
-    exit;
-}
+        $userId = (int) $_SESSION['user']['id'];
 
-$post['inspector_id'] = $ref['inspector_id'];
-$post['location_id']            = $ref['location_id'];
+        $ref = $this->kyndrylRepo
+            ->getInspectorAndLocationByUserId($userId);
 
-        }
+        if (!$ref) {
+            $_SESSION['flash_error'] =
+                'Seu perfil não está completamente configurado (fiscal ou localidade).
+                 Entre em contato com o administrador.';
 
-        /* ---------- Auditor ---------- */
-        if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
-            $post['user_id']         = (int)$_SESSION['user']['id'];
-            $post['kyndryl_auditor'] = (string)$_SESSION['user']['name'];
-        }
+            $_SESSION['flash_old'] = $post;
 
-        try {
-            $id = $this->service->handle($post);
-
-            $logger?->write('debug.log', date('c') . " OK id={$id}\n");
-
-            header('Location: ' . $this->base() . '/?created=' . urlencode((string)$id), true, 303);
+            header(
+                'Location: ' . $this->base() . '/?invalid=profile',
+                true,
+                303
+            );
             exit;
+        }
 
-        } catch (\PDOException $e) {
+        // força dados confiáveis
+        $post['inspector_id'] = $ref['inspector_id'];
+        $post['location_id']  = $ref['location_id'];
+    }
 
-    // 🔎 SQLite: erro 19 = UNIQUE constraint violation
-    $errorCode = $e->getCode();              // geralmente "23000"
-    $errorInfo = $e->errorInfo[1] ?? null;   // SQLite = 19
+    /* ---------- Auditor ---------- */
+    if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
+        $post['user_id']         = (int) $_SESSION['user']['id'];
+        $post['kyndryl_auditor'] = (string) $_SESSION['user']['name'];
+    }
 
-    if ($errorInfo === 19 && str_contains($e->getMessage(), 'ticket_number')) {
-        $ticket = (string)($post['ticket_number'] ?? '');
+    try {
+        $id = $this->service->handle($post);
 
+        $logger?->write(
+            'debug.log',
+            date('c') . " OK id={$id}\n"
+        );
+
+        header(
+            'Location: ' . $this->base() . '/?created=' . urlencode((string)$id),
+            true,
+            303
+        );
+        exit;
+
+    } catch (\PDOException $e) {
+
+        /**
+         * ✅ TRATAMENTO DEFINITIVO PARA DUPLICIDADE (SQLite)
+         *
+         * Código SQLite:
+         * - SQLSTATE: 23000
+         * - errorInfo[1]: 19
+         */
+        $sqliteCode = $e->errorInfo[1] ?? null;
+
+        if (
+            $sqliteCode === 19 &&
+            str_contains($e->getMessage(), 'ticket_number')
+        ) {
+            $ticket = strtoupper(
+                trim((string)($post['ticket_number'] ?? ''))
+            );
+
+            $_SESSION['flash_error'] =
+                $ticket !== ''
+                    ? "O ticket {$ticket} já está cadastrado."
+                    : "Este número de ticket já está cadastrado.";
+
+            $_SESSION['flash_old'] = $post;
+
+            header(
+                'Location: ' . $this->base() . '/?dupe=1',
+                true,
+                303
+            );
+            exit;
+        }
+
+        // ❌ erro inesperado de banco
         $_SESSION['flash_error'] =
-            $ticket !== ''
-                ? "O ticket {$ticket} já está cadastrado."
-                : "Este ticket já está cadastrado.";
+            'Chamado já registrado.';
 
         $_SESSION['flash_old'] = $post;
 
-        header('Location: ' . $this->base() . '/?dupe=1', true, 303);
+        header(
+            'Location: ' . $this->base() . '/?invalid=1',
+            true,
+            303
+        );
+        exit;
+
+    } catch (\Throwable $e) {
+
+        // ❌ erro de validação / lógica
+        $_SESSION['flash_error'] = $e->getMessage();
+        $_SESSION['flash_old']   = $post;
+
+        header(
+            'Location: ' . $this->base() . '/?invalid=1',
+            true,
+            303
+        );
         exit;
     }
-
-    // fallback genérico
-   $_SESSION['flash_error'] =
-    'Erro ao salvar o chamado: ' . $e->getMessage();
-
-$_SESSION['flash_old'] = $post;
-
-header('Location: ' . $this->base() . '/?invalid=debug', true, 303);
-exit;
 }
-
-catch (\Throwable $e) {
-
-    $_SESSION['flash_error'] = $e->getMessage();
-    $_SESSION['flash_old']   = $post;
-
-    header('Location: ' . $this->base() . '/?invalid=1', true, 303);
-    exit;
-}
-    }
 
     /* ==========================================================
      * EXPORT CSV
@@ -319,4 +355,28 @@ catch (\Throwable $e) {
     fclose($out);
     exit;
     }
+
+    public function import(): void
+{
+    if (empty($_FILES['file']['tmp_name'])) {
+        $_SESSION['flash_error'] = 'Nenhum arquivo enviado.';
+        header('Location: /import');
+        exit;
+    }
+
+    try {
+        $this->service->importCsv(
+            $_FILES['file']['tmp_name'],
+            $_SESSION['user'],
+            $_FILES['file']['name']
+        );
+
+        $_SESSION['flash_success'] = 'Importação realizada com sucesso.';
+    } catch (\Throwable $e) {
+        $_SESSION['flash_error'] = $e->getMessage();
+    }
+
+    header('Location: /import');
+    exit;
+}
 }

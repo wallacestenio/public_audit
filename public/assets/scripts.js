@@ -1464,6 +1464,122 @@ window.NC = (() => {
   });
 })();
 
+/* =========================================================
+   VALIDAÇÃO ASSÍNCRONA DO NÚMERO DO CHAMADO
+   (Verifica duplicidade e formato via API)
+   ========================================================= */
+(() => {
+  const input     = document.getElementById('ticket_number');
+  const feedback  = document.getElementById('ticket-feedback');
+  const openBtn   = document.getElementById('btn-open-confirm');
+  const submitBtn = document.getElementById('btn-submit-confirm');
+
+  if (!input || !feedback || !openBtn) return;
+
+  let timer      = null;
+  let hasError   = false;
+  let lastValue  = '';
+
+  const base  = '<?= htmlspecialchars($base ?? "", ENT_QUOTES, "UTF-8") ?>';
+  const token = '<?= htmlspecialchars($form_token_catalog ?? "", ENT_QUOTES, "UTF-8") ?>';
+
+  function lock(message) {
+    hasError = true;
+
+    feedback.textContent = message;
+    feedback.style.display = 'block';
+    feedback.style.color = '#dc2626';
+
+    openBtn.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
+
+    openBtn.style.opacity = '0.6';
+    openBtn.style.cursor  = 'not-allowed';
+  }
+
+  function unlock() {
+    hasError = false;
+
+    feedback.style.display = 'none';
+
+    openBtn.disabled = false;
+    if (submitBtn) submitBtn.disabled = false;
+
+    openBtn.style.opacity = '';
+    openBtn.style.cursor  = '';
+  }
+
+  async function validate(ticket) {
+    try {
+      const res = await fetch(
+        `${base}/api/validate/ticket?number=${encodeURIComponent(ticket)}`,
+        {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Form-Token': token,
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin'
+        }
+      );
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      if (data.invalid) {
+        unlock();
+        return;
+      }
+
+      
+if (data.duplicate) {
+  setTicketDuplicado(true, '⚠️ Este chamado já está cadastrado.');
+  lock('⚠️ Este chamado já está cadastrado.');
+} else {
+  setTicketDuplicado(false);
+  unlock();
+}
+
+
+    } catch (err) {
+      console.error('Erro ao validar ticket:', err);
+    }
+  }
+
+  function scheduleValidation() {
+    const value = input.value.trim().toUpperCase();
+
+    if (value === lastValue) return;
+    lastValue = value;
+
+    clearTimeout(timer);
+    unlock();
+
+    if (value.length < 8) return;
+
+    timer = setTimeout(() => validate(value), 400);
+  }
+
+  // ✅ dispara ao digitar
+  input.addEventListener('input', scheduleValidation);
+
+  // ✅ dispara ao colar
+  input.addEventListener('paste', () => {
+    setTimeout(scheduleValidation, 0);
+  });
+
+  // ✅ bloqueia abertura do modal
+  openBtn.addEventListener('click', (e) => {
+    if (hasError) {
+      e.preventDefault();
+      e.stopPropagation();
+      input.focus();
+    }
+  });
+
+})();
+
 
 
 

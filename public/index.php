@@ -90,6 +90,13 @@ use App\Repositories\LocationRepository;
 use App\Repositories\PetrobrasInspectorRepository;
 use App\Repositories\AllowedEmailRepository;
 
+//IMPORT FILES XLSX
+use App\Controllers\ImportAuditEntriesController;
+use App\Services\ImportAuditEntriesService;
+use App\Support\CsvReader;
+use App\Repositories\ImportBatchRepository;
+
+
 
 
 
@@ -149,8 +156,25 @@ $registerCtrl = new RegisterController(
     $pdo
 );
 
+// =====================
+// IMPORTAÇÃO DE AUDITORIAS
+// =====================
+
+$csvReader = new CsvReader();
+
+$importBatchRepository = new ImportBatchRepository($pdo);
+
+$importAuditEntriesService = new ImportAuditEntriesService(
+    $csvReader,
+    $auditRepo,              // ✅ variável existente
+    $importBatchRepository,
+    $kyndrylAuditorRepo      // ✅ variável existente
+);
 
 
+$importController = new ImportAuditEntriesController(
+    $importAuditEntriesService
+);
 
 /* ===================== AUTH / LOGIN ===================== */
 $auth      = new Auth($pdo);
@@ -265,6 +289,17 @@ $router->get('/export/csv', function () use ($mustAuth, $auditCtrl) {
     $mustAuth();
     $auditCtrl->exportCsv();
 });
+
+/* ===================== IMPORT FILE XLSX ===================== */
+
+$router->get('/import', function () use ($importController) {
+    $importController->showForm();
+});
+
+$router->post('/import', function () use ($importController) {
+    $importController->import();
+});
+
 
 /* ===================== DISPATCH ===================== */
 $router->dispatch(

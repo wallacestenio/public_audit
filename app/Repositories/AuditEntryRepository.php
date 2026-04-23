@@ -29,37 +29,61 @@ final class AuditEntryRepository
 {
     $pdo = $this->rawPdo();
 
-    $sql = "INSERT INTO audit_entries
-        (ticket_number, ticket_type, kyndryl_auditor, petrobras_inspector, audited_supplier, location,
-         audit_month, priority, requester_name, category, resolver_group, sla_met, is_compliant,
-         noncompliance_reason_ids, noncompliance_reasons, user_id)
-        VALUES
-        (:ticket_number, :ticket_type, :kyndryl_auditor, :petrobras_inspector, :audited_supplier, :location,
-         :audit_month, :priority, :requester_name, :category, :resolver_group, :sla_met, :is_compliant,
-         :nc_ids, :nc_labels, :user_id)";
+    $sql = "
+INSERT INTO audit_entries (
+  ticket_number,
+  ticket_type,
+  kyndryl_auditor,
+  petrobras_inspector,
+  audited_supplier,
+  location,
+  audit_month,
+  sla_met,
+  priority,
+  category,
+  resolver_group,
+  is_compliant,
+  noncompliance_reasons,
+  noncompliance_reason_ids,
+  import_batch_id
+) VALUES (
+  :ticket_number,
+  :ticket_type,
+  :kyndryl_auditor,
+  :petrobras_inspector,
+  :audited_supplier,
+  :location,
+  :audit_month,
+  :sla_met,
+  :priority,
+  :category,
+  :resolver_group,
+  :is_compliant,
+  :noncompliance_reasons,
+  :noncompliance_reason_ids,
+  :import_batch_id
+)
+";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-    ':ticket_number'       => (string)$data['ticket_number'],
-    ':ticket_type'         => (string)$data['ticket_type'],
-    ':kyndryl_auditor'     => (string)$data['kyndryl_auditor'],
-    ':petrobras_inspector' => (string)$data['petrobras_inspector'],
-    ':audited_supplier'    => (string)$data['audited_supplier'],
-    ':location'            => (string)$data['location'],
-    ':audit_month'         => (string)$data['audit_month'],
-    ':priority'            => (int)$data['priority'],
+  ':ticket_number' => $data['ticket_number'] ?? null,
+  ':ticket_type' => $data['ticket_type'] ?? null,
+  ':kyndryl_auditor' => $data['kyndryl_auditor'] ?? null,
+  ':petrobras_inspector' => $data['petrobras_inspector'] ?? null,
+  ':audited_supplier' => $data['audited_supplier'] ?? null,
+  ':location' => $data['location'] ?? null,
+  ':audit_month' => $data['audit_month'] ?? null,
+  ':sla_met' => $data['sla_met'] ?? null,
+  ':priority' => $data['priority'] ?? null,
+  ':category' => $data['category'] ?? null,
+  ':resolver_group' => $data['resolver_group'] ?? null,
+  ':is_compliant' => $data['is_compliant'] ?? null,
+  ':noncompliance_reasons' => $data['noncompliance_reasons'] ?? null,
+  ':noncompliance_reason_ids' => $data['noncompliance_reason_ids'] ?? null,
+  ':import_batch_id' => $data['import_batch_id'] ?? null,
+]);
 
-    // << agora vem sempre vazio (ou ajuste para null se a coluna permitir):
-    ':requester_name'      => (string)($data['requester_name'] ?? ''),
-
-    ':category'            => (string)$data['category'],
-    ':resolver_group'      => (string)$data['resolver_group'],
-    ':sla_met'             => (int)$data['sla_met'],
-    ':is_compliant'        => (int)$data['is_compliant'],
-    ':nc_ids'              => $data['noncompliance_reason_ids'] ?? null,
-    ':nc_labels'           => $data['noncompliance_reasons'] ?? null,
-    ':user_id'             => isset($data['user_id']) ? (int)$data['user_id'] : null,
-    ]);
 
     $id = (int)$pdo->lastInsertId();
     if ($id === 0) {
@@ -264,6 +288,10 @@ public function listAuditMonthsByUser(int $userId): array
     $stmt->execute([':user_id' => $userId]);
 
     return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+}
+public function insertWithReasons(array $data, array $reasonIds = []): int
+{
+    return $this->model->insertWithReasons($data, $reasonIds);
 }
 
 
