@@ -6,7 +6,9 @@ namespace App\Controllers;
 use App\Services\CreateAuditEntryService;
 use App\Repositories\AuditEntryRepository;
 use App\Repositories\KyndrylAuditorRepository;
+use App\Services\ExportAuditoriaMensal;
 use App\Support\Logger;
+
 
 final class AuditEntriesController
 {
@@ -21,6 +23,9 @@ final class AuditEntriesController
     ) {
         $this->logger ??= new Logger();
     }
+
+    
+    
 
     /* ==========================================================
      * HELPERS
@@ -73,109 +78,58 @@ final class AuditEntriesController
      * FORM (GET /)
      * ========================================================== */
 
+
     public function form(): void
-    {
-        /* ---------- Flash ---------- */
-        $flashError = $_SESSION['flash_error'] ?? null;
-        $flashOld   = $_SESSION['flash_old'] ?? null;
-        unset($_SESSION['flash_error'], $_SESSION['flash_old']);
+{
+    /* ---------- Flash ---------- */
+    $flashError = $_SESSION['flash_error'] ?? null;
+    $flashOld   = $_SESSION['flash_old'] ?? null;
+    unset($_SESSION['flash_error'], $_SESSION['flash_old']);
 
-        $old = is_array($flashOld) ? $flashOld : [];
+    $old = is_array($flashOld) ? $flashOld : [];
 
-        /* ---------- Auditor Kyndryl (sessão) ---------- */
-        if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
-            $old['kyndryl_auditor']     = (string)$_SESSION['user']['name'];
-            $old['kyndryl_auditor_id']  = (int)$_SESSION['user']['id'];
-            $old['_lock_kyndryl_field'] = 1;
-        }
+    /* ---------- Auditor Kyndryl (sessão) ---------- */
+    if (!empty($_SESSION['user']['id']) && !empty($_SESSION['user']['name'])) {
+        $old['kyndryl_auditor']     = (string)$_SESSION['user']['name'];
+        $old['kyndryl_auditor_id']  = (int)$_SESSION['user']['id'];
+        $old['_lock_kyndryl_field'] = 1;
+    }
 
-        /* ======================================================
-         * AUTOPREENCHIMENTO (BASEADO EM kyndryl_auditors)
-         * ====================================================== */
-        if (!empty($_SESSION['user']['id'])) {
-           $userId = (int) $_SESSION['user']['id'];
+    /* ---------- Autopreenchimento ---------- */
+    if (!empty($_SESSION['user']['id'])) {
+        $userId = (int) $_SESSION['user']['id'];
 
-$ref = $this->kyndrylRepo
-    ->getInspectorAndLocationByUserId($userId);
+        $ref = $this->kyndrylRepo->getInspectorAndLocationByUserId($userId);
 
+        if (is_array($ref)) {
 
-            if (is_array($ref)) {
+            if (!empty($ref['inspector_id']) && !empty($ref['petrobras_inspector'])) {
+                $old['petrobras_inspector']    = (string)$ref['petrobras_inspector'];
+                $old['petrobras_inspector_id'] = (int)$ref['inspector_id'];
+                $old['_lock_inspector_field']  = 1;
+            }
 
-                // Inspetor Petrobras
-                if (!empty($ref['inspector_id']) && !empty($ref['petrobras_inspector'])) {
-                    $old['petrobras_inspector']    = (string)$ref['petrobras_inspector'];
-                    $old['petrobras_inspector_id'] = (int)$ref['inspector_id'];
-                    $old['_lock_inspector_field']  = 1;
-                }
-
-                // Localidade
-                if (!empty($ref['location_id']) && !empty($ref['location'])) {
-                    $old['location']              = (string)$ref['location'];
-                    $old['location_id']           = (int)$ref['location_id'];
-                    $old['_lock_location_field']  = 1;
-                }
+            if (!empty($ref['location_id']) && !empty($ref['location'])) {
+                $old['location']             = (string)$ref['location'];
+                $old['location_id']          = (int)$ref['location_id'];
+                $old['_lock_location_field'] = 1;
             }
         }
-
-        /* ---------- Token ---------- */
-        $form_token_catalog = $this->ensureCatalogFormToken();
-
-        /* ---------- Render ---------- */
-        $this->render('form', [
-            'title'              => 'Auditoria de Chamados',
-            'error'              => $flashError,
-            'old'                => $old,
-            'form_token_catalog' => $form_token_catalog,
-        ]);
     }
 
- public function noncomplianceStats(): void
-{
-    // ✅ Usuário logado
-    $userId = (int)($_SESSION['user']['id'] ?? 0);
-    if ($userId <= 0) {
-        header('Location: ' . $this->base() . '/login');
-        exit;
-    }
+    /* ---------- Token ---------- */
+    $form_token_catalog = $this->ensureCatalogFormToken();
 
-    // ✅ Filtro por mês (opcional)
-    $month = isset($_GET['month']) && $_GET['month'] !== ''
-        ? trim((string)$_GET['month'])
-        : null;
-
-    // ✅ BUSCA OS DADOS SOMENTE DO USUÁRIO LOGADO
-    $raw = $this->repo->fetchNoncomplianceStatsByUser(
-        $userId,
-        $month
-    );
-
-    $months = $this->repo->listAuditMonthsByUser($userId);
-
-    $counter = [];
-
-    foreach ($raw as $line) {
-
-    // ✅ ignora valores nulos ou vazios
-    if (!is_string($line) || trim($line) === '') {
-        continue;
-    }
-
-    $items = array_filter(array_map('trim', explode(';', $line)));
-
-    foreach ($items as $label) {
-        $counter[$label] = ($counter[$label] ?? 0) + 1;
-    }
-}
-
-    arsort($counter);
-
-    $this->render('noncompliance_stats', [
-        'title'         => 'Estatísticas de Não Conformidades',
-        'stats'         => $counter,
-        'months'        => $months,
-        'selectedMonth' => $month,
+    /* ---------- Render ---------- */
+    $this->render('form', [
+        'title'              => 'Auditoria de Chamados',
+        'error'              => $flashError,
+        'old'                => $old,
+        'form_token_catalog' => $form_token_catalog,
     ]);
 }
+    
+
 
     /* ==========================================================
      * API – VALIDATE TICKET
@@ -187,7 +141,7 @@ $ref = $this->kyndrylRepo
 
         $number = trim((string)($_GET['number'] ?? ''));
 
-        if ($number === '' || !preg_match('/^(INC|RITM|SCTASK)\d{6,}$/', $number)) {
+        if ($number === '' || !preg_match('/^(INC|RITM|REQ|SCTASK|TASK)\d+$/', $number)) {
             echo json_encode(['ok' => true, 'duplicate' => false, 'invalid' => true]);
             return;
         }
@@ -206,6 +160,20 @@ $ref = $this->kyndrylRepo
 
     $post   = $_POST ?? [];
     $logger = $this->logger;
+
+    // ✅ NORMALIZA E VALIDA O TICKET
+    $ticket = strtoupper(trim((string)($post['ticket_number'] ?? '')));
+
+    if ($ticket === '') {
+        throw new \RuntimeException('Número do ticket é obrigatório.');
+    }
+
+    if (!preg_match('/^(INC|RITM|REQ|SCTASK|TASK)\d+$/i', $ticket)) {
+        throw new \RuntimeException('Tipo de Ticket inválido.');
+    }
+
+    // ✅ sobrescreve o valor normalizado
+    $post['ticket_number'] = $ticket;
 
     /* ---------- Sobrescreve via kyndryl ---------- */
     if (!empty($_SESSION['user']['id'])) {
@@ -356,6 +324,45 @@ $ref = $this->kyndrylRepo
     exit;
     }
 
+    public function exportXlsx(): void
+{
+
+
+set_time_limit(0);
+ini_set('memory_limit', '512M');
+
+    $userId = (int)($_SESSION['user']['id'] ?? 0);
+
+    if ($userId <= 0) {
+        http_response_code(401);
+        echo 'Não autenticado.';
+        return;
+    }
+
+    // ✅ mês vindo da URL (MESMO PADRÃO DO CSV)
+    $month = isset($_GET['audit_month']) && $_GET['audit_month'] !== ''
+        ? trim((string)$_GET['audit_month'])
+        : null;
+
+    if (!$month) {
+        throw new \RuntimeException('Mês não informado.');
+    }
+
+    // ✅ reutiliza o Repository que JÁ EXISTE no controller
+    $exportService = new ExportAuditoriaMensal($this->repo);
+
+    // ✅ gera o arquivo
+    $arquivo = $exportService->exportar($month);
+
+    // ✅ força download
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . basename($arquivo) . '"');
+    header('Content-Length: ' . filesize($arquivo));
+
+    readfile($arquivo);
+    exit;
+}
+
     public function import(): void
 {
     if (empty($_FILES['file']['tmp_name'])) {
@@ -377,6 +384,168 @@ $ref = $this->kyndrylRepo
     }
 
     header('Location: /import');
+    exit;
+}
+
+public function noncomplianceStats(): void
+{
+    $userId = (int)($_SESSION['user']['id'] ?? 0);
+    if ($userId <= 0) {
+        header('Location: ' . $this->base() . '/login');
+        exit;
+    }
+
+    // ✅ Filtros
+    $month = isset($_GET['month']) && $_GET['month'] !== ''
+        ? trim((string)$_GET['month'])
+        : null;
+
+    $resolverGroup = isset($_GET['resolver_group']) && $_GET['resolver_group'] !== ''
+        ? trim((string)$_GET['resolver_group'])
+        : null;
+
+    // ✅ Listas para os selects
+    $months = $this->repo->listAuditMonthsByUser($userId);
+
+    if (method_exists($this->repo, 'listResolverGroupsByUser')) {
+        $resolverGroups = $this->repo->listResolverGroupsByUser($userId);
+    } else {
+        $resolverGroups = [];
+    }
+
+    // ✅ TOTAL DE CHAMADOS DO CENÁRIO (BASE DO FILTRO)
+    $totals = $this->repo->countAuditsByMonth($userId, $month);
+
+    $totalAudits  = (int)($totals['total'] ?? 0);
+    $totalNC      = (int)($totals['noncompliant'] ?? 0);
+    $totalOK      = max(0, $totalAudits - $totalNC);
+
+    $scenarioTotals = [
+        'total'         => $totalAudits,
+        'noncompliant'  => $totalNC,
+        'compliant'     => $totalOK,
+    ];
+
+    // ✅ Buscar não conformidades
+    $statsByResolver = [];
+
+    $rows = $this->repo->fetchNoncomplianceGroupedByResolver(
+        $userId,
+        $month,
+        $resolverGroup
+    );
+
+    foreach ($rows as $row) {
+        $resolver = $row['resolver_group'] ?: 'Sem Mesa';
+        $raw = trim((string)($row['noncompliance_reasons'] ?? ''));
+
+        if ($raw === '') continue;
+
+        foreach (array_map('trim', explode(';', $raw)) as $label) {
+            if ($label === '') continue;
+            $statsByResolver[$resolver][$label] =
+                ($statsByResolver[$resolver][$label] ?? 0) + 1;
+        }
+    }
+
+    // ✅ Consolida quando Mesa = Todas
+    if ($resolverGroup === null && !empty($statsByResolver)) {
+        $all = [];
+        foreach ($statsByResolver as $stats) {
+            foreach ($stats as $label => $count) {
+                $all[$label] = ($all[$label] ?? 0) + $count;
+            }
+        }
+        $statsByResolver = ['Todas as Mesas' => $all];
+    }
+
+    // ✅ Gráfico percentual geral (Resumo)
+    $complianceSummary = null;
+
+    if ($resolverGroup === null && $totalAudits > 0) {
+        $complianceSummary = [
+            'labels' => ['Em Conformidade', 'Não Conformidade'],
+            'values' => [
+                round(($totalOK / $totalAudits) * 100, 1),
+                round(($totalNC / $totalAudits) * 100, 1),
+            ],
+        ];
+    }
+
+    // ✅ Render
+    $this->render('noncompliance_stats', [
+        'title'                 => 'Estatísticas de Não Conformidades',
+        'statsByResolver'       => $statsByResolver,
+        'months'                => $months,
+        'resolverGroups'        => $resolverGroups,
+        'selectedMonth'         => $month,
+        'selectedResolverGroup' => $resolverGroup,
+        'complianceSummary'     => $complianceSummary,
+        'scenarioTotals'        => $scenarioTotals,
+    ]);
+}
+
+public function exportScenarioHtml(): void
+{
+    $userId = (int)($_SESSION['user']['id'] ?? 0);
+    if ($userId <= 0) {
+        http_response_code(401);
+        exit('Não autenticado');
+    }
+
+    // filtros
+    $month = isset($_GET['month']) && $_GET['month'] !== '' ? trim($_GET['month']) : null;
+    $resolverGroup = isset($_GET['resolver_group']) && $_GET['resolver_group'] !== '' ? trim($_GET['resolver_group']) : null;
+
+    // reutiliza A MESMA LÓGICA do relatório
+    $statsByResolver = [];
+
+    $rows = $this->repo->fetchNoncomplianceGroupedByResolver(
+        $userId,
+        $month,
+        $resolverGroup
+    );
+
+    foreach ($rows as $row) {
+        $resolver = $row['resolver_group'] ?: 'Sem Mesa';
+        $raw = trim((string)($row['noncompliance_reasons'] ?? ''));
+        if ($raw === '') continue;
+
+        foreach (array_map('trim', explode(';', $raw)) as $label) {
+            if ($label === '') continue;
+            $statsByResolver[$resolver][$label] =
+                ($statsByResolver[$resolver][$label] ?? 0) + 1;
+        }
+    }
+
+    if ($resolverGroup === null && !empty($statsByResolver)) {
+        $all = [];
+        foreach ($statsByResolver as $stats) {
+            foreach ($stats as $k => $v) {
+                $all[$k] = ($all[$k] ?? 0) + $v;
+            }
+        }
+        $statsByResolver = ['Todas as Mesas' => $all];
+    }
+
+    // gera HTML puro
+    header('Content-Type: text/html; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="cenario_' . ($month ?? 'todos') . '.html"');
+
+    // ✅ TOTAL DE CHAMADOS DO CENÁRIO (MESMA REGRA DA TELA)
+$totals = $this->repo->countAuditsByMonth($userId, $month);
+
+$totalAudits = (int)($totals['total'] ?? 0);
+$totalNC     = (int)($totals['noncompliant'] ?? 0);
+$totalOK     = max(0, $totalAudits - $totalNC);
+
+$scenarioTotals = [
+    'total'         => $totalAudits,
+    'noncompliant'  => $totalNC,
+    'compliant'     => $totalOK,
+];
+
+    include dirname(__DIR__) . '/Views/noncompliance_export.php';
     exit;
 }
 }

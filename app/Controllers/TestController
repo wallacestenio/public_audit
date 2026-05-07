@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Core\ServiceFactory;
+
+class TestController
+{
+    public function test()
+    {
+        $service = ServiceFactory::makeAssistantAnalyzer();
+
+        $result = $service->analyze(
+            [
+                'audit_month' => '2026-04',
+                'location_id' => 123,
+                'item_id' => 1,
+                'bdgc_quantity' => 10,
+                'found_quantity' => 8,
+                'divergence_quantity' => 2
+            ],
+            'inventory_audit'
+        );
+
+        var_dump($result);
+    }
+}

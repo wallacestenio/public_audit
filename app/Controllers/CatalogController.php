@@ -138,4 +138,24 @@ final class CatalogController
         echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         exit;
     }
+
+    public function countAuditsByMonth(int $userId, ?string $month): array
+{
+    $sql = "
+        SELECT
+            COUNT(*) AS total,
+            SUM(CASE WHEN is_compliant = 0 THEN 1 ELSE 0 END) AS noncompliant
+        FROM audit_entries
+        WHERE user_id = :user_id
+          AND (:month IS NULL OR audit_month = :month)
+    ";
+
+    $stmt = $this->rawPdo()->prepare($sql);
+    $stmt->execute([
+        'user_id' => $userId,
+        'month'   => $month,
+    ]);
+
+    return $stmt->fetch(\PDO::FETCH_ASSOC) ?: ['total' => 0, 'noncompliant' => 0];
+}
 }

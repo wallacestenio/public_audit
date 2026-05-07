@@ -253,27 +253,31 @@ public function listAuditMonths(): array
 
     return $rows ?: [];
 }
-public function fetchNoncomplianceStatsByUser(int $userId, ?string $month = null): array
-{
+
+public function fetchNoncomplianceGroupedByResolver(
+    int $userId,
+    ?string $month,
+    ?string $resolverGroup = null
+): array {
     $sql = "
-        SELECT noncompliance_reasons
+        SELECT resolver_group, noncompliance_reasons
         FROM audit_entries
         WHERE user_id = :user_id
+          AND (:month IS NULL OR audit_month = :month)
+          AND (:resolver_group IS NULL OR resolver_group = :resolver_group)
     ";
 
-    $params = [':user_id' => $userId];
+    $stmt = $this->rawPdo()->prepare($sql);
+    $stmt->execute([
+        'user_id'        => $userId,
+        'month'          => $month,
+        'resolver_group' => $resolverGroup,
+    ]);
 
-    if ($month) {
-        $sql .= " AND audit_month = :month";
-        $params[':month'] = $month;
-    }
-
-    $pdo  = $this->rawPdo();
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-
-    return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 }
+
+
 
 public function listAuditMonthsByUser(int $userId): array
 {
@@ -293,6 +297,107 @@ public function insertWithReasons(array $data, array $reasonIds = []): int
 {
     return $this->model->insertWithReasons($data, $reasonIds);
 }
+
+/**
+ * Retorna um mapa [label => id] para as justificativas de não conformidade.
+ */
+public function mapNoncomplianceReasonLabelToId(): array
+{
+    $stmt = $this->rawPdo()->query(
+        "SELECT id, noncompliance_reason FROM noncompliance_reasons"
+    );
+
+    $map = [];
+    foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+        $map[trim($row['noncompliance_reason'])] = (int) $row['id'];
+    }
+    return $map;
+}
+// fim da classe//
+
+
+public function fetchNoncomplianceStatsByUser(
+    int $userId,
+    ?string $month = null,
+    ?string $resolverGroup = null
+): array {
+    $sql = "
+        SELECT noncompliance_reasons
+        FROM audit_entries
+        WHERE user_id = :user_id
+          AND (:month IS NULL OR audit_month = :month)
+          AND (:resolver_group IS NULL OR resolver_group = :resolver_group)
+    ";
+
+    $stmt = $this->rawPdo()->prepare($sql);
+    $stmt->execute([
+        'user_id'        => $userId,
+        'month'          => $month,
+        'resolver_group' => $resolverGroup,
+    ]);
+
+    return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+}
+
+/**
+ * Associa um registro de audit_entries a um lote de importação (import_batches).
+ * Útil para rastrear quais registros vieram de qual arquivo.
+ */
+public function attachImportBatch(string $ticketNumber, int $batchId): void
+{
+    $stmt = $this->rawPdo()->prepare(
+        "UPDATE audit_entries
+         SET import_batch_id = :batch
+         WHERE TRIM(UPPER(ticket_number)) = TRIM(UPPER(:ticket))"
+    );
+
+    $stmt->execute([
+        ':batch'  => $batchId,
+        ':ticket' => $ticketNumber,
+    ]);
+}
+
+public function listResolverGroupsByUser(int $userId): array
+{
+    $sql = "
+        SELECT DISTINCT resolver_group
+        FROM audit_entries
+        WHERE user_id = :user_id
+          AND resolver_group IS NOT NULL
+          AND TRIM(resolver_group) <> ''
+        ORDER BY resolver_group
+    ";
+
+    $stmt = $this->rawPdo()->prepare($sql);
+    $stmt->execute(['user_id' => $userId]);
+
+    return $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+}
+
+public function countAuditsByMonth(
+    int $userId,
+    ?string $month
+): array {
+    $sql = "
+        SELECT
+            COUNT(*) AS total,
+            SUM(CASE WHEN is_compliant = 0 THEN 1 ELSE 0 END) AS noncompliant
+        FROM audit_entries
+        WHERE user_id = :user_id
+          AND (:month IS NULL OR audit_month = :month)
+    ";
+
+    $stmt = $this->rawPdo()->prepare($sql);
+    $stmt->execute([
+        'user_id' => $userId,
+        'month'   => $month,
+    ]);
+
+    return $stmt->fetch(\PDO::FETCH_ASSOC)
+        ?: ['total' => 0, 'noncompliant' => 0];
+}
+
+
 
 
 }

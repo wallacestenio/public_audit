@@ -178,4 +178,22 @@ final class CatalogRepository
         ";
         return $this->run($sql, $params);
     }
+
+    public function findAll(): array
+{
+    return $this->all(); // ou o método que já existe
+}
+
+public function listInventoryItems(): array
+{
+    $stmt = $this->pdo->query("
+        SELECT id, name
+        FROM inventory_items
+        WHERE active = 1
+        ORDER BY name
+    ");
+
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
+
 }

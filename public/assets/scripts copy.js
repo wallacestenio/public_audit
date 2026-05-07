@@ -157,7 +157,7 @@ window.exportByMonth = function () {
     let v = (tn.value || '').toUpperCase().replace(/\s+/g, '');
     tn.value = v;
 
-    const ok = /^(INC|RITM|SCTASK)\d{6,}$/.test(v);
+    const ok = /^(INC|RITM|REQ|SCTASK|TASK)\d+$/.test(v);
     tn.setCustomValidity(
       ok ? '' : 'O ticket deve iniciar com INC, RITM ou SCTASK + dígitos.'
     );
@@ -622,3 +622,4 @@ makeAutocomplete({
     if (e.key === 'Enter' && !btnSubmit.disabled) btnSubmit.click();
   });
 })();
+

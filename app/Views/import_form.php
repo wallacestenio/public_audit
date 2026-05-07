@@ -27,12 +27,14 @@ unset($_SESSION['flash_error'], $_SESSION['flash_success']);
 
     <div class="field">
       <label>Selecione o arquivo (CSV)</label>
-      <input
-        type="file"
-        name="file"
-        accept=".csv"
-        required
-      >
+      
+<input
+  type="file"
+  name="file"
+  accept=".csv,.xlsx"
+  required
+>
+
     </div>
 
     <div class="actions" style="margin-top:16px">

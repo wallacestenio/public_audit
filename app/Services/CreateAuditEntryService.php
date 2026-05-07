@@ -109,7 +109,7 @@ final class CreateAuditEntryService
         throw new \InvalidArgumentException('Mês da Auditoria inválido.');
     }
 
-    if (!in_array($data['priority'], [1,2,3,4], true)) {
+    if (!in_array($data['priority'], [1,2,3,4,5], true)) {
         throw new \InvalidArgumentException('Prioridade inválida.');
     }
 

@@ -1,0 +1,31 @@
+.assistant-card {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+.assistant-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.assistant-card textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccd1d6;
+}
+
+.assistant-actions {
+  margin-top: 12px;
+  text-align: right;
+}
+
+#assistant-result {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
